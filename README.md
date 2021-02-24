@@ -6,18 +6,18 @@ AudioStore is a service where you can find your favorite tracks, create a place 
 
 We are KPI students and decided to create an application as an educational project. This service provides many popular music tracks and a place where you can invite your friends to listen to music.
 
-# Main functionality:
+## Main functionality:
 
-  ## Roles
+  ### Roles
    - Moderator
    - User
-  ## As Moderator you can
+  ### As Moderator you can
    - Create a room for listening to music to which users can connect
 
-# Technologies
- ## Front-end:
+## Technologies
+ ### Front-end:
   - Figma
- ## Back-end:
+ ### Back-end:
   - PostgreSQL
   - JS
   - ...
