@@ -13,6 +13,9 @@ We are KPI students and decided to create an application as an educational proje
    - User
   ### As Moderator you can
    - Create a room for listening to music to which users can connect
+   - ...
+  ### As User you can
+   - Enter to the rood to listen music
 
 ## Technologies
  ### Front-end:
