@@ -34,7 +34,7 @@ We are KPI students and decided to create an application as an educational proje
 
 ## Authors and acknowledgment
 
-- Anton Borovik
+- Anton Borovyk
 - Mykola Onyshchuk
 - Alexey Kharenko
 
