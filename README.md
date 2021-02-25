@@ -9,25 +9,31 @@ We are KPI students and we've decided to create an application as an educational
 ## Main functionality:
 
   ### Roles
-   - Moderator
+   - Content Creator
    - User
-  ### As Moderator, you can
-   - Create a room for listening to music which users can connect to
-   - ...
+  ### As Content Creator, you can
+   - upload music and description
+
   ### As a User, you can
-   - Enter the room to listen to music
+   - create and manage a room
+   - listen any song
+   - find songs 
+   - rate songs
 
 ## Technologies
+ ### Front-end:
+  - Html
+  - CSS
+  - Native JavaScript
+
  ### Back-end:
   - PostgreSQL
-  - JS
-  - ...
+  - Pure Node.js
  
 ## Roadmap
 
 - Create a database with many songs
 - Create a function that will allow to create and connect to the room
-- Create a RESTful system
 - Create a convenient design
 
 ## Authors and acknowledgment
