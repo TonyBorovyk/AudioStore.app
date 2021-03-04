@@ -1,6 +1,6 @@
-# AudioStore
+# _AudioStore_
 
-AudioStore is a service where you can find your favorite tracks, create a place to listen to songs with other members.
+AudioStore is a service where you can find your favorite tracks, create a place to listen to songs with other members..
 
 ## Description
 
@@ -16,7 +16,7 @@ We are KPI students and we've decided to create an application as an educational
 
   ### As a User, you can
    - create and manage a room
-   - listen any song
+   - listen to any song
    - find songs 
    - rate songs
 
