@@ -16,7 +16,7 @@ We are KPI students and we've decided to create an application as an educational
 
   ### As a User, you can
    - create and manage a room
-   - listen any song
+   - listen to any song
    - find songs 
    - rate songs
 
