@@ -4,6 +4,7 @@
         "es2021": true,
         "node": true
     },
+    
     "extends": [
         "prettier",
         "airbnb-base"
@@ -15,7 +16,10 @@
         "ecmaVersion": 12
     },
     "rules": {
-        "prettier/prettier": "error"
+        "prettier/prettier": ["error", 
+           "endOfLine: auto"  
+        ]
+        
     },
     "root": true
 }
