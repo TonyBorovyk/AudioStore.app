@@ -24,7 +24,7 @@ We are KPI students and we've decided to create an application as an educational
  ### Front-end:
   - Html
   - CSS
-  - Native JavaScript
+  - VueJS
 
  ### Back-end:
   - PostgreSQL
