@@ -6,9 +6,11 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "prepare": "cd .. && npx husky install back-end/.husky",
-    "lint": "npx eslint . --fix",
-    "prettier": "npx prettier -c . && npx prettier -l . && npx prettier -w . "
+    "prepare": "cd .. && npx husky install",
+    "lint": "npx eslint .",
+    "format":"npx eslint . --fix",
+    "prettier": "npx prettier -c .",
+    "prettier:format": "npx prettier -w ."
   },
   "author": "",
   "license": "ISC",
