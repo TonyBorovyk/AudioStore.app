@@ -8,4 +8,4 @@ cd  ..
 cd front-end
 npm run lint
 cd ..
-git add .
+
