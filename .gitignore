@@ -22,4 +22,5 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
-/back-end/.husky/_
+.husky/_
+back-end/.vscode

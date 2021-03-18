@@ -1,0 +1,24 @@
+{
+  "name": "AudioStore.app",
+  "version": "1.0.0",
+  "description": "AudioStore is a service where you can find your favorite tracks, create a place to listen to songs with other members..",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install",
+    "modules": "cd back-end && npm install && cd ../front-end && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TonyBorovyk/AudioStore.app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TonyBorovyk/AudioStore.app/issues"
+  },
+  "homepage": "https://github.com/TonyBorovyk/AudioStore.app#readme",
+  "devDependencies": {
+    "husky": "^5.1.3"
+  }
+}
