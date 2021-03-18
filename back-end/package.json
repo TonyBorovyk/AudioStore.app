@@ -10,6 +10,7 @@
     "lint": "npx eslint . --fix",
     "prettier": "npx prettier -c . && npx prettier -l . && npx prettier -w . "
   },
+  
   "author": "",
   "license": "ISC",
   "devDependencies": {
