@@ -1,18 +1,28 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div class="main-wrapper">
+    <h1>Recently Added</h1>
+    <BaseSongsGridContainer :songs="getRecentlyAddedSongs" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import BaseSongsGridContainer from "@/components/BaseSongsGridContainer.vue";
+import {mapGetters, mapActions} from "vuex";
 
 export default {
   name: "Home",
   components: {
-    HelloWorld
+    BaseSongsGridContainer,
+  },
+  computed:{
+    ...mapGetters(["getRecentlyAddedSongs"]),
+  },
+  methods:{
+    ...mapActions(["fetchRecAddedSongs"]),
+  },
+  created(){
+    this.fetchRecAddedSongs();
   }
 };
 </script>
