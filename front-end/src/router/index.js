@@ -8,11 +8,81 @@ const routes = [
     component: Home
   },
   {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
+    path: "/songs",
+    name: "Songs",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Songs.vue")
+  },
+  {
+    path: "/songs/:track_id",
+    name: "SongDetails",
+    component: () => import(/* webpackChunkName: "about" */ "../views/Song.vue")
+  },
+  {
+    path: "/albums",
+    name: "Albums",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/albums/:album_id",
+    name: "AlbumDetails",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/artists",
+    name: "Artists",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/artists/:artist_id",
+    name: "ArtistDetails",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/login",
+    name: "LogIn",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/LogIn.vue")
+  },
+  {
+    path: "/signup",
+    name: "SignUp",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/search",
+    name: "Search",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/rooms",
+    name: "Room",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/rooms/:id",
+    name: "RoomPage",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/profile/:user_id",
+    name: "Profile",
+    children: [
+      {
+        path: "playlists",
+        name: "UserPlaylists",
+        component: () =>
+          import(/* webpackChunkName: "about" */ "../views/About.vue")
+      }
+    ],
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue")
   }

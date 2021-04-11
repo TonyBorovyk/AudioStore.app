@@ -4,12 +4,9 @@
 
 <script>
 export default {
-    name:"ButtonMore",
-    props:["route"],
-
-}
+  name: "ButtonMore",
+  props: ["route"]
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

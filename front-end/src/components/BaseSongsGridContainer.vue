@@ -1,22 +1,19 @@
 <template>
   <div class="items-container">
-    <BaseItem v-for="song in songs" :key="song.track_id" :song="song" />
+    <BaseSongItem v-for="song in songs" :key="song.track_id" :song="song" />
   </div>
 </template>
 
 <script>
-import BaseItem from "@/components/BaseItem.vue";
+import BaseSongItem from "@/components/BaseSongItem.vue";
 
 export default {
-    name: "BaseSongsGridContainer",
-    props:["songs"],
-    components:{
-      BaseItem,
-    }
-
-}
+  name: "BaseSongsGridContainer",
+  props: ["songs"],
+  components: {
+    BaseSongItem
+  }
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
