@@ -47,6 +47,53 @@ export default {
   list-style: none;
   min-height: 100vh;
   background: #212e3a;
+  .background-visible {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: rgba(128, 128, 128, 0.338);
+    z-index: 110;
+  }
+  .login-signup-container {
+    position: relative;
+    max-width: 500px;
+    left: 50%;
+    transform: translateX(-50%);
+    form {
+      p,
+      label {
+        user-select: none;
+      }
+      .input-block {
+        text-align: left;
+        display: grid;
+        grid-row-gap: 10px;
+        margin: 20px 0;
+        input {
+          border: none;
+          outline: none;
+          background: white;
+          color: black;
+          padding: 10px 20px;
+          border-radius: 16px;
+          margin-right: 5px;
+        }
+      }
+      .input-block:focus-within {
+        color: white;
+      }
+      .show-password-block {
+        text-align: left;
+        label {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+
+  .btn-margin {
+    margin: 10px;
+  }
   a {
     text-decoration: none;
     color: white;

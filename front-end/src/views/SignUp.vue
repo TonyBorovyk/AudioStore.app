@@ -1,7 +1,34 @@
 <template>
   <div class="login-signup-container">
-    <h1>Log in</h1>
+    <h1>Sign up</h1>
     <form @submit.prevent="changeLogInStatus">
+      <div class="input-block">
+        <p class="form-field-title">Name</p>
+        <input
+          class="form-field"
+          type="text"
+          name="first_name"
+          placeholder="Name"
+        />
+      </div>
+      <div class="input-block">
+        <p class="form-field-title">Surname</p>
+        <input
+          class="form-field"
+          type="text"
+          name="second_name"
+          placeholder="Surname"
+        />
+      </div>
+      <div class="input-block">
+        <p class="form-field-title">Username</p>
+        <input
+          class="form-field"
+          type="text"
+          name="username"
+          placeholder="Usename"
+        />
+      </div>
       <div class="input-block">
         <p class="form-field-title">Email</p>
         <input
@@ -26,11 +53,11 @@
         <input type="checkbox" id="show_password" v-model="show_password" />
         <label for="show_password">Show Password</label>
       </div>
-      <ButtonSubmit :btn_text="'Log in'" />
+      <ButtonSubmit :btn_text="'Sign up'" />
     </form>
     <p>
-      If not registered yet, please
-      <router-link to="/signup">Sign Up</router-link>
+      If registered, please
+      <router-link to="/login">Log in</router-link>
     </p>
   </div>
 </template>

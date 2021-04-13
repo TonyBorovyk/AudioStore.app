@@ -29,8 +29,8 @@
           </h4></router-link
         >
       </div>
-      <div class="song-lyrics" @click="changeShowMorePopUpActivity">
-        {{ getSongDetails.lyrics }}
+      <div class="song-lyrics">
+        <p @click="changeShowMorePopUpActivity">{{ getSongDetails.lyrics }}</p>
         <ShowMorePopUp
           :data="getSongDetails.lyrics"
           v-if="isShowMorePopUpActive"

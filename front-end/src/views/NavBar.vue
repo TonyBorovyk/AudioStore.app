@@ -20,7 +20,7 @@
     </div>
     <ul class="main-routes-list">
       <li v-if="isLoggedIn">
-        <router-link to="/profile"
+        <router-link to="/profile/username"
           ><img src="../assets/icons/user.png" />
           <p :class="small ? 'hidden' : ''">Username</p></router-link
         >
@@ -136,7 +136,9 @@ export default {
       margin-bottom: 20px;
     }
   }
-  a, .log-out-block, .add-room-block {
+  a,
+  .log-out-block,
+  .add-room-block {
     color: white;
     text-decoration: none;
     display: flex;
