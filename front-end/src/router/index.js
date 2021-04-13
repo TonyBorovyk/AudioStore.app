@@ -22,25 +22,25 @@ const routes = [
     path: "/albums",
     name: "Albums",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+      import(/* webpackChunkName: "about" */ "../views/Albums.vue")
   },
   {
     path: "/albums/:album_id",
     name: "AlbumDetails",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+      import(/* webpackChunkName: "about" */ "../views/AlbumDetails.vue")
   },
   {
     path: "/artists",
     name: "Artists",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+      import(/* webpackChunkName: "about" */ "../views/Artists.vue")
   },
   {
     path: "/artists/:artist_id",
     name: "ArtistDetails",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+      import(/* webpackChunkName: "about" */ "../views/ArtistDetails.vue")
   },
   {
     path: "/login",
@@ -58,11 +58,17 @@ const routes = [
     path: "/search",
     name: "Search",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+      import(/* webpackChunkName: "about" */ "../views/Search.vue")
   },
   {
     path: "/rooms",
     name: "Room",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/rooms/add",
+    name: "AddRoom",
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue")
   },
@@ -73,7 +79,7 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/About.vue")
   },
   {
-    path: "/profile/:user_id",
+    path: "/profile/:username",
     name: "Profile",
     children: [
       {

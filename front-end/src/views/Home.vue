@@ -1,31 +1,46 @@
 <template>
-  <div class="main-wrapper">
+  <div class="home-wrapper">
     <router-link to="/signup">
       <h1 class="sign-up-link">SignUp</h1>
     </router-link>
-    <h1>Recently Added</h1>
-    <BaseSongsGridContainer :songs="getSongs" />
+    <h1 class="text">Recently Added</h1>
+    <div class="items-container grid">
+      <BaseSongItem
+        v-for="song in getSongs"
+        :key="song.track_id"
+        :song="song"
+      />
+    </div>
+    <ButtonTenMore :AskMore="moreRecAddedSongs" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import BaseSongsGridContainer from "@/components/BaseSongsGridContainer.vue";
+import BaseSongItem from "@/components/BaseSongItem.vue";
+import ButtonTenMore from "@/components/ButtonTenMore.vue";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Home",
   components: {
-    BaseSongsGridContainer
+    BaseSongItem,
+    ButtonTenMore
   },
   computed: {
     ...mapGetters(["getSongs"])
   },
   methods: {
-    ...mapActions(["fetchRecAddedSongs"])
+    ...mapActions(["fetchRecAddedSongs", "moreRecAddedSongs"])
   },
   created() {
     this.fetchRecAddedSongs();
   }
 };
 </script>
+
+<style>
+a .sign-up-link {
+  margin: 10px;
+}
+</style>

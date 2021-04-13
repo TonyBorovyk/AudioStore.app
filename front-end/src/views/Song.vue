@@ -6,7 +6,7 @@
       </div>
       <div class="right-song-info">
         <h2 class="track-name">{{ getSongDetails.track_name }}</h2>
-        <ArtistsContainer :song="getSongDetails" />
+        <SongArtists :song="getSongDetails" />
         <p class="genre">Genre: {{ getSongDetails.category }}</p>
         <span class="duration">Duration {{ getSongDetails.duration }}</span>
         <div class="raiting">Raiting: {{ getSongDetails.raiting }}</div>
@@ -23,10 +23,18 @@
     <div class="another-song-info">
       <div class="song-album-info">
         <img :src="getSongAlbum.album_cover" />
-        <h4 class="song-album-name">{{ getSongAlbum.album_name }}</h4>
+        <router-link :to="`/albums/${getSongAlbum.album_id}`"
+          ><h4 class="song-album-name">
+            {{ getSongAlbum.album_name }}
+          </h4></router-link
+        >
       </div>
-      <div class="song-lyrics">
+      <div class="song-lyrics" @click="changeShowMorePopUpActivity">
         {{ getSongDetails.lyrics }}
+        <ShowMorePopUp
+          :data="getSongDetails.lyrics"
+          v-if="isShowMorePopUpActive"
+        />
       </div>
     </div>
   </div>
@@ -34,8 +42,9 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import ArtistsContainer from "@/components/ArtistsContainer.vue";
+import SongArtists from "@/components/SongArtists.vue";
 import AddSongPlaylist from "@/components/AddSongPlaylist.vue";
+import ShowMorePopUp from "@/components/ShowMorePopUp.vue";
 
 export default {
   name: "Songs",
@@ -45,14 +54,15 @@ export default {
     };
   },
   components: {
-    ArtistsContainer,
-    AddSongPlaylist
+    SongArtists,
+    AddSongPlaylist,
+    ShowMorePopUp
   },
   computed: {
-    ...mapGetters(["getSongDetails", "getSongAlbum"])
+    ...mapGetters(["getSongDetails", "getSongAlbum", "isShowMorePopUpActive"])
   },
   methods: {
-    ...mapActions(["fetchSongDetails"])
+    ...mapActions(["fetchSongDetails", "changeShowMorePopUpActivity"])
   },
   created() {
     this.fetchSongDetails();

@@ -1,7 +1,10 @@
 <template>
-  <div class="pop-up-playlist-container">
-    <button @click="changePlaylistPopUpActivity" v-if="isLoggedIn">
-      Add to Playlist {{ isPlaylistPopUpActive }}
+  <div class="pop-up-playlist-container" v-if="isLoggedIn">
+    <button
+      class="btn btn-playlist-pop-up"
+      @click="changePlaylistPopUpActivity"
+    >
+      <img src="../assets/icons/plus.png" />
     </button>
     <AddSongPlaylistPopUp v-if="isPlaylistPopUpActive" />
   </div>
@@ -26,4 +29,19 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss">
+.pop-up-playlist-container {
+  .btn-playlist-pop-up {
+    border-radius: 50%;
+    background: var(--first-button-color);
+    img {
+      height: 16px;
+      width: 16px;
+      margin: 0;
+    }
+  }
+  .btn-playlist-pop-up:hover {
+    background: var(--first-button-color);
+  }
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="pop-up-playlist-menu">
+  <div class="playlist-menu pop-up">
     <h4>Choose playlist</h4>
     <div
       class="pop-up-playlist-container"
@@ -49,11 +49,4 @@ export default {
 };
 </script>
 
-<style>
-.pop-up-playlist-menu {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-</style>
+<style></style>

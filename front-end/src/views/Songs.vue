@@ -1,18 +1,28 @@
 <template>
   <div class="songs-wrapper">
-    <label for="sort">Sort by:</label>
-    <select id="sort" name="sort_type" v-model="sort" @change="sendSort">
-      <option value="time_added">Time added</option>
-      <option value="genre">Genre</option>
-      <option value="year">Year</option>
-    </select>
-    <BaseSongsGridContainer :songs="getSongs" />
-    <button class="more-songs">10 More</button>
+    <h1>Songs</h1>
+    <div class="sort-block">
+      <label for="sort">Sort by:</label>
+      <select id="sort" name="sort_type" v-model="sort" @change="sendSort">
+        <option value="time_added">Time added</option>
+        <option value="genre">Genre</option>
+        <option value="year">Year</option>
+      </select>
+    </div>
+    <div class="items-container grid">
+      <BaseSongItem
+        v-for="song in getSongs"
+        :key="song.track_id"
+        :song="song"
+      />
+    </div>
+    <ButtonTenMore :AskMore="moreRecAddedSongs" />
   </div>
 </template>
 
 <script>
-import BaseSongsGridContainer from "@/components/BaseSongsGridContainer.vue";
+import BaseSongItem from "@/components/BaseSongItem.vue";
+import ButtonTenMore from "@/components/ButtonTenMore.vue";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -23,13 +33,14 @@ export default {
     };
   },
   components: {
-    BaseSongsGridContainer
+    BaseSongItem,
+    ButtonTenMore
   },
   computed: {
     ...mapGetters(["getSongs"])
   },
   methods: {
-    ...mapActions(["fetchRecAddedSongs"]),
+    ...mapActions(["fetchRecAddedSongs", "moreRecAddedSongs"]),
     sendSort() {
       console.log(this.sort);
     }
@@ -40,4 +51,20 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss">
+.songs-wrapper {
+  .sort-block {
+    margin-bottom: 20px;
+    label {
+      margin-right: 5px;
+    }
+    #sort {
+      outline: none;
+      border: none;
+      padding: 5px 10px;
+      background: var(--third-button-color);
+      color: var(--first-text-color);
+    }
+  }
+}
+</style>
