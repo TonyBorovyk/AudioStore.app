@@ -2,6 +2,11 @@
   <div class="wrapper">
     <NavBar />
     <div class="main-screen">
+      <div v-if="!isDataUploaded" class="loading">
+        <div class="spinner">
+          <img src="./assets/icons/refresh.png">
+        </div>
+      </div>
       <BaseSearch />
       <router-view></router-view>
     </div>
@@ -9,6 +14,7 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
 import NavBar from "@/views/NavBar.vue";
 import BaseSearch from "@/components/BaseSearch.vue";
 
@@ -16,6 +22,9 @@ export default {
   components: {
     NavBar,
     BaseSearch
+  },
+  computed:{
+    ...mapGetters('data_upload',["isDataUploaded"]),
   }
 };
 </script>
@@ -53,6 +62,27 @@ export default {
     height: 100%;
     background: rgba(128, 128, 128, 0.338);
     z-index: 110;
+  }
+  .loading{
+    position: fixed;
+    top: 0;
+    left: 70px;
+    width: 100%;
+    height: 100vh;
+    background: #212e3a;
+    z-index: 1000;
+    .spinner{
+      position: relative;
+      top:50%;
+      left:50%;
+      transform: translate(-50%, -50%);
+      img{
+      height: 150px;
+      width: 150px;
+      animation: fullRotate 1s ease-in-out infinite;
+    }
+    }
+    
   }
   .login-signup-container {
     position: relative;
@@ -159,6 +189,14 @@ export default {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+  }
+  @keyframes fullRotate {
+    from{
+      transform: rotate(0deg);
+    }
+    to{
+      transform: rotate(360deg);
+    }
   }
 }
 </style>

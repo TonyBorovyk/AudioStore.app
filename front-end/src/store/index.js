@@ -8,6 +8,7 @@ import artists from "./modules/artists";
 import artist_details from "./modules/artist_details";
 import albums from "./modules/albums";
 import album_details from "./modules/album_details";
+import data_upload from "./modules/data_upload";
 
 export default createStore({
   modules: {
@@ -19,6 +20,7 @@ export default createStore({
     artists,
     artist_details,
     albums,
-    album_details
+    album_details,
+    data_upload
   }
 });
