@@ -30,6 +30,13 @@ export default {
   created() {
     this.fetchAlbumDetails(this.$route.params.album_id);
     this.fetchRecAddedSongs();
+  },
+  beforeRouteUpdate(to, next) {
+    if (to.name == "AlbumDetails") {
+      this.fetchAlbumDetails(this.$route.params.album_id);
+      this.fetchRecAddedSongs();
+      next();
+    }
   }
 };
 </script>

@@ -67,8 +67,8 @@ export default {
 .playlist-menu {
   position: relative;
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  top: 40vh;
+  transform: translate(-50%);
   width: 200px;
   background: var(--second-button-color);
   h4 {

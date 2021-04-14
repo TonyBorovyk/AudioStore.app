@@ -30,18 +30,19 @@ export default {
 .show-more-block {
   position: relative;
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  top: 10vh;
+  transform: translate(-50%);
   max-width: 500px;
   height: 80vh;
   background: var(--second-button-color);
+  text-align: center;
   .btn-pop-up {
     width: 40px;
     border-radius: 50%;
     background: var(--first-button-color);
     img {
-      height: 16px;
-      width: 16px;
+      height: 16px !important;
+      width: 16px !important;
     }
   }
   .btn-pop-up:hover {

@@ -1,26 +1,29 @@
 <template>
   <div class="song-wrapper">
-    <div class="main-song-info">
+    <div class="main-song-info grid">
       <div class="left-song-info">
         <img :src="getSongDetails.song_cover" />
       </div>
       <div class="right-song-info">
         <h2 class="track-name">{{ getSongDetails.track_name }}</h2>
         <SongArtists :song="getSongDetails" />
-        <p class="genre">Genre: {{ getSongDetails.category }}</p>
-        <span class="duration">Duration {{ getSongDetails.duration }}</span>
-        <div class="raiting">Raiting: {{ getSongDetails.raiting }}</div>
-        <p class="song-release-year">{{ getSongDetails.release_year }}</p>
+        <div class="song-details">
+          <p class="genre">Genre: {{ getSongDetails.category }}</p>
+          <span class="duration">Duration {{ getSongDetails.duration }}</span>
+          <p class="song-release-year">{{ getSongDetails.release_year }}</p>
+        </div>
       </div>
     </div>
-    <div class="song-buttons-container">
-      <button class="play-song" @click="listen = !listen">
-        Listen {{ listen }}
-      </button>
+    <div class="button-player-container flex-row">
       <AddSongPlaylist :song="getSongDetails.track_id" />
+      <BasePlayer
+        :song="getSongDetails"
+        :song_exist="true"
+        :autoplay="false"
+        :list="false"
+      />
     </div>
-    <!--song player to do-->
-    <div class="another-song-info">
+    <div class="another-song-info grid">
       <div class="song-album-info">
         <img :src="getSongAlbum.album_cover" />
         <router-link :to="`/albums/${getSongAlbum.album_id}`"
@@ -30,6 +33,7 @@
         >
       </div>
       <div class="song-lyrics">
+        <h3>Lyrics</h3>
         <p @click="changeShowMorePopUpActivity">{{ getSongDetails.lyrics }}</p>
         <ShowMorePopUp
           :data="getSongDetails.lyrics"
@@ -45,18 +49,15 @@ import { mapGetters, mapActions } from "vuex";
 import SongArtists from "@/components/SongArtists.vue";
 import AddSongPlaylist from "@/components/AddSongPlaylist.vue";
 import ShowMorePopUp from "@/components/ShowMorePopUp.vue";
+import BasePlayer from "@/components/BasePlayer.vue";
 
 export default {
   name: "Songs",
-  data() {
-    return {
-      listen: false
-    };
-  },
   components: {
     SongArtists,
     AddSongPlaylist,
-    ShowMorePopUp
+    ShowMorePopUp,
+    BasePlayer
   },
   computed: {
     ...mapGetters(["getSongDetails", "getSongAlbum", "isShowMorePopUpActive"])
@@ -66,8 +67,61 @@ export default {
   },
   created() {
     this.fetchSongDetails();
+  },
+  beforeRouteUpdate(to, next) {
+    if (to.name == "Song") {
+      this.fetchSongDetails();
+      next();
+    }
   }
 };
 </script>
 
-<style></style>
+<style lang="scss">
+.song-wrapper {
+  position: relative;
+  padding: 20px 20px;
+  .main-song-info {
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 10px;
+    img {
+      height: 300px;
+      width: 300px;
+    }
+    .right-song-info {
+      text-align: left;
+      h2 {
+        margin-bottom: 20px;
+        font-size: 45px;
+      }
+      .artists-item-container {
+        margin-bottom: 10px;
+      }
+      .song-details {
+        line-height: 20px;
+      }
+    }
+  }
+  .button-player-container {
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 30px;
+    align-items: center;
+    .player-container {
+      margin-left: 20px;
+    }
+  }
+  .another-song-info {
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 10px;
+    margin-bottom: 0px;
+    .song-lyrics {
+      text-align: left;
+    }
+    img {
+      height: 300px;
+      width: 300px;
+    }
+  }
+}
+</style>
