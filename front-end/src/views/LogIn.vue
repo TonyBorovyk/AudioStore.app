@@ -1,10 +1,12 @@
 <template>
   <div class="login-signup-container">
     <h1>Log in</h1>
-    <form @submit.prevent="changeLogInStatus">
+    <div v-if="error" class="error-message">{{ error }}</div>
+    <form @submit.prevent="handleSubmit">
       <div class="input-block">
         <p class="form-field-title">Email</p>
         <input
+          v-model="email"
           class="form-field"
           type="text"
           name="email"
@@ -15,6 +17,7 @@
       <div class="input-block">
         <p class="form-field-title">Password</p>
         <input
+          v-model="password"
           :type="show_password ? 'text' : 'password'"
           class="form-field"
           name="password"
@@ -43,6 +46,9 @@ export default {
   name: "LogIn",
   data() {
     return {
+      email: "",
+      password: "",
+      error: "",
       show_password: false
     };
   },
@@ -53,7 +59,30 @@ export default {
     ...mapGetters(["isLoggedIn"])
   },
   methods: {
-    ...mapActions(["changeLogInStatus"])
+    ...mapActions(["changeLogInStatus"]),
+    async handleSubmit() {
+      const data = {
+        email: this.email,
+        password: this.password
+      };
+      console.log(data);
+      this.changeLogInStatus();
+
+      // try{
+      // const response = await fetch('http://localhost:3000/login', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify(data)
+      // }).then(res => { return res.json()})
+
+      //localStorage.setItem('token', token);
+      this.$router.push("/");
+      // } catch(e){
+      // this.errer = "Invalid email or password";
+      // }
+    }
   }
 };
 </script>

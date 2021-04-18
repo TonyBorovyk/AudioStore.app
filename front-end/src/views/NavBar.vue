@@ -67,10 +67,15 @@
         ><img src="../assets/icons/login.png" />
         <p :class="small ? 'hidden' : ''">Log In</p></router-link
       >
-      <div class="log-out-block" v-if="isLoggedIn" @click="changeLogInStatus">
+      <a
+        class="log-out-block"
+        href="javascript:void(0)"
+        @click="handleClick"
+        v-if="isLoggedIn"
+      >
         <img src="../assets/icons/logout.png" />
         <p :class="small ? 'hidden' : ''">Log Out</p>
-      </div>
+      </a>
     </div>
   </div>
 </template>
@@ -89,7 +94,13 @@ export default {
     ...mapGetters(["isLoggedIn"])
   },
   methods: {
-    ...mapActions(["changeLogInStatus"])
+    ...mapActions(["changeLogInStatus"]),
+    handleClick() {
+      // localStorage.removeItem('token');
+      console.log("Token removed");
+      this.changeLogInStatus();
+      this.$router.push("/");
+    }
   },
   watch: {
     $route() {

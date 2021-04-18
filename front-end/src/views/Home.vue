@@ -1,6 +1,6 @@
 <template>
   <div class="home-wrapper">
-    <router-link to="/signup">
+    <router-link v-if="!isLoggedIn" to="/signup">
       <h1 class="sign-up-link">SignUp</h1>
     </router-link>
     <h1 class="text">Recently Added</h1>
@@ -28,7 +28,7 @@ export default {
     ButtonTenMore
   },
   computed: {
-    ...mapGetters(["getSongs"])
+    ...mapGetters(["getSongs", "isLoggedIn"])
   },
   methods: {
     ...mapActions(["fetchRecAddedSongs", "moreRecAddedSongs"])

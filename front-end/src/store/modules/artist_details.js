@@ -1,3 +1,5 @@
+import router from "@/router";
+
 const state = {
   artist_details: {}
 };
@@ -7,13 +9,21 @@ const getters = {
 };
 
 const actions = {
-  async fetchArtistDetails({ commit }, id) {
+  async fetchArtistDetails({ commit, dispatch }, id) {
+    dispatch("data_upload/changeDataUploadStatus", false, { root: true });
     const res = await fetch(
       `https://my-json-server.typicode.com/AlexKharenko/Audio/artists?artist_id=${id}`
-    ).then(response => response.json());
+    )
+      .then(response => response.json())
+      .catch(error => {
+        console.error(error);
+        router.push("/error");
+      });
     console.log(res);
 
     await commit("setArtistDetails", res[0]);
+
+    dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   }
 };
 

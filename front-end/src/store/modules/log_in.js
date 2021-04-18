@@ -1,5 +1,6 @@
 const state = {
-  logged_in: false
+  logged_in: false,
+  user: {}
 };
 
 const getters = {
