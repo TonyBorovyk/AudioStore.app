@@ -1,14 +1,15 @@
-const http = require('http');
+/* eslint-disable no-console */
+const fastify = require('fastify')();
 
-const hostname = 'localhost';
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello World');
-});
+fastify.register(require('./api/routes/songs'), { prefix: '/songs' });
+// fastify.register(require('./api/routes/albums'), { prefix: '/albums' });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+fastify.listen(PORT, (err /* , adress */) => {
+  if (err) {
+    console.log(err);
+    process.exit(1);
+  }
+  console.log(`Server is listening on Port:${PORT}`);
 });
