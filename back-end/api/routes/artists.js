@@ -1,11 +1,11 @@
-const {getAlbums, getAlbumById} = require('../controllers/albums.controller')
+const {getArtists, getArtistById} = require('../controllers/artists.controller');
 
 async function routes(fastify, options) {
   fastify.get('/list', async (req, res) => {
-    res.send(await getAlbums(req, res))
+    res.send(await getArtists(req, res))
   });
   fastify.get('/:id', async (req, res) => {
-    res.send(await getAlbumById(req, res))
+    res.send(await getArtistById(req, res))
   });
 }
 

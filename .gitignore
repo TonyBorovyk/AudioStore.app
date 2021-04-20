@@ -23,7 +23,7 @@ pnpm-debug.log*
 *.sw?
 
 .husky/_
-<<<<<<< HEAD
+
 back-end/.vscode
-=======
->>>>>>> 5fc96de28dec4c53c02beb712ca19db887f56b9a
+
+

@@ -11,7 +11,10 @@
     "ecmaVersion": 12
   },
   "rules": {
-    "prettier/prettier": ["error", { "endOfLine": "auto" }]
-  },
+    "prettier/prettier": ["error", 
+       "endOfLine: auto"  
+    ]
+    
+},
   "root": true
 }

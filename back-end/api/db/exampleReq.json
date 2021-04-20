@@ -1,0 +1,140 @@
+{
+  "song_details": [{
+    "track_id": "1",
+    "track_name": "Natural",
+    "artists": [
+      {
+        "artist_id": 1,
+        "artist_name": "Imagine Dragons"
+      },
+      {
+        "artist_id": 2,
+        "artist_name": "The Chainsmokers"
+      }
+    ],
+    "category": "Pop",
+    "album": {
+      "album_id": 1,
+      "artists": [
+        {
+          "artist_id": 1,
+          "artist_name": "Imagine Dragons"
+        }
+      ],
+      "album_name": "Origins",
+      "album_cover": "https://upload.wikimedia.org/wikipedia/ru/5/59/Origins_cover_%28Imagine_Dragons%29.jpg"
+    },
+    "lyrics": "Will you hold the line?",
+    "duration": "3:09",
+    "song_cover": "https://upload.wikimedia.org/wikipedia/en/1/10/Imagine_Dragons_Natural.png?a4a81394e8a883a6d2de95253a09e9b0=9c9fb62266f5dfc4ddd189970d218a9b",
+    "raiting": "7.5",
+    "release_year": "2018",
+    "time_added": "1618058294",
+    "track_url": "https://dl3.ru-music.cc/mp3/39995.mp3"
+  }],
+  "last_added_songs": [
+    {
+      "track_id": "1",
+      "track_name": "Natural",
+      "artists": [
+        {
+          "artist_id": 1,
+          "artist_name": "Imagine Dragons"
+        },
+        {
+          "artist_id": 2,
+          "artist_name": "The Chainsmokers"
+        }
+      ],
+      "category": "Pop",
+      "duration": "3:09",
+      "song_cover": "https://upload.wikimedia.org/wikipedia/en/1/10/Imagine_Dragons_Natural.png?a4a81394e8a883a6d2de95253a09e9b0=9c9fb62266f5dfc4ddd189970d218a9b",
+      "raiting": "7.5",
+      "time_added": "1618058294",
+      "track_url": "https://dl3.ru-music.cc/mp3/39995.mp3"
+    },
+    {
+      "track_id": "2",
+      "track_name": "Boomerang",
+      "artists": [
+        {
+          "artist_id": 1,
+          "artist_name": "Imagine Dragons"
+        }
+      ],
+      "category": "Pop",
+      "duration": "3:07",
+      "song_cover": "https://i-tsmusic.com/i/img/songs/2031.jpg",
+      "raiting": "7.5",
+      "time_added": "1618061894",
+      "track_url": "https://dl.muzonovs.ru/uploads/files/2018-11/1541696455_1541689025_02-boomerang.mp3"
+    }
+  ],
+  "albums": [
+    {
+      "album_id": 1,
+      "album_name": "Origins",
+      "artists": [
+        {
+          "artist_id": 1,
+          "artist_name": "Imagine Dragons"
+        }
+      ],
+      "album_cover": "https://upload.wikimedia.org/wikipedia/ru/5/59/Origins_cover_%28Imagine_Dragons%29.jpg",
+      "songs_list": [
+        {
+          "track_id": "2",
+          "track_name": "Boomerang",
+          "artists": [
+            {
+              "artist_id": 1,
+              "artist_name": "Imagine Dragons"
+            }
+          ],
+          "duration": "3:07"
+        },
+        {
+          "track_id": "2",
+          "track_name": "Boomerang",
+          "artists": [
+            {
+              "artist_id": 1,
+              "artist_name": "Imagine Dragons"
+            }
+          ],
+          "duration": "3:07"
+        }
+      ]
+    }
+  ],
+  "playlists": [
+    {
+      "playlist_id": "1",
+      "playlist_title": "First test",
+      "tracks": [
+        1,
+        2
+      ]
+    },
+    {
+      "playlist_id": "2",
+      "playlist_title": "Second test",
+      "tracks": [
+        1,
+        2
+      ]
+    }
+  ],
+  "artists": [
+    {
+      "artist_id": "1",
+      "artist_name": "Imagine Dragons",
+      "count_of_songs": 2
+    },
+    {
+      "artist_id": "2",
+      "artist_name": "The Chainsmokers",
+      "count_of_songs": 10
+    }
+  ]
+}
