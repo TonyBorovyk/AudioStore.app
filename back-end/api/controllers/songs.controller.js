@@ -4,7 +4,7 @@ const {getAlbumsService} = require('../services/albums.service');
 
 const getSongs = async (req, res, next) => {
     try {
-        const orders = Object.keys(req.query).length ? req.query : "last_added" ;
+        const orders = (req.body && req.body.order_by) || "last_added" ;
 
         let songs = await getAllSongsByOrdersService(orders);
         songs = songs.map( song => ({
