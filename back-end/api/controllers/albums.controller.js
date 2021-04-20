@@ -1,8 +1,15 @@
 const {getAlbumsService, getAlbumByIdService} = require('../services/albums.service');
+const {getArtistByIdService} = require('../services/artists.service');
+const {getSongByIdService} = require('../services/songs.service');
 
 const getAlbums = async (req, res, next) => {
     try {
-        const albums = await getAlbumsService();
+        let albums = await getAlbumsService();
+        albums = albums.map( album => ({
+            ...album,
+            artists: album.artists.map( artistsId => getArtistByIdService(artistsId)),
+            songs_list: album.songs_list.map(songId => getSongByIdService(songId)) ,
+        }));
 
         return res.send({
             data: albums,
@@ -18,7 +25,12 @@ const getAlbums = async (req, res, next) => {
 
 const getAlbumById = async (req, res, next) => {
     try {
-        const album = await getAlbumByIdService(req.params.id);
+        let album = await getAlbumByIdService(req.params.id);
+        album = {
+            ...album,
+            artists: album.artists.map( artistsId => getArtistByIdService(artistsId)),
+            songs_list: album.songs_list.map(songId => getSongByIdService(songId)) ,
+        }
 
         return res.send({
             data: album || {},

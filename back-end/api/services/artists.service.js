@@ -1,8 +1,8 @@
 const fs = require('fs');
 
 const getArtistsService = () => {
-  const data = fs.readFileSync('api/db/exampleReq.json');
-  return JSON.parse(data).artists;
+  const artists = fs.readFileSync('api/db/artists.json');
+  return JSON.parse(artists).artists;
 };
 
 const getArtistByIdService = (id) => {

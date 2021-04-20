@@ -1,8 +1,8 @@
 const fs = require('fs');
 
 const getPlaylistsService = () => {
-  const data = fs.readFileSync('api/db/exampleReq.json');
-  return JSON.parse(data).playlists;
+  const playlists = fs.readFileSync('api/db/playlist.json');
+  return JSON.parse(playlists).playlists;
 };
 
 const getPlaylistByIdService = (id) => {

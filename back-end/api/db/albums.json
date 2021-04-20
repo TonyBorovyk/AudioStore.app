@@ -1,0 +1,11 @@
+{
+  "albums": [
+    {
+      "album_id": 1,
+      "album_name": "Origins",
+      "artists": [1],
+      "album_cover": "https://upload.wikimedia.org/wikipedia/ru/5/59/Origins_cover_%28Imagine_Dragons%29.jpg",
+      "songs_list": [1, 2]
+    }
+  ]
+}

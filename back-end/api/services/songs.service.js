@@ -2,13 +2,15 @@
 const fs = require('fs');
 
 const getAllSongsService = () => {
-  const data = fs.readFileSync('api/db/exampleReq.json');
-  return JSON.parse(data).song_details;
+  const songs = fs.readFileSync('api/db/songs.json');
+  return JSON.parse(songs).songs;
 };
-const getLastAddedSongsService = () => {
-  const data = fs.readFileSync('api/db/exampleReq.json');
-  return JSON.parse(data).last_added_songs;
+
+const getAllSongsByOrdersService = ( orders ) => {
+  const songs = getAllSongsService();
+  return songs;
 };
+
 const getSongByIdService = (id) => {
   const songs = getAllSongsService();
   return songs.filter( song => song.track_id == id)[0];
@@ -16,6 +18,6 @@ const getSongByIdService = (id) => {
 
 module.exports = {
   getAllSongsService,
-  getLastAddedSongsService,
   getSongByIdService,
+  getAllSongsByOrdersService
 };

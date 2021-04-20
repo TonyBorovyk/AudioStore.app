@@ -2,7 +2,7 @@ const {getArtistsService, getArtistByIdService} = require('../services/artists.s
 
 const getArtists = async (req, res, next) => {
     try {
-        const artists = await getArtistsService();
+        let artists = await getArtistsService();
 
         return res.send({
             data: artists,
@@ -18,7 +18,7 @@ const getArtists = async (req, res, next) => {
 
 const getArtistById = async (req, res, next) => {
     try {
-        const artist = await getArtistByIdService(req.params.id);
+        let artist = await getArtistByIdService(req.params.id);
 
         return res.send({
             data: artist || {},

@@ -2,8 +2,8 @@
 const fs = require('fs');
 
 const getAlbumsService = () => {
-  const data = fs.readFileSync('api/db/exampleReq.json');
-  return JSON.parse(data).albums;
+  const albums = fs.readFileSync('api/db/albums.json');
+  return JSON.parse(albums).albums;
 };
 
 const getAlbumByIdService = (id) => {

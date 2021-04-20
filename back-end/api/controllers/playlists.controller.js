@@ -1,8 +1,13 @@
 const {getPlaylistsService, getPlaylistByIdService} = require('../services/playlists.service');
+const {getSongByIdService} = require('../services/songs.service');
 
 const getPlaylists = async (req, res, next) => {
     try {
-        const playlists = await getPlaylistsService();
+        let playlists = await getPlaylistsService();
+        playlists = playlists.map( playlist => ({
+            ...playlist,
+            tracks: playlist.tracks.map( songId => getSongByIdService(songId)),
+        }));
 
         return res.send({
             data: playlists,
@@ -18,7 +23,11 @@ const getPlaylists = async (req, res, next) => {
 
 const getPlaylistById = async (req, res, next) => {
     try {
-        const playlist = await getPlaylistByIdService(req.params.id);
+        let playlist = await getPlaylistByIdService(req.params.id);
+        playlist = {
+            ...playlist,
+            tracks: playlist.tracks.map( songId => getSongByIdService(songId)),
+        };
 
         return res.send({
             data: playlist || {},
