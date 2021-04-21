@@ -41,7 +41,6 @@ const getAlbumById = async (req, res) => {
       ),
       songs_list: album.songs_list.map((songId) => getSongByIdService(songId)),
     };
-
     return res.send({
       data: album || {},
       success: true,

@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable camelcase */
 const fs = require('fs');
 
@@ -13,7 +14,7 @@ const getAllSongsByOrdersService = () => {
 
 const getSongByIdService = (id) => {
   const songs = getAllSongsService();
-  return songs.filter((song) => song.track_id === id)[0];
+  return songs.filter((song) => song.track_id === parseInt(id))[0];
 };
 
 module.exports = {
