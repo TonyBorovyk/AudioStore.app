@@ -15,6 +15,7 @@ fastify.register(require('./api/routes/albums'), { prefix: '/albums' });
 fastify.register(require('./api/routes/artists'), { prefix: '/artists' });
 fastify.register(require('./api/routes/playlists'), { prefix: '/playlists' });
 fastify.register(require('./api/routes/profile'), { prefix: '/profile' });
+fastify.register(require('./api/routes/search'), { prefix: '/search' });
 fastify.register(require('./api/routes/auth'));
 
 // LISTNER
