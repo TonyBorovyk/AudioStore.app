@@ -7,7 +7,7 @@ const getArtistsService = () => {
 
 const getArtistByIdService = (id) => {
   const artists = getArtistsService();
-  return artists.filter( artist => artist.artist_id == id)[0];
+  return artists.filter((artist) => artist.artist_id === id)[0];
 };
 
 module.exports = {

@@ -7,7 +7,7 @@ const getPlaylistsService = () => {
 
 const getPlaylistByIdService = (id) => {
   const playlists = getPlaylistsService();
-  return playlists.filter( playlist => playlist.playlist_id == id)[0];
+  return playlists.filter((playlist) => playlist.playlist_id === id)[0];
 };
 
 module.exports = {

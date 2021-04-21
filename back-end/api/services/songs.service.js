@@ -6,18 +6,18 @@ const getAllSongsService = () => {
   return JSON.parse(songs).songs;
 };
 
-const getAllSongsByOrdersService = ( orders ) => {
+const getAllSongsByOrdersService = () => {
   const songs = getAllSongsService();
   return songs;
 };
 
 const getSongByIdService = (id) => {
   const songs = getAllSongsService();
-  return songs.filter( song => song.track_id == id)[0];
+  return songs.filter((song) => song.track_id === id)[0];
 };
 
 module.exports = {
   getAllSongsService,
   getSongByIdService,
-  getAllSongsByOrdersService
+  getAllSongsByOrdersService,
 };

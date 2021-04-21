@@ -8,7 +8,7 @@ const getAlbumsService = () => {
 
 const getAlbumByIdService = (id) => {
   const albums = getAlbumsService();
-  return albums.filter( album => album.album_id == id)[0];
+  return albums.filter((album) => album.album_id === id)[0];
 };
 
 module.exports = {
