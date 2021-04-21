@@ -7,10 +7,10 @@ const getArtists = async (req, res) => {
   try {
     const artists = await getArtistsService();
 
-    return res.send({
+    return {
       data: artists,
       success: true,
-    });
+    }
   } catch (error) {
     return res.send({
       error,
@@ -28,10 +28,10 @@ const getArtistById = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    return res.send({
+    return {
       error,
       success: false,
-    });
+    }
   }
 };
 
