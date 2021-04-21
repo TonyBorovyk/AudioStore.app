@@ -7,8 +7,8 @@ const getUsers = () => {
 };
 
 const getUserById = (id) => {
-  let users = getUsers();
-  return users.filter( user => user.user_id == id)[0];
+  const users = getUsers();
+  return users.filter((user) => user.user_id === id)[0];
 };
 
 module.exports = {

@@ -1,12 +1,13 @@
 // IMPORTS
 
 const fastify = require('fastify')();
+
 const PORT = process.env.PORT || 3000;
 
 fastify.register(require('fastify-cookie'));
 fastify.register(require('fastify-cors'), {
-  credentials:true,
-})
+  credentials: true,
+});
 
 // ROUTES
 fastify.register(require('./api/routes/songs'), { prefix: '/songs' });

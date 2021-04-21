@@ -1,38 +1,41 @@
-const {getArtistsService, getArtistByIdService} = require('../services/artists.service');
+const {
+  getArtistsService,
+  getArtistByIdService,
+} = require('../services/artists.service');
 
-const getArtists = async (req, res, next) => {
-    try {
-        let artists = await getArtistsService();
+const getArtists = async (req, res) => {
+  try {
+    const artists = await getArtistsService();
 
-        return res.send({
-            data: artists,
-            success: true
-        });
-    } catch (error) {
-        return res.send({
-            error,
-            success: false
-        });
-    }
+    return res.send({
+      data: artists,
+      success: true,
+    });
+  } catch (error) {
+    return res.send({
+      error,
+      success: false,
+    });
+  }
 };
 
-const getArtistById = async (req, res, next) => {
-    try {
-        let artist = await getArtistByIdService(req.params.id);
+const getArtistById = async (req, res) => {
+  try {
+    const artist = await getArtistByIdService(req.params.id);
 
-        return res.send({
-            data: artist || {},
-            success: true
-        });
-    } catch (error) {
-        return res.send({
-            error,
-            success: false
-        });
-    }
+    return res.send({
+      data: artist || {},
+      success: true,
+    });
+  } catch (error) {
+    return res.send({
+      error,
+      success: false,
+    });
+  }
 };
 
 module.exports = {
-    getArtists,
-    getArtistById,
+  getArtists,
+  getArtistById,
 };

@@ -8,8 +8,8 @@ const getters = {
 };
 
 const actions = {
-  changeLogInStatus({ commit, state }) {
-    commit("setLoggedIn", !state.logged_in);
+  changeLogInStatus({ commit }, status) {
+    commit("setLoggedIn", status);
   }
 };
 

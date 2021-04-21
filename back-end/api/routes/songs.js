@@ -1,11 +1,11 @@
-const {getSongById, getSongs} = require('../controllers/songs.controller')
+const { getSongById, getSongs } = require('../controllers/songs.controller');
 
-async function routes(fastify, options) {
+async function routes(fastify) {
   fastify.get('/', async (req, res) => {
-    res.send(await getSongs(req, res))
+    res.send(await getSongs(req, res));
   });
   fastify.get('/:id', async (req, res) => {
-    res.send(await getSongById(req, res))
+    res.send(await getSongById(req, res));
   });
 }
 

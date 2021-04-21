@@ -107,6 +107,13 @@ export default {
           border-radius: 16px;
           margin-right: 5px;
         }
+        input.invalid-input{
+        background: rgba(236, 46, 46, 0.61);
+        }
+      }
+      .invalid-message{
+        color:rgba(236, 46, 46, 0.61);
+        font-size: 14px;
       }
       .input-block:focus-within {
         color: white;
@@ -117,6 +124,8 @@ export default {
           margin-left: 10px;
         }
       }
+      
+      
     }
   }
 

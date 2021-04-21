@@ -6,24 +6,29 @@
       <div class="input-block">
         <p class="form-field-title">Email</p>
         <input
-          v-model="email"
+          v-model.trim="email"
           class="form-field"
+          :class="v$.email.$error ? 'invalid-input' : ''"
           type="text"
           name="email"
           placeholder="Email"
           id="email"
         />
+      <p v-if="v$.email.$dirty && v$.email.required.$invalid" class="invalid-message">Required field</p>
+      <p v-if="v$.email.$dirty && v$.email.email.$invalid" class="invalid-message">Shold be email: example "a@a.co"</p>
       </div>
       <div class="input-block">
         <p class="form-field-title">Password</p>
         <input
-          v-model="password"
+          v-model.trim="password"
           :type="show_password ? 'text' : 'password'"
           class="form-field"
+          :class="v$.password.$error ? 'invalid-input' : ''"
           name="password"
           placeholder="Password"
           id="password"
         />
+        <p v-if="v$.password.$dirty && v$.password.required.$invalid" class="invalid-message">Required field</p>
       </div>
       <div class="show-password-block">
         <input type="checkbox" id="show_password" v-model="show_password" />
@@ -39,11 +44,16 @@
 </template>
 
 <script>
+import useVuelidate from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
 import { mapActions, mapGetters } from "vuex";
 import ButtonSubmit from "@/components/ButtonSubmit.vue";
 
 export default {
   name: "LogIn",
+  setup () {
+    return { v$: useVuelidate() }
+  },
   data() {
     return {
       email: "",
@@ -58,31 +68,56 @@ export default {
   computed: {
     ...mapGetters(["isLoggedIn"])
   },
+  validations () {
+    return {
+      email: { required, email }, 
+      password: { required },
+    }
+  },
   methods: {
     ...mapActions(["changeLogInStatus"]),
+    ...mapActions("data_upload", ["changeDataUploadStatus"]),
     async handleSubmit() {
+      this.v$.$touch();
+      if(this.v$.$error){
+        return 0;
+      };
       const data = {
         email: this.email,
         password: this.password
       };
       console.log(data);
-      this.changeLogInStatus();
 
-      // try{
-      // const response = await fetch('http://localhost:3000/login', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify(data)
-      // }).then(res => { return res.json()})
-
-      //localStorage.setItem('token', token);
-      this.$router.push("/");
-      // } catch(e){
-      // this.errer = "Invalid email or password";
-      // }
+      try{
+      let response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      if(response.status==200){
+          response = await response.json();
+          console.log(response);
+          this.changeLogInStatus(true);
+          this.$router.push('/');
+          return;
+        }
+        else{
+          response = await response.json();
+          this.error = response.message;
+          console.log(response);
+          return 0;
+        }
+      } catch(e){
+        console.error(e)
+        this.errer = "Invalid email or password";
+      }
     }
+  },
+  created() {
+    this.changeDataUploadStatus(true);
   }
+  
 };
 </script>
