@@ -2,10 +2,18 @@
 /* eslint-disable radix */
 /* eslint-disable camelcase */
 const fs = require('fs');
+const { getSongByIdService } = require('./songs.service');
 
 const getPlaylistsService = () => {
   const playlists = fs.readFileSync('api/db/playlist.json');
-  return JSON.parse(playlists).playlists;
+  let parsePlaylists = JSON.parse(playlists).playlists;
+
+  parsePlaylists = parsePlaylists.map((playlist) => ({
+    ...playlist,
+    tracks: playlist.tracks.map((songId) => getSongByIdService(songId)),
+  }));
+
+  return parsePlaylists;
 };
 
 const getPlaylistsByUserId = (user_id) => {
@@ -15,9 +23,7 @@ const getPlaylistsByUserId = (user_id) => {
 
 const getPlaylistByIdService = (id) => {
   const playlists = getPlaylistsService();
-  return playlists.filter(
-    (playlist) => playlist.playlist_id === parseInt(id)
-  )[0];
+  return playlists.filter((playlist) => playlist.playlist_id === +id)[0];
 };
 
 module.exports = {

@@ -13,5 +13,6 @@
   "rules": {
     "prettier/prettier": ["error", { "endOfLine": "auto" }]
   },
+
   "root": true
 }
