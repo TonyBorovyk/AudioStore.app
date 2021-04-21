@@ -19,10 +19,10 @@ const getAlbums = async (req, res) => {
       songs_list: album.songs_list.map((songId) => getSongByIdService(songId)),
     }));
 
-    return res.send({
+    return {
       data: albums,
       success: true,
-    });
+    }
   } catch (error) {
     return res.send({
       error,
@@ -42,10 +42,10 @@ const getAlbumById = async (req, res) => {
       songs_list: album.songs_list.map((songId) => getSongByIdService(songId)),
     };
 
-    return res.send({
+    return {
       data: album || {},
       success: true,
-    });
+    }
   } catch (error) {
     return res.send({
       error,

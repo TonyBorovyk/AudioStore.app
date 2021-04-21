@@ -10,16 +10,17 @@ const getSongs = async (req, res) => {
     const orders = Object.keys(req.query).length ? req.query : 'last_added';
 
     let songs = await getAllSongsByOrdersService(orders);
+
     songs = songs.map((song) => ({
       ...song,
       artists: song.artists.map((artistsId) => getArtistByIdService(artistsId)),
       album: getAlbumsService(song.album),
     }));
 
-    return res.send({
+    return {
       data: songs,
       success: true,
-    });
+    }
   } catch (error) {
     return res.send({
       error,
@@ -37,10 +38,10 @@ const getSongById = async (req, res) => {
       album: getAlbumsService(song.album),
     };
 
-    return res.send({
+    return {
       data: song || {},
       success: true,
-    });
+    }
   } catch (error) {
     return res.send({
       error,
