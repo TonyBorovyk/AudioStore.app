@@ -66,11 +66,11 @@ export default {
     ...mapActions(["fetchSongDetails", "changeShowMorePopUpActivity"])
   },
   created() {
-    this.fetchSongDetails();
+    this.fetchSongDetails(this.$route.params.track_id);
   },
   beforeRouteUpdate(to, next) {
     if (to.name == "Song") {
-      this.fetchSongDetails();
+      this.fetchSongDetails(this.$route.params.track_id);
       next();
     }
   }

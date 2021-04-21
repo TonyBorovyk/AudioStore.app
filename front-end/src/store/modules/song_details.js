@@ -12,11 +12,9 @@ const getters = {
 };
 
 const actions = {
-  async fetchSongDetails({ commit, dispatch } /*, id*/) {
+  async fetchSongDetails({ commit, dispatch }, id) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
-    const res = await fetch(
-      `https://my-json-server.typicode.com/AlexKharenko/Audio/song_details`
-    )
+    const res = await fetch(`http://localhost:3000/songs/${id}`)
       .then(response => response.json())
       .catch(error => {
         console.error(error);
@@ -24,7 +22,7 @@ const actions = {
       });
     console.log(res);
 
-    await commit("setSongDetails", res);
+    await commit("setSongDetails", res.data);
     await sleep(1000);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   }

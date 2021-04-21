@@ -13,28 +13,24 @@ const getters = {
 const actions = {
   async fetchRecAddedSongs({ commit, dispatch }) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
-    const res = await fetch(
-      `https://my-json-server.typicode.com/AlexKharenko/Audio/last_added_songs`
-    )
+    const res = await fetch(`http://localhost:3000/songs`)
       .then(response => response.json())
       .catch(error => {
         console.error(error);
         router.push("/error");
       });
-    console.log(res);
 
-    await commit("setSongs", res);
+    await commit("setSongs", res.data);
     await sleep(1000);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   },
   async moreRecAddedSongs({ commit, dispatch }) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
-    const res = await fetch(
-      `https://my-json-server.typicode.com/AlexKharenko/Audio/last_added_songs`
-    ).then(response => response.json());
-    console.log(res);
+    const res = await fetch(`http://localhost:3000/songs`).then(response =>
+      response.json()
+    );
 
-    await commit("addSongs", res);
+    await commit("addSongs", res.data);
     await sleep(1000);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   }

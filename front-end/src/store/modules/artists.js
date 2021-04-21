@@ -11,17 +11,14 @@ const getters = {
 const actions = {
   async fetchAllArtists({ commit, dispatch }) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
-    const res = await fetch(
-      `https://my-json-server.typicode.com/AlexKharenko/Audio/artists`
-    )
+    const res = await fetch(`http://localhost:3000/artists`)
       .then(response => response.json())
       .catch(error => {
         console.error(error);
         router.push("/error");
       });
-    console.log(res);
 
-    await commit("setArtists", res);
+    await commit("setArtists", res.data);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   }
 };
