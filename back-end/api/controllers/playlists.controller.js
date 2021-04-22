@@ -1,82 +1,47 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable function-paren-newline */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable prettier/prettier */
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
 const {
-  getPlaylistsByUserId,
+  getPlaylistsService,
   getPlaylistByIdService,
 } = require('../services/playlists.service');
-const { getSongByIdService } = require('../services/songs.service');
-const { getArtistByIdService } = require('../services/artists.service');
 
-const getUserPlaylist = async (req, res) => {
+const getPlaylists = async (req, res) => {
   try {
-    const cookie = req.cookies.jwt;
-    const claims = jwt.verify(cookie, process.env.JWT_SECRET);
-    if (!claims) {
-      return res.code(401).send({
-        message: 'Unauthenticated',
-        success: false,
-      });
-    }
-    const playlists = await getPlaylistsByUserId(claims.id);
+    let playlists = await getPlaylistsService();
+    playlists = playlists.map((playlist) => ({
+      ...playlist,
+      tracks: playlist.tracks.map((songId) => getSongByIdService(songId)),
+    }));
     return res.send({
       data: playlists,
       success: true,
     });
   } catch (error) {
-    return res.code(401).send({
-      message: 'Unauthenticated',
+    return {
+      error,
       success: false,
-    });
+    };
   }
 };
 
 const getPlaylistById = async (req, res) => {
   try {
-    const cookie = req.cookies.jwt;
-    const claims = jwt.verify(cookie, process.env.JWT_SECRET);
-    if (!claims) {
-      return res.code(401).send({
-        message: 'Unauthenticated',
-        success: false,
-      });
-    }
     let playlist = await getPlaylistByIdService(req.params.id);
-    playlist = {
+    playlists = playlists.map((playlist) => ({
       ...playlist,
-      tracks: playlist.tracks.map((songId) => {
-        let song = getSongByIdService(songId);
-        song = {
-          ...song,
-          artists: song.artists.map((artistId) =>
-            getArtistByIdService(artistId)
-          ),
-        };
-        return song;
-      }),
-    };
-    if (playlist.user_id !== claims.id) {
-      return res.code(400).send({
-        message: 'Not allowed',
-        success: false,
-      });
-    }
-    return res.send({
+      tracks: playlist.tracks.map((songId) => getSongByIdService(songId)),
+    }));
+    return {
       data: playlist || {},
       success: true,
-    });
+    };
   } catch (error) {
-    return res.code(401).send({
-      message: 'Unauthenticated',
+    return res.send({
+      error,
       success: false,
     });
   }
 };
 
 module.exports = {
-  getUserPlaylist,
+  getPlaylists,
   getPlaylistById,
 };
