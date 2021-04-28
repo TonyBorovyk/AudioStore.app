@@ -12,17 +12,23 @@ const isJson = str => {
 
 // Function can get different number of arguments
 const sendMessage = () => {
-  if (arguments[0] === "connect") {
+  if (arguments[0] === "create new room") {
     const obj = {
       method: arguments[0],
-      field1: arguments[1],
-      field2: arguments[2],
-      field3: arguments[3]
+      roomId: arguments[1],
+      roomName: arguments[2],
+      adminId: arguments[3]
+    };
+  } else if (arguments[0] === "connect user to the room") {
+    const obj = {
+      method: arguments[0],
+      roomId: arguments[1],
+      adminId: arguments[2]
     };
   } else if (arguments[0] === "new track") {
     const obj = {
       method: arguments[0],
-      field1: arguments[1]
+      trackId: arguments[1]
     };
   } else if (arguments[0] === 'play'
     || arguments[0] === 'pause'
