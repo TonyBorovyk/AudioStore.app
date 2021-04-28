@@ -1,26 +1,23 @@
 const WebSocketServer = require('ws');
 
-const rooms = [];
+const rooms = new Map();
 
 const webSocketServer = new WebSocketServer.Server({
   port: 8081,
 });
 
-const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
-
-const addRoom = (roomName, roomId, connection) => {
-  const id = random(0, 1000000000);
+const addRoom = (roomName, id, roomId, connection) => {
   if (typeof rooms[roomName] === 'undefined') {
-    rooms[roomName] = {
+    rooms.set(roomName, {
       roomId,
       adminId: id,
       adminConnection: connection,
       usersIds: [id],
       usersConnections: [connection],
-    };
+    });
   } else {
-    rooms[roomName].usersIds.push(id);
-    rooms[roomName].usersConnections.push(connection);
+    rooms.get(roomName).usersIds.push(id);
+    rooms.get(roomName).usersConnections.push(connection);
   }
 };
 
@@ -28,15 +25,16 @@ const sendToEveryoneInARoom = (socket, message) => {
   const foundObj = rooms.find((room) => room.adminConnection === socket);
   if (typeof foundObj !== 'undefined') {
     foundObj.usersConnections.forEach((connection) => connection.send(message));
+  } else {
+    socket.send('You have to be admin');
   }
-  socket.send('You have to be admin');
 };
 
 webSocketServer.on('connection', (socket) => {
   socket.on('message', (message) => {
     const messageObj = JSON.parse(message);
     if (messageObj.method === 'connect') {
-      addRoom(messageObj.field2, messageObj.field3, socket);
+      addRoom(messageObj.field2, messageObj.field1, messageObj.field3, socket);
     } else if (
       messageObj.method === 'play'
       || messageObj.method === 'pause'
@@ -46,7 +44,7 @@ webSocketServer.on('connection', (socket) => {
     } else if (messageObj.method === 'new track') {
       sendToEveryoneInARoom(socket, messageObj.field1);
     } else if (messageObj.method === 'get array of rooms') {
-      socket.send(JSON.stringify(rooms));
+      socket.send(rooms);
     } else if (messageObj.method === 'get room object') {
       const foundObj = rooms.find((room) => room.usersConnections.contains(socket));
       socket.send(JSON.stringify(foundObj));
@@ -59,8 +57,8 @@ webSocketServer.on('connection', (socket) => {
       const roomName = rooms.findIndex(
         (room) => room.adminConnection === socket,
       );
-      rooms[roomName].usersConnections.forEach((connection) => connection.send('Connection is closed'));
-      delete rooms[roomName];
+      rooms.get(roomName).usersConnections.forEach((connection) => connection.send('Connection is closed'));
+      delete rooms.get(roomName);
     } else {
       const foundCon = rooms.find((room) => room.usersConnections.contains(socket));
       const ind = foundCon.usersConnections.findIndex(socket);
