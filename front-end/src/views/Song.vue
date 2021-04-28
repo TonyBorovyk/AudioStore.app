@@ -17,7 +17,8 @@
     <div class="button-player-container flex-row">
       <AddSongPlaylist :song="getSongDetails.track_id" />
       <BasePlayer
-        :song="getSongDetails"
+        :song_id="getSongDetails.track_id"
+        :songs="[getSongDetails]"
         :song_exist="true"
         :autoplay="false"
         :list="false"
@@ -66,11 +67,11 @@ export default {
     ...mapActions(["fetchSongDetails", "changeShowMorePopUpActivity"])
   },
   created() {
-    this.fetchSongDetails();
+    this.fetchSongDetails(this.$route.params.track_id);
   },
   beforeRouteUpdate(to, next) {
     if (to.name == "Song") {
-      this.fetchSongDetails();
+      this.fetchSongDetails(this.$route.params.track_id);
       next();
     }
   }

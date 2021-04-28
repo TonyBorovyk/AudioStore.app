@@ -12,7 +12,12 @@
           name="first_name"
           placeholder="Name"
         />
-        <p v-if="v$.first_name.$dirty && v$.first_name.required.$invalid" class="invalid-message">Required field</p>
+        <p
+          v-if="v$.first_name.$dirty && v$.first_name.required.$invalid"
+          class="invalid-message"
+        >
+          Required field
+        </p>
       </div>
       <div class="input-block">
         <p class="form-field-title">Surname</p>
@@ -24,12 +29,17 @@
           name="last_name"
           placeholder="Surname"
         />
-        <p v-if="v$.last_name.$dirty && v$.last_name.required.$invalid" class="invalid-message">Required field</p>
+        <p
+          v-if="v$.last_name.$dirty && v$.last_name.required.$invalid"
+          class="invalid-message"
+        >
+          Required field
+        </p>
       </div>
       <div class="input-block">
         <p class="form-field-title">Username</p>
         <input
-          @input="username_exist=false"
+          @input="username_exist = false"
           v-model.trim="username"
           class="form-field"
           :class="v$.username.$error ? 'invalid-input' : ''"
@@ -37,15 +47,32 @@
           name="username"
           placeholder="Usename"
         />
-        <p v-if="username_exist" class="invalid-message">Username is already taken</p>
-        <p v-if="v$.username.$dirty && v$.username.required.$invalid" class="invalid-message">Required field</p>
-        <p v-if="v$.username.$dirty && v$.username.minLength.$invalid" class="invalid-message">Should be at least 3 long</p>
-        <p v-if="v$.username.$dirty && v$.username.maxLength.$invalid" class="invalid-message">Should be shorter than 40 long</p>
+        <p v-if="username_exist" class="invalid-message">
+          Username is already taken
+        </p>
+        <p
+          v-if="v$.username.$dirty && v$.username.required.$invalid"
+          class="invalid-message"
+        >
+          Required field
+        </p>
+        <p
+          v-if="v$.username.$dirty && v$.username.minLength.$invalid"
+          class="invalid-message"
+        >
+          Should be at least 3 long
+        </p>
+        <p
+          v-if="v$.username.$dirty && v$.username.maxLength.$invalid"
+          class="invalid-message"
+        >
+          Should be shorter than 40 long
+        </p>
       </div>
       <div class="input-block">
         <p class="form-field-title">Email</p>
         <input
-          @input="email_exist=false"
+          @input="email_exist = false"
           v-model.trim="email"
           class="form-field"
           :class="v$.email.$error ? 'invalid-input' : ''"
@@ -55,8 +82,18 @@
           id="email"
         />
         <p v-if="email_exist" class="invalid-message">Email already exist</p>
-        <p v-if="v$.email.$dirty && v$.email.required.$invalid" class="invalid-message">Required field</p>
-        <p v-if="v$.email.$dirty && v$.email.email.$invalid" class="invalid-message">Shold be email: example "a@a.co"</p>
+        <p
+          v-if="v$.email.$dirty && v$.email.required.$invalid"
+          class="invalid-message"
+        >
+          Required field
+        </p>
+        <p
+          v-if="v$.email.$dirty && v$.email.email.$invalid"
+          class="invalid-message"
+        >
+          Shold be email: example "a@a.co"
+        </p>
       </div>
       <div class="input-block">
         <p class="form-field-title">Password</p>
@@ -69,8 +106,21 @@
           placeholder="Password"
           id="password"
         />
-        <p v-if="v$.password.$dirty && v$.password.required.$invalid" class="invalid-message">Required field</p>
-        <p v-if="v$.password.$dirty && (v$.password.maxLength.$invalid || v$.password.minLength.$invalid)" class="invalid-message">Password should be between 6 and 18 long</p>
+        <p
+          v-if="v$.password.$dirty && v$.password.required.$invalid"
+          class="invalid-message"
+        >
+          Required field
+        </p>
+        <p
+          v-if="
+            v$.password.$dirty &&
+              (v$.password.maxLength.$invalid || v$.password.minLength.$invalid)
+          "
+          class="invalid-message"
+        >
+          Password should be between 6 and 18 long
+        </p>
       </div>
       <div class="input-block">
         <p class="form-field-title">Password confirmation</p>
@@ -83,8 +133,22 @@
           placeholder="Password confirmation"
           id="password_confirm"
         />
-        <p v-if="v$.password_confirm.$dirty && v$.password_confirm.required.$invalid" class="invalid-message">Required field</p>
-        <p v-if="v$.password_confirm.$dirty && v$.password_confirm.sameAs.$invalid" class="invalid-message">Should match the password</p>
+        <p
+          v-if="
+            v$.password_confirm.$dirty && v$.password_confirm.required.$invalid
+          "
+          class="invalid-message"
+        >
+          Required field
+        </p>
+        <p
+          v-if="
+            v$.password_confirm.$dirty && v$.password_confirm.sameAs.$invalid
+          "
+          class="invalid-message"
+        >
+          Should match the password
+        </p>
       </div>
       <div class="show-password-block">
         <input type="checkbox" id="show_password" v-model="show_password" />
@@ -100,15 +164,21 @@
 </template>
 
 <script>
-import useVuelidate from '@vuelidate/core'
-import { required, email, minLength, maxLength, sameAs } from '@vuelidate/validators'
+import useVuelidate from "@vuelidate/core";
+import {
+  required,
+  email,
+  minLength,
+  maxLength,
+  sameAs
+} from "@vuelidate/validators";
 import { mapActions, mapGetters } from "vuex";
 import ButtonSubmit from "@/components/ButtonSubmit.vue";
 
 export default {
   name: "LogIn",
-  setup () {
-    return { v$: useVuelidate() }
+  setup() {
+    return { v$: useVuelidate() };
   },
   data() {
     return {
@@ -129,24 +199,24 @@ export default {
   computed: {
     ...mapGetters(["isLoggedIn"])
   },
-  validations () {
+  validations() {
     return {
-      first_name: {required},
-      last_name: {required},
-      username: {required, minLength: minLength(3), maxLength: maxLength(40)},
-      email: { required, email }, 
+      first_name: { required },
+      last_name: { required },
+      username: { required, minLength: minLength(3), maxLength: maxLength(40) },
+      email: { required, email },
       password: { required, minLength: minLength(6), maxLength: maxLength(18) },
-      password_confirm:{ required, sameAs: sameAs(this.password)}
-    }
+      password_confirm: { required, sameAs: sameAs(this.password) }
+    };
   },
   methods: {
     ...mapActions(["changeLogInStatus"]),
     ...mapActions("data_upload", ["changeDataUploadStatus"]),
     async handleSubmit() {
       this.v$.$touch();
-      if(this.v$.$error){
+      if (this.v$.$error) {
         return 0;
-      };
+      }
       const data = {
         first_name: this.first_name,
         last_name: this.last_name,
@@ -155,30 +225,28 @@ export default {
         password: this.password,
         password_confirm: this.password_confirm
       };
-      try{
-        let response = await fetch('http://localhost:3000/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+      try {
+        let response = await fetch("http://localhost:3000/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
         });
-        if(response.status == 201){
+        if (response.status == 201) {
           response = await response.json();
-          this.$router.push('/login');
-        }
-        else{
+          this.$router.push("/login");
+        } else {
           response = await response.json();
-          if(response.message == "email exist"){
-              this.email_exist = true;
+          if (response.message == "email exist") {
+            this.email_exist = true;
           }
-          if(response.message == "username exist"){
-              this.username_exist = true;
-          } 
+          if (response.message == "username exist") {
+            this.username_exist = true;
+          }
           return 0;
-        }        
-      }
-      catch(e){
+        }
+      } catch (e) {
         console.log(e.message);
         return;
       }
@@ -186,6 +254,9 @@ export default {
   },
   created() {
     this.changeDataUploadStatus(true);
+    if (this.isLoggedIn) {
+      this.$router.push("/");
+    }
   }
 };
 </script>

@@ -1,16 +1,11 @@
 <template>
-  <div class="playlists-continer">
-
-  </div>
+  <div class="playlists-continer"></div>
 </template>
 
 <script>
 export default {
-    name: "RoomPlaylists",
-    
-}
+  name: "RoomPlaylists"
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

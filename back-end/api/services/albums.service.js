@@ -1,6 +1,6 @@
+/* eslint-disable radix */
 /* eslint-disable camelcase */
 const fs = require('fs');
-
 
 const getAlbumsService = () => {
   const albums = fs.readFileSync('api/db/albums.json');

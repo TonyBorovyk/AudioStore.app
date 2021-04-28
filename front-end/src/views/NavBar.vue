@@ -20,9 +20,9 @@
     </div>
     <ul class="main-routes-list">
       <li v-if="isLoggedIn">
-        <router-link to="/profile/username"
+        <router-link :to="'/profile/' + username"
           ><img src="../assets/icons/user.png" />
-          <p :class="small ? 'hidden' : ''">Username</p></router-link
+          <p :class="small ? 'hidden' : ''">{{ username }}</p></router-link
         >
       </li>
       <li v-if="!isLoggedIn">
@@ -55,7 +55,7 @@
           <p :class="small ? 'hidden' : ''">Rooms</p></router-link
         >
       </li>
-      <li v-if="isLoggedIn">
+      <li v-if="isLoggedIn" @click="changeCreateRoomPopUpActivity">
         <div class="add-room-block">
           <img src="../assets/icons/add-friend.png" />
           <p :class="small ? 'hidden' : ''">Add Room</p>
@@ -67,11 +67,7 @@
         ><img src="../assets/icons/login.png" />
         <p :class="small ? 'hidden' : ''">Log In</p></router-link
       >
-      <div
-        class="log-out-block"
-        @click="handleClick"
-        v-if="isLoggedIn"
-      >
+      <div class="log-out-block" @click="handleClick" v-if="isLoggedIn">
         <img src="../assets/icons/logout.png" />
         <p :class="small ? 'hidden' : ''">Log Out</p>
       </div>
@@ -86,30 +82,45 @@ export default {
   name: "NavBar",
   data() {
     return {
-      small: true
+      small: true,
+      username: ""
     };
   },
   computed: {
-    ...mapGetters(["isLoggedIn"])
+    ...mapGetters(["isLoggedIn", "getUser", "isCreateRoomPopUpActive"])
   },
   methods: {
-    ...mapActions(["changeLogInStatus"]),
+    ...mapActions([
+      "changeLogInStatus",
+      "changeCreateRoomPopUpActivity",
+      "fetchUser"
+    ]),
     async handleClick() {
-      try{
-        await fetch('http://localhost:3000/logout', {
-        method: 'POST',
-      });
-      } catch(e){
+      try {
+        await fetch("http://localhost:3000/logout", {
+          method: "POST",
+          credentials: "include"
+        });
+      } catch (e) {
         console.error(e);
       }
-      this.changeLogInStatus();
+      this.changeLogInStatus(false);
       this.$router.push("/");
     }
   },
   watch: {
     $route() {
       this.small = true;
+    },
+    isLoggedIn() {
+      if (this.isLoggedIn) {
+        this.fetchUser();
+        this.username = this.getUser.username;
+      }
     }
+  },
+  created() {
+    this.fetchUser();
   }
 };
 </script>
@@ -158,6 +169,7 @@ export default {
     text-decoration: none;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
   p {
     overflow: hidden;

@@ -1,21 +1,18 @@
 <template>
   <div class="room-container">
-      <RoomSearch />
+    <RoomSearch />
   </div>
 </template>
 
 <script>
-import RoomSearch from '../components/RoomSearch.vue';
+import RoomSearch from "../components/RoomSearch.vue";
 
 export default {
-    name:"AdminRoom",
-    components:{
-        RoomSearch,
-    }
-
-}
+  name: "AdminRoom",
+  components: {
+    RoomSearch
+  }
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

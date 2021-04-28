@@ -1,52 +1,71 @@
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const {
-  getPlaylistsService,
+  getPlaylistsByUserId,
   getPlaylistByIdService,
 } = require('../services/playlists.service');
+const { getSongByIdService } = require('../services/songs.service');
+const { getArtistByIdService } = require('../services/artists.service');
 
-const getPlaylists = async (req, res) => {
-  try {
-    let playlists = await getPlaylistsService();
-    playlists = playlists.map((playlist) => ({
-      ...playlist,
-      tracks: playlist.tracks.map((songId) => getSongByIdService(songId)),
-    }));
-    return res.send({
-      data: playlists,
-      success: true,
-    });
-  } catch (error) {
-    return {
-      error,
-      success: false,
-    };
-  }
-};
 
-const getPlaylistById = async (req, res) => {
-  try {
-    let playlist = await getPlaylistByIdService(req.params.id);
-    playlists = playlists.map((playlist) => ({
-      ...playlist,
-      tracks: playlist.tracks.map((songId) => getSongByIdService(songId)),
-    }));
-    return {
-      data: playlist || {},
-      success: true,
-    };
-  } catch (error) {
-    return res.send({
-      error,
-      success: false,
-    });
-  }
-};
+
 
 async function routes(fastify) {
   fastify.get('/', async (req, res) => {
-    res.send(await getPlaylists(req, res));
+    const cookie = req.cookies.jwt;
+    const claims = jwt.verify(cookie, process.env.JWT_SECRET);
+    if (!claims) {
+      return res.code(401).send({
+        message: 'Unauthenticated',
+        success: false,
+      });
+    }
+    const playlists = await getPlaylistsByUserId(claims.id);
+    if (playlist == undefined) {
+      res.code(401).send({ message: 'Unauthenticated', success: false });
+    }
+    let data = { data: playlists, success: true };
+    res.send(data);
   });
   fastify.get('/:id', async (req, res) => {
-    res.send(await getPlaylistById(req, res));
+    const cookie = req.cookies.jwt;
+    const claims = jwt.verify(cookie, process.env.JWT_SECRET);
+    if (!claims) {
+      return res.code(401).send({
+        message: 'Unauthenticated',
+        success: false,
+      });
+    }
+    let playlist = await getPlaylistByIdService(req.params.id);
+    if (playlist == undefined) {
+      res.code(500).send({ success: false });
+    playlist = {
+      ...playlist,
+      tracks: playlist.tracks.map((songId) => {
+        let song = getSongByIdService(songId);
+        if (song == undefined) {
+          res.code(500).send({ success: false });
+        }
+        song = {
+          ...song,
+          artists: song.artists.map((artistId) =>
+            getArtistByIdService(artistId)
+          ),
+        };
+        let data = { data: song, success: true };
+        res.send(data);
+      }),
+    };
+    if (playlist.user_id !== claims.id) {
+      return res.code(400).send({
+        message: 'Not allowed',
+        success: false,
+      });
+    }
+    let data = { data: playlist || {},success: true, };
+        res.send(data);
+  } 
+  
   });
 }
 

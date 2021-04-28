@@ -8,22 +8,18 @@ const {
   getUserByEmail,
 } = require('../services/auth.service');
 
-const logoutUser = async (req, res) => {
-  try {
+async function routes(fastify) {
+  fastify.post('/login', async (req, res) => {
     res.setCookie('jwt', '', { maxAge: 0 });
-    return res.code(201).send({
-      success: true,
-    });
-  } catch (error) {
-    return res.code(500).send({
-      error,
-      success: false,
-    });
-  }
-};
-
-const registerUser = async (req, res) => {
-  try {
+    if (maxAge == undefined) {
+      res.code(201).send({
+        success: true,
+      });
+    }
+    let data = { success: false };
+    res.send(data);
+  });
+  fastify.post('/signup', async (req, res) => {
     if (usernameExist(req.body.username)) {
       return res.code(400).send({
         success: false,
@@ -46,20 +42,16 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
       last_name: req.body.last_name,
     };
-    await setUser(user);
-    return res.code(201).send({
-      success: true,
-    });
-  } catch (error) {
-    return res.code(500).send({
-      error,
-      success: false,
-    });
-  }
-};
-
-const loginUser = async (req, res) => {
-  try {
+    setUser(user);
+    if (user == undefined) {
+      res.code(201).send({
+        success: true,
+      });
+    }
+    let data = { success: false };
+    res.send(data);
+  });
+  fastify.post('/logout', async (req, res) => {
     const user = await getUserByEmail(req.body.email);
     if (!user) {
       return res.code(404).send({
@@ -80,41 +72,9 @@ const loginUser = async (req, res) => {
       httpOnly: true,
       maxAge: 24 * 60 * 1000,
     });
-
-    return res.send({
-      success: true,
-    });
-  } catch (e) {
-    console.log(e);
-    return res.code(500).send({
-      error: e,
-      success: false,
-    });
-  }
-};
-
-async function routes(fastify) {
-  fastify.post('/login', async (req, res) => {
-    try {
-      res.send(await loginUser(req, res));
-    } catch (e) {
-      res.send(e);
-    }
   });
-  fastify.post('/signup', async (req, res) => {
-    try {
-      res.send(await registerUser(req, res));
-    } catch (e) {
-      res.send(e);
-    }
-  });
-  fastify.post('/logout', async (req, res) => {
-    try {
-      res.send(await logoutUser(req, res));
-    } catch (e) {
-      res.send(e);
-    }
-  });
+  let data = { success: false };
+  res.send(data);
 }
 
 module.exports = routes;

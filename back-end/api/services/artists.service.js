@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 const fs = require('fs');
 
 const getArtistsService = () => {

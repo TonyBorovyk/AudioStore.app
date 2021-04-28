@@ -1,6 +1,6 @@
 <template>
   <div class="room-search">
-      <form action="" v-on:submit.prevent="SendSearch">
+    <form action="" v-on:submit.prevent="SendSearch">
       <input
         type="search"
         placeholder="Search songs by name"
@@ -17,7 +17,7 @@
 
 <script>
 export default {
-    name: "RoomSearch",
+  name: "RoomSearch",
   data() {
     return {
       searchRequest: ""
@@ -33,12 +33,12 @@ export default {
       console.log(this.searchRequest);
     }
   }
-}
+};
 </script>
 
 <style lang="scss">
-    .room-search{
-        form {
+.room-search {
+  form {
     padding: 20px;
     #search {
       border: none;
@@ -63,6 +63,6 @@ export default {
     .btn-search:hover {
       background: var(--third-button-hover-color);
     }
-    }
-    }
+  }
+}
 </style>

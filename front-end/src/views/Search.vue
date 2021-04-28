@@ -6,8 +6,6 @@
     <ArtistsList :artists="getArtists" />
     <h3>Albums</h3>
     <AlbumsList :albums="getAlbums" />
-    <h3>Rooms</h3>
-    <RoomsList :rooms="rooms_temp" />
   </div>
 </template>
 
@@ -16,26 +14,13 @@ import { mapGetters, mapActions } from "vuex";
 import SongsList from "@/components/SongsList.vue";
 import ArtistsList from "@/components/ArtistsList.vue";
 import AlbumsList from "@/components/AlbumsList.vue";
-import RoomsList from "@/components/RoomsList.vue";
 
 export default {
   name: "Search",
   components: {
     SongsList,
     ArtistsList,
-    AlbumsList,
-    RoomsList
-  },
-  data() {
-    return {
-      rooms_temp: [
-        {
-          room_id: 1,
-          room_name: "Temp",
-          count_of_users: 3
-        }
-      ]
-    };
+    AlbumsList
   },
   computed: {
     ...mapGetters(["getArtists", "getSongs", "getAlbums"])

@@ -10,6 +10,7 @@
       <BaseSearch />
       <router-view></router-view>
     </div>
+    <CreateRoomPopUp :username="getUser.username" />
   </div>
 </template>
 
@@ -17,14 +18,17 @@
 import { mapGetters } from "vuex";
 import NavBar from "@/views/NavBar.vue";
 import BaseSearch from "@/components/BaseSearch.vue";
+import CreateRoomPopUp from "@/components/CreateRoomPopUp.vue";
 
 export default {
   components: {
     NavBar,
-    BaseSearch
+    BaseSearch,
+    CreateRoomPopUp
   },
   computed: {
-    ...mapGetters("data_upload", ["isDataUploaded"])
+    ...mapGetters("data_upload", ["isDataUploaded"]),
+    ...mapGetters(["getUser"])
   }
 };
 </script>
@@ -47,6 +51,96 @@ export default {
   --first-text-hover-color: #b4b0b0;
 }
 
+#pop-up {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #777f88;
+  list-style: none;
+  .pop-up {
+    position: fixed;
+    top: 0;
+    padding-left: 70px;
+    height: 100vh;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(128, 128, 128, 0.788);
+    .pop-up-content-container {
+      position: relative;
+      padding: 20px;
+      max-width: 400px;
+      min-height: 300px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: #212e3a;
+      border-radius: 5px;
+      .close-pop-btn {
+        background: var(--second-button-color);
+        border-radius: 50%;
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
+      .close-pop-btn {
+        background: var(--second-button-hover-color);
+      }
+    }
+  }
+}
+
+.btn-margin {
+  margin: 10px;
+}
+
+.btn {
+  border: none;
+  outline: none;
+  padding: 10px 10px;
+  cursor: pointer;
+}
+
+form {
+  padding: 0 20px;
+  p,
+  label {
+    user-select: none;
+  }
+  .input-block {
+    text-align: left;
+    display: grid;
+    grid-row-gap: 10px;
+    margin: 20px 0;
+    input {
+      border: none;
+      outline: none;
+      background: white;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 16px;
+      margin-right: 5px;
+    }
+    input.invalid-input {
+      background: rgba(236, 46, 46, 0.61);
+    }
+  }
+  .invalid-message {
+    color: rgba(236, 46, 46, 0.61);
+    font-size: 14px;
+  }
+  .input-block:focus-within {
+    color: white;
+  }
+  .show-password-block {
+    text-align: left;
+    label {
+      margin-left: 10px;
+    }
+  }
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -56,13 +150,7 @@ export default {
   list-style: none;
   min-height: 100vh;
   background: #212e3a;
-  .background-visible {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background: rgba(128, 128, 128, 0.338);
-    z-index: 110;
-  }
+
   .loading {
     position: fixed;
     top: 0;
@@ -83,55 +171,15 @@ export default {
       }
     }
   }
+
   .login-signup-container {
     position: relative;
     max-width: 500px;
     left: 50%;
     transform: translateX(-50%);
-    form {
-      p,
-      label {
-        user-select: none;
-      }
-      .input-block {
-        text-align: left;
-        display: grid;
-        grid-row-gap: 10px;
-        margin: 20px 0;
-        input {
-          border: none;
-          outline: none;
-          background: white;
-          color: black;
-          padding: 10px 20px;
-          border-radius: 16px;
-          margin-right: 5px;
-        }
-        input.invalid-input{
-        background: rgba(236, 46, 46, 0.61);
-        }
-      }
-      .invalid-message{
-        color:rgba(236, 46, 46, 0.61);
-        font-size: 14px;
-      }
-      .input-block:focus-within {
-        color: white;
-      }
-      .show-password-block {
-        text-align: left;
-        label {
-          margin-left: 10px;
-        }
-      }
-      
-      
-    }
+    padding: 0 10px;
   }
 
-  .btn-margin {
-    margin: 10px;
-  }
   a {
     text-decoration: none;
     color: white;
@@ -173,12 +221,7 @@ export default {
   .text {
     cursor: default;
   }
-  .btn {
-    border: none;
-    outline: none;
-    padding: 10px 10px;
-    cursor: pointer;
-  }
+
   h1 {
     margin-bottom: 20px;
   }
@@ -192,12 +235,7 @@ export default {
   .grid {
     display: grid;
   }
-  .pop-up {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
+
   @keyframes fullRotate {
     from {
       transform: rotate(0deg);
