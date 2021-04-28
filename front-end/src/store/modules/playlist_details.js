@@ -2,12 +2,12 @@ import router from "@/router";
 
 const state = {
   playlist: {
-      tracks:[{artists:[]}],
-  },
+    tracks: [{ artists: [] }]
+  }
 };
 
 const getters = {
-  getPlaylist: state => state.playlist,
+  getPlaylist: state => state.playlist
 };
 
 const actions = {
@@ -26,11 +26,11 @@ const actions = {
       });
     await commit("setPlaylist", res.data);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
-  },
+  }
 };
 
 const mutations = {
-  setPlaylist: (state, playlist) => (state.playlist = playlist),
+  setPlaylist: (state, playlist) => (state.playlist = playlist)
 };
 
 export default {

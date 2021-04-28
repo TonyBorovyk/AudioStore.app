@@ -31,23 +31,20 @@ const sendToEveryoneInARoom = (socket, message) => {
 };
 
 webSocketServer.on('connection', (socket) => {
+  console.log(socket);
   socket.on('message', (message) => {
+    console.log(message);
     const messageObj = JSON.parse(message);
     if (messageObj.method === 'connect') {
       addRoom(messageObj.field2, messageObj.field1, messageObj.field3, socket);
     } else if (
-      messageObj.method === 'play'
-      || messageObj.method === 'pause'
-      || messageObj.method === 'stop'
+      messageObj.method === 'play' ||
+      messageObj.method === 'pause' ||
+      messageObj.method === 'stop'
     ) {
       sendToEveryoneInARoom(socket, messageObj.method);
     } else if (messageObj.method === 'new track') {
       sendToEveryoneInARoom(socket, messageObj.field1);
-    } else if (messageObj.method === 'get array of rooms') {
-      socket.send(rooms);
-    } else if (messageObj.method === 'get room object') {
-      const foundObj = rooms.find((room) => room.usersConnections.contains(socket));
-      socket.send(JSON.stringify(foundObj));
     }
   });
 
@@ -55,12 +52,18 @@ webSocketServer.on('connection', (socket) => {
     const foundObj = rooms.find((room) => room.adminConnection === socket);
     if (typeof foundObj !== 'undefined') {
       const roomName = rooms.findIndex(
-        (room) => room.adminConnection === socket,
+        (room) => room.adminConnection === socket
       );
-      rooms.get(roomName).usersConnections.forEach((connection) => connection.send('Connection is closed'));
+      rooms
+        .get(roomName)
+        .usersConnections.forEach((connection) =>
+          connection.send('Connection is closed')
+        );
       delete rooms.get(roomName);
     } else {
-      const foundCon = rooms.find((room) => room.usersConnections.contains(socket));
+      const foundCon = rooms.find((room) =>
+        room.usersConnections.contains(socket)
+      );
       const ind = foundCon.usersConnections.findIndex(socket);
       foundObj.usersConnections.splice(ind);
       foundObj.usersIds.splice(ind);

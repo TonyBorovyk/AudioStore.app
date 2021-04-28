@@ -1,13 +1,13 @@
 <template>
-  <div class="playlist-container">
-    <h1>{{ getPlaylist.playlist_title }}</h1>
+  <div class="items-continer">
+    <h2>Songs</h2>
     <div class="list-margin list-container">
       <div
         class="list-item playlist-item"
-        v-for="track in getPlaylist.tracks"
+        v-for="track in getSongs"
         :key="track.track_id"
       >
-        <div class="play" @click="changeSong(track.track_id)">
+        <div class="play" @click="changeSongId(track.track_id)">
           <img src="../assets/icons/play.png" />
         </div>
         <div class="song-name text">{{ track.track_name }}</div>
@@ -16,56 +16,39 @@
         </div>
       </div>
     </div>
-    <BasePlayer
-      :song_id="song_id"
-      :songs="getPlaylist.tracks"
-      :song_exist="song_exist"
-      :list="true"
-    />
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import BasePlayer from "@/components/BasePlayer.vue";
 export default {
-  name: "Playlist",
-  data() {
-    return {
-      song_id: "",
-      song_exist: false
-    };
-  },
-  components: {
-    BasePlayer
-  },
-  computed: {
-    ...mapGetters(["getPlaylist"])
-  },
+  name: "RoomPlaylists",
   methods: {
-    ...mapActions(["fetchPlaylist"]),
+    ...mapActions(["changeSongId", "changeSongList"]),
     trackArtists(artists) {
       let artists_string = "";
-      artists.forEach(artist => {
+      artists.forEach((artist) => {
         artists_string = artists_string + artist.artist_name + " ";
       });
       return artists_string;
     },
-    changeSong(track_id) {
-      this.song_id = track_id;
-      this.song_exist = true;
-    }
   },
-  created() {
-    this.fetchPlaylist(this.$route.params.playlist_id);
-  }
+  computed: {
+    ...mapGetters(["getSongs"]),
+  },
+  watch: {
+    getSongs() {
+      this.changeSongList(this.getSongs);
+    },
+  },
 };
 </script>
 
 <style lang="scss">
-.playlist-container {
-  position: relative;
-  height: 100%;
+.items-continer {
+  height: 50vh;
+  overflow-y: scroll;
+  margin-top: 40px;
   .playlist-item {
     justify-content: flex-start !important;
     .play {
@@ -91,12 +74,6 @@ export default {
       white-space: nowrap;
       overflow: hidden;
     }
-  }
-  .player-container {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
   }
 }
 </style>

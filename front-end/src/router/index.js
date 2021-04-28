@@ -70,7 +70,7 @@ const routes = [
     path: "/rooms/:id",
     name: "RoomPage",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+      import(/* webpackChunkName: "about" */ "../views/Room.vue")
   },
   {
     path: "/profile/:username",
