@@ -55,7 +55,7 @@
           <p :class="small ? 'hidden' : ''">Rooms</p></router-link
         >
       </li>
-      <li v-if="isLoggedIn">
+      <li v-if="isLoggedIn" @click="changeCreateRoomPopUpActivity">
         <div class="add-room-block">
           <img src="../assets/icons/add-friend.png" />
           <p :class="small ? 'hidden' : ''">Add Room</p>
@@ -87,10 +87,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["isLoggedIn", "getUser"])
+    ...mapGetters(["isLoggedIn", "getUser", "isCreateRoomPopUpActive"])
   },
   methods: {
-    ...mapActions(["changeLogInStatus", "fetchUser"]),
+    ...mapActions([
+      "changeLogInStatus",
+      "changeCreateRoomPopUpActivity",
+      "fetchUser"
+    ]),
     async handleClick() {
       try {
         await fetch("http://localhost:3000/logout", {
@@ -165,6 +169,7 @@ export default {
     text-decoration: none;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
   p {
     overflow: hidden;

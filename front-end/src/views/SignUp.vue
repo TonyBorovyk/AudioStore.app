@@ -254,6 +254,9 @@ export default {
   },
   created() {
     this.changeDataUploadStatus(true);
+    if (this.isLoggedIn) {
+      this.$router.push("/");
+    }
   }
 };
 </script>

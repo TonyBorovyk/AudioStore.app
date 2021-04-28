@@ -2,17 +2,10 @@
 /* eslint-disable radix */
 /* eslint-disable camelcase */
 const fs = require('fs');
-const { getSongByIdService } = require('./songs.service');
 
 const getPlaylistsService = () => {
   const playlists = fs.readFileSync('api/db/playlist.json');
-  let parsePlaylists = JSON.parse(playlists).playlists;
-
-  parsePlaylists = parsePlaylists.map((playlist) => ({
-    ...playlist,
-    tracks: playlist.tracks.map((songId) => getSongByIdService(songId)),
-  }));
-
+  const parsePlaylists = JSON.parse(playlists).playlists;
   return parsePlaylists;
 };
 

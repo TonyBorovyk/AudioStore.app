@@ -17,7 +17,8 @@
     <div class="button-player-container flex-row">
       <AddSongPlaylist :song="getSongDetails.track_id" />
       <BasePlayer
-        :song="getSongDetails"
+        :song_id="getSongDetails.track_id"
+        :songs="[getSongDetails]"
         :song_exist="true"
         :autoplay="false"
         :list="false"

@@ -1,17 +1,19 @@
 <template>
-  <div class="background-visible pop-up">
-    <div class="show-more-block">
-      <button
-        class="btn btn-pop-up btn-margin"
-        @click="changeShowMorePopUpActivity"
-      >
-        <img src="../assets/icons/close.png" />
-      </button>
-      <div class="show-more-data">
-        {{ data }}
+  <teleport to="#pop-up">
+    <div class="pop-up">
+      <div class="pop-up-content-container show-more">
+        <button
+          class="btn close-pop-btn btn-margin"
+          @click="changeShowMorePopUpActivity"
+        >
+          <img src="../assets/icons/close.png" />
+        </button>
+        <div class="show-more-data">
+          {{ data }}
+        </div>
       </div>
     </div>
-  </div>
+  </teleport>
 </template>
 
 <script>
@@ -27,29 +29,14 @@ export default {
 </script>
 
 <style lang="scss">
-.show-more-block {
-  position: relative;
-  left: 50%;
-  top: 10vh;
-  transform: translate(-50%);
-  max-width: 500px;
-  height: 80vh;
-  background: var(--second-button-color);
-  text-align: center;
-  .btn-pop-up {
-    width: 40px;
-    border-radius: 50%;
-    background: var(--first-button-color);
-    img {
-      height: 16px !important;
-      width: 16px !important;
-    }
-  }
-  .btn-pop-up:hover {
-    background: var(--first-button-hover-color);
-  }
-  .show-more-data {
-    color: var(--first-text-color);
-  }
+.show-more {
+  top: 50px !important;
+  transform: translate(-50%, 0%) !important;
+  height: 90%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.show-more-data {
+  color: var(--first-text-color);
 }
 </style>

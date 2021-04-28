@@ -90,7 +90,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["changeLogInStatus"]),
+    ...mapActions(["changeLogInStatus", "fetchUser"]),
     ...mapActions("data_upload", ["changeDataUploadStatus"]),
     async handleSubmit() {
       this.v$.$touch();
@@ -101,7 +101,6 @@ export default {
         email: this.email,
         password: this.password
       };
-      console.log(data);
 
       try {
         let response = await fetch("http://localhost:3000/login", {
@@ -114,7 +113,7 @@ export default {
         });
         if (response.status == 200) {
           response = await response.json();
-          this.changeLogInStatus(true);
+          this.fetchUser();
           await this.$router.push("/");
           return;
         } else {
@@ -130,6 +129,9 @@ export default {
   },
   created() {
     this.changeDataUploadStatus(true);
+    if (this.isLoggedIn) {
+      this.$router.push("/");
+    }
   }
 };
 </script>

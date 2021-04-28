@@ -4,7 +4,6 @@
       <router-link :to="`/rooms/${room.room_id}`"
         ><h3>{{ room.room_name }}</h3></router-link
       >
-      <p>Users: {{ room.count_of_users }}</p>
     </div>
   </div>
 </template>

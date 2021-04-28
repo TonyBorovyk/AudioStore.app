@@ -1,3 +1,7 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable function-paren-newline */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable prettier/prettier */
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const {
@@ -5,6 +9,7 @@ const {
   getPlaylistByIdService,
 } = require('../services/playlists.service');
 const { getSongByIdService } = require('../services/songs.service');
+const { getArtistByIdService } = require('../services/artists.service');
 
 const getUserPlaylist = async (req, res) => {
   try {
@@ -42,7 +47,16 @@ const getPlaylistById = async (req, res) => {
     let playlist = await getPlaylistByIdService(req.params.id);
     playlist = {
       ...playlist,
-      tracks: playlist.tracks.map((songId) => getSongByIdService(songId)),
+      tracks: playlist.tracks.map((songId) => {
+        let song = getSongByIdService(songId);
+        song = {
+          ...song,
+          artists: song.artists.map((artistId) =>
+            getArtistByIdService(artistId)
+          ),
+        };
+        return song;
+      }),
     };
     if (playlist.user_id !== claims.id) {
       return res.code(400).send({

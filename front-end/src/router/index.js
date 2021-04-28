@@ -75,16 +75,14 @@ const routes = [
   {
     path: "/profile/:username",
     name: "Profile",
-    children: [
-      {
-        path: "playlists",
-        name: "UserPlaylists",
-        component: () =>
-          import(/* webpackChunkName: "about" */ "../views/About.vue")
-      }
-    ],
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+      import(/* webpackChunkName: "about" */ "../views/Profile.vue")
+  },
+  {
+    path: "/profile/:username/playlists/:playlist_id",
+    name: "Playlist",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Playlist.vue")
   }
 ];
 
