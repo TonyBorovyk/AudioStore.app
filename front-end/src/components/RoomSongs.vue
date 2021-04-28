@@ -27,20 +27,20 @@ export default {
     ...mapActions(["changeSongId", "changeSongList"]),
     trackArtists(artists) {
       let artists_string = "";
-      artists.forEach((artist) => {
+      artists.forEach(artist => {
         artists_string = artists_string + artist.artist_name + " ";
       });
       return artists_string;
-    },
+    }
   },
   computed: {
-    ...mapGetters(["getSongs"]),
+    ...mapGetters(["getSongs"])
   },
   watch: {
     getSongs() {
       this.changeSongList(this.getSongs);
-    },
-  },
+    }
+  }
 };
 </script>
 

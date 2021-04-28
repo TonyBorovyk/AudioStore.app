@@ -41,7 +41,7 @@ export default {
   name: "RoomPlaylists",
   data() {
     return {
-      active: "",
+      active: ""
     };
   },
   methods: {
@@ -49,18 +49,18 @@ export default {
       "changeSongId",
       "changeSongList",
       "fetchPlaylist",
-      "fetchAllUserPlaylists",
+      "fetchAllUserPlaylists"
     ]),
     trackArtists(artists) {
       let artists_string = "";
-      artists.forEach((artist) => {
+      artists.forEach(artist => {
         artists_string = artists_string + artist.artist_name + " ";
       });
       return artists_string;
-    },
+    }
   },
   computed: {
-    ...mapGetters(["getPlaylist", "getPlaylists"]),
+    ...mapGetters(["getPlaylist", "getPlaylists"])
   },
   watch: {
     active() {
@@ -68,8 +68,8 @@ export default {
     },
     getPlaylist() {
       this.changeSongList(this.getPlaylist.tracks);
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -1,8 +1,10 @@
 <template>
   <div class="room-container">
     <RoomSearch />
-    <button class="btn btn-margin" @click="playlist=!playlist">{{activeTabName}}</button>
-    <RoomPlaylists v-if="playlist"/>
+    <button class="btn btn-margin" @click="playlist = !playlist">
+      {{ activeTabName }}
+    </button>
+    <RoomPlaylists v-if="playlist" />
     <RoomSongs v-if="!playlist" />
     <BasePlayer
       :song_id="getSongId"
@@ -14,7 +16,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import RoomSearch from "../components/RoomSearch.vue";
 import RoomPlaylists from "../components/RoomPlaylists.vue";
 import RoomSongs from "../components/RoomSongs.vue";
@@ -28,36 +30,34 @@ export default {
     BasePlayer,
     RoomSongs
   },
-  data(){
-    return{
+  data() {
+    return {
       song_exist: false,
       playlist: false
-    }
+    };
   },
-  methods:{
-    ...mapActions(["fetchRecAddedSongs","fetchAllUserPlaylists"]),
+  methods: {
+    ...mapActions(["fetchRecAddedSongs", "fetchAllUserPlaylists"])
   },
   computed: {
     ...mapGetters(["getSongs", "getSongId", "getSongList"]),
-    activeTabName(){
-      if(this.playlist){
-        return "Songs"
+    activeTabName() {
+      if (this.playlist) {
+        return "Songs";
       }
-      return "Playlist"
+      return "Playlist";
     }
   },
-  watch:{
-    playlist(){
-
+  watch: {
+    playlist() {},
+    getSongId() {
+      this.song_exist = true;
     },
-    getSongId(){
-      this.song_exist=true;
-    },
-    getSongList(){
+    getSongList() {
       this.song_exist = false;
     }
   },
-  created(){
+  created() {
     this.fetchRecAddedSongs();
     this.fetchAllUserPlaylists();
   }
@@ -65,13 +65,13 @@ export default {
 </script>
 
 <style lang="scss">
-  .room-container{
-    .player-container{
-      margin-left: 70px;
-      position: fixed;
-      bottom:0;
-      left:50%;
-      transform: translateX(-50%);
-    }
+.room-container {
+  .player-container {
+    margin-left: 70px;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
   }
+}
 </style>

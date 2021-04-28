@@ -7,7 +7,7 @@
           <img src="./assets/icons/refresh.png" />
         </div>
       </div>
-      <BaseSearch v-if="$route.name != 'RoomPage'"/>
+      <BaseSearch v-if="$route.name != 'RoomPage'" />
       <router-view></router-view>
     </div>
     <CreateRoomPopUp :username="getUser.username" />

@@ -118,9 +118,8 @@ export default {
     }
   },
   watch: {
-    song_exist(){
-      if(!this.song_exist)
-        this.play_now=false;
+    song_exist() {
+      if (!this.song_exist) this.play_now = false;
     },
     song_id() {
       this.getSongById(this.song_id);

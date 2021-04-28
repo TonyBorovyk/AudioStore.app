@@ -1,7 +1,7 @@
 <template>
   <div class="room-wrapper">
     <AdminRoom v-if="admin" />
-    <UserRoom />
+    <UserRoom v-if="!admin"/>
   </div>
 </template>
 
@@ -16,37 +16,36 @@ export default {
     AdminRoom,
     UserRoom
   },
-  data(){
+  data() {
     return {
       admin: false,
-      connection: null,
-    }
+      connection: null
+    };
   },
   methods: {
-    ...mapActions(["fetchSongDetails","fetchRoomData"]),
+    ...mapActions(["fetchSongDetails", "fetchRoomData"]),
     ...mapActions("data_upload", ["changeDataUploadStatus"]),
-    sendMessage(message){
+    sendMessage(message) {
       console.log(this.connection);
       this.connection.send(message);
     }
   },
   created() {
     this.fetchRoomData();
-    if(!this.admin){
+    if (!this.admin) {
       this.fetchSongDetails(1);
     }
     this.changeDataUploadStatus(true);
     this.connection = new WebSocket("ws://localhost:8081");
 
-    this.connection.onopen = (e) =>{
+    this.connection.onopen = e => {
       console.log(e);
       console.log("Successfully connected to websocket");
-      
-    }
+    };
 
-    this.connection.onmessage = (e) => {
+    this.connection.onmessage = e => {
       console.log(e);
-    }
+    };
   }
 };
 </script>

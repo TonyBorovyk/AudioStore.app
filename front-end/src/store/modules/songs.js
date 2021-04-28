@@ -2,7 +2,7 @@ import { sleep } from "@/functions/sleep.js";
 import router from "@/router";
 
 const state = {
-  songs: [{artists:[]}]
+  songs: [{ artists: [] }]
 };
 
 const getters = {
