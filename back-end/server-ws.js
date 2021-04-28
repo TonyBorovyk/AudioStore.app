@@ -31,13 +31,16 @@ const sendToEveryoneInARoom = (socket, message) => {
 };
 
 webSocketServer.on('connection', (socket) => {
-  console.log(socket);
   socket.on('message', (message) => {
-    console.log(message);
     const messageObj = JSON.parse(message);
     if (messageObj.method === 'create new room') {
-      addRoom(messageObj.roomId, messageObj.roomName, messageObj.adminId, socket);
-    } else if (messageObj.trackId === 'connect user to the room') {
+      addRoom(
+        messageObj.roomId,
+        messageObj.roomName,
+        messageObj.adminId,
+        socket
+      );
+    } else if (messageObj.method === 'connect user to the room') {
       addUserToRoom(messageObj.roomId, messageObj.adminId, socket);
     } else if (
       messageObj.method === 'play' ||
@@ -45,8 +48,9 @@ webSocketServer.on('connection', (socket) => {
       messageObj.method === 'stop'
     ) {
       sendToEveryoneInARoom(socket, messageObj.method);
-    } else if (messageObj.trackId === 'new track') {
-      sendToEveryoneInARoom(socket, messageObj.trackId);
+    } else if (messageObj.method === 'new track') {
+      sendToEveryoneInARoom(socket, messageObj);
+      console.log(message);
     }
   });
 
