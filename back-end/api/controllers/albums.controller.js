@@ -22,7 +22,7 @@ const getAlbums = async (req, res) => {
     return {
       data: albums,
       success: true,
-    }
+    };
   } catch (error) {
     return res.send({
       error,
@@ -45,7 +45,7 @@ const getAlbumById = async (req, res) => {
     return {
       data: album || {},
       success: true,
-    }
+    };
   } catch (error) {
     return res.send({
       error,
