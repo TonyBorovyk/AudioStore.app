@@ -16,8 +16,8 @@ const addRoom = (roomId, roomName, adminId, connection) => {
   });
 };
 
-const addUserToRoom = (roomId, adminId, connection) => {
-  rooms.get(roomId).usersIds.push(adminId);
+const addUserToRoom = (roomId, userId, connection) => {
+  rooms.get(roomId).usersIds.push(userId);
   rooms.get(roomId).usersConnections.push(connection);
 };
 
@@ -35,7 +35,7 @@ webSocketServer.on('connection', (socket) => {
     const messageObj = JSON.parse(message);
     if (messageObj.method === 'create new room') {
       addRoom(messageObj.roomId, messageObj.roomName, messageObj.adminId, socket);
-    } else if (messageObj.trackId === 'connect user to the room') {
+    } else if (messageObj.method === 'connect user to the room') {
       addUserToRoom(messageObj.roomId, messageObj.adminId, socket);
     } else if (
       messageObj.method === 'play'
@@ -43,8 +43,8 @@ webSocketServer.on('connection', (socket) => {
       || messageObj.method === 'stop'
     ) {
       sendToEveryoneInARoom(socket, messageObj.method);
-    } else if (messageObj.trackId === 'new track') {
-      sendToEveryoneInARoom(socket, messageObj.trackId);
+    } else if (messageObj.method === 'new track') {
+      sendToEveryoneInARoom(socket, JSON.stringify(messageObj));
     }
   });
 
