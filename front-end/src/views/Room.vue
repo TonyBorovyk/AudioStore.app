@@ -1,7 +1,7 @@
 <template>
   <div class="room-wrapper">
     <AdminRoom v-if="admin" />
-    <UserRoom v-if="!admin"/>
+    <UserRoom v-if="!admin" />
   </div>
 </template>
 

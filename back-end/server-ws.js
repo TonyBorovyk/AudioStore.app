@@ -6,19 +6,19 @@ const webSocketServer = new WebSocketServer.Server({
   port: 8081,
 });
 
-const addRoom = (roomName, id, roomId, connection) => {
-  if (typeof rooms[roomName] === 'undefined') {
-    rooms.set(roomName, {
-      roomId,
-      adminId: id,
-      adminConnection: connection,
-      usersIds: [id],
-      usersConnections: [connection],
-    });
-  } else {
-    rooms.get(roomName).usersIds.push(id);
-    rooms.get(roomName).usersConnections.push(connection);
-  }
+const addRoom = (roomId, roomName, adminId, connection) => {
+  rooms.set(roomId, {
+    roomName,
+    adminId,
+    adminConnection: connection,
+    usersIds: [adminId],
+    usersConnections: [connection],
+  });
+};
+
+const addUserToRoom = (roomId, adminId, connection) => {
+  rooms.get(roomId).usersIds.push(adminId);
+  rooms.get(roomId).usersConnections.push(connection);
 };
 
 const sendToEveryoneInARoom = (socket, message) => {
@@ -35,16 +35,18 @@ webSocketServer.on('connection', (socket) => {
   socket.on('message', (message) => {
     console.log(message);
     const messageObj = JSON.parse(message);
-    if (messageObj.method === 'connect') {
-      addRoom(messageObj.field2, messageObj.field1, messageObj.field3, socket);
+    if (messageObj.method === 'create new room') {
+      addRoom(messageObj.roomId, messageObj.roomName, messageObj.adminId, socket);
+    } else if (messageObj.trackId === 'connect user to the room') {
+      addUserToRoom(messageObj.roomId, messageObj.adminId, socket);
     } else if (
       messageObj.method === 'play' ||
       messageObj.method === 'pause' ||
       messageObj.method === 'stop'
     ) {
       sendToEveryoneInARoom(socket, messageObj.method);
-    } else if (messageObj.method === 'new track') {
-      sendToEveryoneInARoom(socket, messageObj.field1);
+    } else if (messageObj.trackId === 'new track') {
+      sendToEveryoneInARoom(socket, messageObj.trackId);
     }
   });
 
