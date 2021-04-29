@@ -11,7 +11,7 @@ const getters = {
 };
 
 const actions = {
-  async fetchAllUserPlaylists({ commit, dispatch } /*user_id*/) {
+  async fetchAllUserPlaylists({ commit, dispatch }) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
     const res = await fetch(`http://localhost:3000/profile/playlists`, {
       headers: {

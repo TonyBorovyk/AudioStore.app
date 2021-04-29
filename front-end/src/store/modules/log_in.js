@@ -2,7 +2,7 @@ import router from "@/router";
 
 const state = {
   logged_in: false,
-  user: {}
+  user: { username: "" }
 };
 
 const getters = {
@@ -23,8 +23,7 @@ const actions = {
         console.error(error);
         router.push("/error");
       });
-
-    await commit("setUser", res.user);
+    await commit("setUser", res.user || { username: "" });
     dispatch("changeLogInStatus", res.success);
   },
   changeLogInStatus({ commit }, status) {

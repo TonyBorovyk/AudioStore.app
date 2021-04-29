@@ -26,9 +26,10 @@
         ref="audio"
         :src="song.track_url"
         :autoplay="play_now"
+        @ended="nextSong()"
       ></audio>
       <div class="buttons-play-block flex-row">
-        <button class="btn btn-action" v-if="list">
+        <button class="btn btn-action" v-if="list" @click="prevSong()">
           <img class="img-btn-prev" src="../assets/icons/next_song.png" />
         </button>
         <button class="btn btn-action btn-action-big" @click="PlayPauseSong">
@@ -37,7 +38,7 @@
             src="../assets/icons/play.png"
           />
         </button>
-        <button class="btn btn-action" v-if="list">
+        <button class="btn btn-action" v-if="list" @click="nextSong()">
           <img src="../assets/icons/next_song.png" />
         </button>
       </div>
@@ -48,13 +49,51 @@
 <script>
 export default {
   name: "BasePlayer",
-  props: ["song", "song_exist", "autoplay", "list"],
+  props: ["song_id", "songs", "song_exist", "autoplay", "list"],
   data() {
     return {
-      play_now: false
+      song_id_now: this.song_id,
+      song: {},
+      play_now: false,
     };
   },
   methods: {
+    nextSong() {
+      for (let i = 0; i < this.songs.length; i++) {
+        if (
+          i < this.songs.length - 1 &&
+          this.songs[i].track_id === this.song_id_now
+        ) {
+          this.getSongById(this.songs[i + 1].track_id);
+          break;
+        }
+        if (
+          i === this.songs.length - 1 &&
+          this.songs[i].track_id === this.song_id_now
+        ) {
+          i = 0;
+          this.getSongById(this.songs[i].track_id);
+          break;
+        }
+      }
+    },
+    prevSong() {
+      for (let i = 0; i < this.songs.length; i++) {
+        if (i > 0 && this.songs[i].track_id === this.song_id_now) {
+          this.getSongById(this.songs[i - 1].track_id);
+          break;
+        }
+        if (i === 0 && this.songs[i].track_id === this.song_id_now) {
+          i = this.songs.length - 1;
+          this.getSongById(this.songs[i].track_id);
+          break;
+        }
+      }
+    },
+    getSongById(id) {
+      this.song = this.songs.filter((song) => song.track_id === +id)[0];
+      this.song_id_now = id;
+    },
     PlayPauseSong() {
       if (this.song_exist) {
         if (this.play_now) {
@@ -72,15 +111,28 @@ export default {
       this.$refs.progress.style.width = `${progPercent}%`;
     },
     setProgress(e) {
-      const clientWidth = 376; //container has fiwed with
+      const clientWidth = 376; //container has fixed with
       const clickX = e.offsetX;
       const duration = this.$refs.audio.duration;
       this.$refs.audio.currentTime = (clickX / clientWidth) * duration;
+    },
+  },
+  watch: {
+    song_id() {
+       this.getSongById(this.song_id);
+      if(this.list){
+        this.play_now = true;
+      }
+    },
+    song_id_now() {
+      if(this.list){
+        if (!this.play_now) this.PlayPauseSong();
+      }
+    },
+    songs(){
+      this.getSongById(this.song_id);
     }
   },
-  mounted() {
-    this.play_now = this.autoplay;
-  }
 };
 </script>
 
@@ -107,9 +159,8 @@ export default {
     }
   }
   .player-data-block {
-    position: absolute;
-    bottom: 10px;
     align-items: center;
+    justify-content: space-between;
     .music-info {
       text-align: left;
       max-width: 220px;
