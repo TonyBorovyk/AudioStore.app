@@ -1,7 +1,7 @@
 import router from "@/router";
 
 const state = {
-  playlists: [],
+  playlists: [{}],
   playlist_popup_active: false
 };
 
@@ -24,7 +24,6 @@ const actions = {
         console.error(error);
         router.push("/error");
       });
-
     await commit("setPlaylists", res.data);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   },

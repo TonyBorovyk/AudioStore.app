@@ -11,6 +11,7 @@ import albums from "./modules/albums";
 import album_details from "./modules/album_details";
 import data_upload from "./modules/data_upload";
 import rooms from "./modules/rooms";
+import room from "./modules/room";
 
 export default createStore({
   modules: {
@@ -25,6 +26,7 @@ export default createStore({
     albums,
     album_details,
     data_upload,
-    rooms
+    rooms,
+    room
   }
 });

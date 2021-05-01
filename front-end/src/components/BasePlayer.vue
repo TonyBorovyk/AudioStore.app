@@ -54,7 +54,7 @@ export default {
     return {
       song_id_now: this.song_id,
       song: {},
-      play_now: false,
+      play_now: false
     };
   },
   methods: {
@@ -91,7 +91,7 @@ export default {
       }
     },
     getSongById(id) {
-      this.song = this.songs.filter((song) => song.track_id === +id)[0];
+      this.song = this.songs.filter(song => song.track_id === +id)[0];
       this.song_id_now = id;
     },
     PlayPauseSong() {
@@ -115,24 +115,27 @@ export default {
       const clickX = e.offsetX;
       const duration = this.$refs.audio.duration;
       this.$refs.audio.currentTime = (clickX / clientWidth) * duration;
-    },
+    }
   },
   watch: {
+    song_exist() {
+      if (!this.song_exist) this.play_now = false;
+    },
     song_id() {
-       this.getSongById(this.song_id);
-      if(this.list){
+      this.getSongById(this.song_id);
+      if (this.list) {
         this.play_now = true;
       }
     },
     song_id_now() {
-      if(this.list){
+      if (this.list) {
         if (!this.play_now) this.PlayPauseSong();
       }
     },
-    songs(){
+    songs() {
       this.getSongById(this.song_id);
     }
-  },
+  }
 };
 </script>
 

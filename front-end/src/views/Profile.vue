@@ -70,13 +70,13 @@ export default {
 </script>
 
 <style>
-.create-room{
+.create-room {
   background: var(--third-button-color);
   color: white;
   font-size: 20px;
 }
 
-.create-room:hover{
+.create-room:hover {
   background: var(--third-button-hover-color);
 }
 </style>
