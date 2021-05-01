@@ -1,4 +1,4 @@
-/*const { getSongs } = require('../controllers/songs.controller');
+const { getSongs } = require('../controllers/songs.controller');
 const { getAlbums } = require('../controllers/albums.controller');
 const { getArtists } = require('../controllers/artists.controller');
 
@@ -41,4 +41,4 @@ async function routes(fastify) {
   });
 }
 
-module.exports = routes;*/
+module.exports = routes;
