@@ -53,7 +53,20 @@ const getAlbumById = async (req, res) => {
 
 async function routes(fastify) {
   fastify.get('/', async (req, res) => {
-    res.send(await getAlbums(req, res));
+    let albums = await getAlbumsService();
+    if (albums == undefined) {
+      res.code(500).send({ success: false });
+    }
+    albums = albums.map((album) => ({
+      ...album,
+      artists: album.artists.map((artistsId) =>
+        getArtistByIdService(artistsId)
+      ),
+      songs_list: album.songs_list.map((songId) => getSongByIdService(songId)),
+    }));
+
+    let data = { data: albums, success: true };
+    res.send(data);
   });
   fastify.get('/:id', async (req, res) => {
     res.send(await getAlbumById(req, res));
