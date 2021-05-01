@@ -1,25 +1,23 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
-const { getUserById } = require('../services/profile.service');
+const { getUser } = require('../controllers/profile.controller');
+const {
+  getUserPlaylist,
+  getPlaylistById,
+} = require('../controllers/playlists.controller');
 
 async function routes(fastify) {
   fastify.get('/', async (req, res) => {
-    const cookie = req.cookies.jwt;
-    const claims = jwt.verify(cookie, process.env.JWT_SECRET);
-    if (!claims) {
-      res.code(401).send({
-        message: 'Unauthenticated',
-        success: false,
-      });
+    try {
+      res.send(await getUser(req, res));
+    } catch (e) {
+      res.send({ e });
     }
   });
   fastify.get('/playlists', async (req, res) => {
-    const user = await getUserById(claims.id);
-    if (user == undefined) {
-      res.code(401).send({ user, success: false });
-    } // claims.id returns user id
-    let data = { data: user || {}, success: true };
-    res.send(data);
+    try {
+      res.send(await getUserPlaylist(req, res));
+    } catch (e) {
+      res.send({ e });
+    }
   });
   fastify.get('/playlists/:id', async (req, res) => {
     try {
