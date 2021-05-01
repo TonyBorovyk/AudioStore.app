@@ -1,24 +1,26 @@
 const WebSocketServer = require('ws');
 
-const rooms = new Map();
+const rooms = [];
 
 const webSocketServer = new WebSocketServer.Server({
   port: 8081,
 });
 
 const addRoom = (roomId, roomName, adminId, connection) => {
-  rooms.set(roomId, {
+  rooms.push({
+    roomId,
     roomName,
     adminId,
     adminConnection: connection,
     usersIds: [adminId],
     usersConnections: [connection],
-  });
+  })
 };
 
 const addUserToRoom = (roomId, userId, connection) => {
-  rooms.get(roomId).usersIds.push(userId);
-  rooms.get(roomId).usersConnections.push(connection);
+  const neededRoom = rooms.find(room => room.roomId === roomId);
+  neededRoom.usersIds.push(userId);
+  neededRoom.usersConnections.push(connection);
 };
 
 const sendToEveryoneInARoom = (socket, message) => {
@@ -38,9 +40,9 @@ webSocketServer.on('connection', (socket) => {
     } else if (messageObj.method === 'connect user to the room') {
       addUserToRoom(messageObj.roomId, messageObj.adminId, socket);
     } else if (
-      messageObj.method === 'play'
-      || messageObj.method === 'pause'
-      || messageObj.method === 'stop'
+        messageObj.method === 'play'
+        || messageObj.method === 'pause'
+        || messageObj.method === 'stop'
     ) {
       sendToEveryoneInARoom(socket, messageObj.method);
     } else if (messageObj.method === 'new track') {
@@ -51,11 +53,11 @@ webSocketServer.on('connection', (socket) => {
   socket.on('close', () => {
     const foundObj = rooms.find((room) => room.adminConnection === socket);
     if (typeof foundObj !== 'undefined') {
-      const roomName = rooms.findIndex(
-        (room) => room.adminConnection === socket,
+      const roomId = rooms.findIndex(
+          (room) => room.adminConnection === socket,
       );
-      rooms.get(roomName).usersConnections.forEach((connection) => connection.send('Connection is closed'));
-      delete rooms.get(roomName);
+      rooms.find(room => roomId).usersConnections.forEach((connection) => connection.send('Connection is closed'));
+      delete rooms.find(room => roomId);
     } else {
       const foundCon = rooms.find((room) => room.usersConnections.contains(socket));
       const ind = foundCon.usersConnections.findIndex(socket);
