@@ -19,11 +19,13 @@ export default {
   data() {
     return {
       admin: false,
+      user_exist: false,
+      room_exist: false,
       connection: null
     };
   },
   methods: {
-    ...mapActions(["fetchSongDetails", "fetchRoomData"]),
+    ...mapActions(["fetchSongDetails", "fetchRoomData", "fetchUser"]),
     ...mapActions("data_upload", ["changeDataUploadStatus"]),
     sendMessage(message) {
       console.log(this.connection);
@@ -35,8 +37,27 @@ export default {
   },
   watch: {
     getUser() {
-      if (this.getRoomData.admin_id === this.getUser.user_id) {
-        this.admin = true;
+      if (this.getUser != { username: "" }) {
+        this.user_exist = true;
+        console.log("getUser", this.getUser);
+        if (this.room_exist && this.connection === null) {
+          this.connection = new WebSocket("ws://localhost:8081");
+          if (this.getRoomData.admin_id === this.getUser.user_id) {
+            this.admin = true;
+          }
+        }
+      }
+    },
+    getRoomData() {
+      if (this.getRoomData != {}) {
+        this.room_exist = true;
+        console.log("getRoomData", this.getRoomData);
+        if (this.user_exist && this.connection === null) {
+          this.connection = new WebSocket("ws://localhost:8081");
+          if (this.getRoomData.admin_id === this.getUser.user_id) {
+            this.admin = true;
+          }
+        }
       }
     },
     getSongId() {
@@ -46,27 +67,37 @@ export default {
           track_id: this.getSongId
         });
       }
+    },
+    connection() {
+      this.connection.onopen = e => {
+        this.changeDataUploadStatus(true);
+        if (this.admin) {
+          this.sendMessage({
+            method: "create new room",
+            roomId: this.$route.params.id,
+            roomName: this.getRoomData.room_name,
+            adminId: this.getUser.user_id
+          });
+        }
+        if (!this.admin) {
+          this.sendMessage({
+            method: "connect user to the room",
+            roomId: this.$route.params.id,
+            adminId: this.getUser.user_id
+          });
+        }
+        console.log(e);
+        console.log("Successfully connected to websocket");
+      };
+
+      this.connection.onmessage = e => {
+        console.log(e);
+      };
     }
   },
   created() {
     this.fetchRoomData();
-    if (this.getRoomData.admin_id === this.getUser.user_id) {
-      this.admin = true;
-    }
-    if (!this.admin) {
-      this.fetchSongDetails(1);
-    }
-    this.changeDataUploadStatus(true);
-    this.connection = new WebSocket("ws://localhost:8081");
-
-    this.connection.onopen = e => {
-      console.log(e);
-      console.log("Successfully connected to websocket");
-    };
-
-    this.connection.onmessage = e => {
-      console.log(e);
-    };
+    this.fetchUser();
   }
 };
 </script>

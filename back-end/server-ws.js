@@ -1,30 +1,31 @@
 const WebSocketServer = require('ws');
 
-const rooms = new Map();
+const rooms = [];
 
 const webSocketServer = new WebSocketServer.Server({
   port: 8081,
 });
 
 const addRoom = (roomId, roomName, adminId, connection) => {
-  rooms.set(roomId, {
+  rooms[roomId] = {
+    roomId,
     roomName,
     adminId,
     adminConnection: connection,
     usersIds: [adminId],
     usersConnections: [connection],
-  });
+  };
 };
 
-const addUserToRoom = (roomId, adminId, connection) => {
-  rooms.get(roomId).usersIds.push(adminId);
-  rooms.get(roomId).usersConnections.push(connection);
+const addUserToRoom = (roomId, userId, connection) => {
+  rooms[roomId].usersIds.push(userId);
+  rooms[roomId].usersConnections.push(connection);
 };
 
 const sendToEveryoneInARoom = (socket, message) => {
-  const foundObj = rooms.find((room) => room.adminConnection === socket);
+  const foundObj = rooms.filter((room) => room.roomId === message.roomId);
   if (typeof foundObj !== 'undefined') {
-    foundObj.usersConnections.forEach((connection) => connection.send(message));
+    foundObj.usersConnections.map((connection) => connection.send(message));
   } else {
     socket.send('You have to be admin');
   }
@@ -40,34 +41,34 @@ webSocketServer.on('connection', (socket) => {
         messageObj.adminId,
         socket
       );
+      console.log('created');
     } else if (messageObj.method === 'connect user to the room') {
       addUserToRoom(messageObj.roomId, messageObj.adminId, socket);
+      console.log('connected');
     } else if (
       messageObj.method === 'play' ||
       messageObj.method === 'pause' ||
       messageObj.method === 'stop'
     ) {
-      sendToEveryoneInARoom(socket, messageObj.method);
-    } else if (messageObj.method === 'new track') {
       sendToEveryoneInARoom(socket, messageObj);
-      console.log(message);
+    } else if (messageObj.method === 'new track') {
+      sendToEveryoneInARoom(socket, JSON.stringify(messageObj));
     }
   });
 
   socket.on('close', () => {
-    const foundObj = rooms.find((room) => room.adminConnection === socket);
+    const foundObj = rooms.filter((room) => room.adminConnection === socket);
     if (typeof foundObj !== 'undefined') {
-      const roomName = rooms.findIndex(
-        (room) => room.adminConnection === socket
+      const roomName = rooms.map((room, index) => {
+        if (room.adminConnection === socket) return index;
+      });
+      console.log(roomName);
+      rooms[roomName[1]].usersConnections.map((connection) =>
+        connection.send('Connection is closed')
       );
-      rooms
-        .get(roomName)
-        .usersConnections.forEach((connection) =>
-          connection.send('Connection is closed')
-        );
-      delete rooms.get(roomName);
+      delete rooms[roomName[1]];
     } else {
-      const foundCon = rooms.find((room) =>
+      const foundCon = rooms.filter((room) =>
         room.usersConnections.contains(socket)
       );
       const ind = foundCon.usersConnections.findIndex(socket);

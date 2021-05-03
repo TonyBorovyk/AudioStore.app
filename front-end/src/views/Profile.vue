@@ -20,7 +20,6 @@
           >
             <h3>{{ playlist.playlist_title }}</h3>
           </router-link>
-          <p>Number of songs: {{ playlist.tracks.length }}</p>
         </div>
       </div>
     </div>

@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "BasePlayer",
   props: ["song_id", "songs", "song_exist", "autoplay", "list"],
@@ -58,6 +60,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["changeSongId"]),
     nextSong() {
       for (let i = 0; i < this.songs.length; i++) {
         if (
@@ -129,6 +132,7 @@ export default {
     },
     song_id_now() {
       if (this.list) {
+        this.changeSongId(this.song_id_now);
         if (!this.play_now) this.PlayPauseSong();
       }
     },
