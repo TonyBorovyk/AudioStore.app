@@ -22,7 +22,7 @@ import BasePlayer from "@/components/BasePlayer.vue";
 import SongArtists from "@/components/SongArtists.vue";
 
 export default {
-  name: "AdminRoom",
+  name: "UserRoom",
   components: {
     SongArtists,
     BasePlayer
