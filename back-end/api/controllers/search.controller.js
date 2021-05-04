@@ -7,7 +7,7 @@ const { getArtists } = require('./artists.controller');
 
 const searchData = async (req, res) => {
   try {
-    const searchVal = req.body.search || '';
+    const searchVal = req.body?.search || '';
 
     const searchHandler = (entity, key) =>
       entity.filter((item) =>
