@@ -29,6 +29,12 @@
     >
       Create room
     </button>
+    <button
+      class="create-room btn btn-margin"
+      @click="changeAddPlaylistActivity"
+    >
+      Add Playlist
+    </button>
   </div>
 </template>
 
@@ -52,6 +58,7 @@ export default {
     ...mapActions([
       "fetchUser",
       "changeCreateRoomPopUpActivity",
+      "changeAddPlaylistActivity",
       "fetchAllUserPlaylists"
     ]),
     ...mapActions("data_upload", ["changeDataUploadStatus"])

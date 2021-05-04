@@ -62,7 +62,6 @@ webSocketServer.on('connection', (socket) => {
       const roomName = rooms.map((room, index) => {
         if (room.adminConnection === socket) return index;
       });
-      console.log(roomName);
       rooms[roomName[1]].usersConnections.map((connection) =>
         connection.send('Connection is closed')
       );
@@ -76,5 +75,7 @@ webSocketServer.on('connection', (socket) => {
       foundObj.usersIds.splice(ind);
       socket.send('Connection is closed');
     }
+    
+    console.log("closed");
   });
 });
