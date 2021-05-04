@@ -9,24 +9,23 @@
       <div class="list-margin list-container">
         <h3>Playlists</h3>
         <div
-          class="list-item flex-row"
-          v-for="playlist in getPlaylists"
-          :key="playlist.playlist_id"
+            class="list-item flex-row"
+            v-for="playlist in getPlaylists"
+            :key="playlist.playlist_id"
         >
           <router-link
-            :to="
+              :to="
               `/profile/${getUser.username}/playlists/${playlist.playlist_id}`
             "
           >
             <h3>{{ playlist.playlist_title }}</h3>
           </router-link>
-          <p>Number of songs: {{ playlist.tracks.length }}</p>
         </div>
       </div>
     </div>
     <button
-      class="create-room btn btn-margin"
-      @click="changeCreateRoomPopUpActivity"
+        class="create-room btn btn-margin"
+        @click="changeCreateRoomPopUpActivity"
     >
       Create room
     </button>
@@ -35,7 +34,6 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-
 export default {
   name: "Profile",
   computed: {
@@ -75,7 +73,6 @@ export default {
   color: white;
   font-size: 20px;
 }
-
 .create-room:hover {
   background: var(--third-button-hover-color);
 }
