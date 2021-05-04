@@ -27,6 +27,16 @@ const throwIfInvalid = (isValid, message = '') => {
 };
 
 async function createDBWithTablesIfNotExists() {
+  // await knex.raw(`
+  //   DROP TABLE IF EXISTS "${tables.TRACK_INFO}";
+  //   DROP TABLE IF EXISTS "${tables.PLAYLIST}";
+  //   DROP TABLE IF EXISTS "${tables.ALBUM}";
+  //   DROP TABLE IF EXISTS "${tables.ROOM}";
+  //   DROP TABLE IF EXISTS "${tables.USER}";
+  //   DROP TABLE IF EXISTS "${tables.TRACK_CATEGORY}";
+  //   DROP TABLE IF EXISTS "${tables.ARTIST}";
+  // `);
+
   await knex.raw(`
     CREATE TABLE IF NOT EXISTS "${tables.ARTIST}" (
         "Artist_ID" SERIAL PRIMARY KEY NOT NULL,

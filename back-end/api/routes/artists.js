@@ -1,7 +1,3 @@
-const {
-  getArtistsService,
-  getArtistByIdService,
-} = require('../services/artists.service');
 const { artists: dbArtists } = require('../db');
 
 const createOpts = {
@@ -26,7 +22,7 @@ async function routes(fastify) {
     });
   });
   fastify.get('/', async (req, res) => {
-    const artists = await getArtistsService();
+    const artists = await dbArtists.getAll();
 
     return res.send({
       data: artists,
@@ -34,7 +30,7 @@ async function routes(fastify) {
     });
   });
   fastify.get('/:id', async (req, res) => {
-    const artist = await getArtistByIdService(req.params.id);
+    const artist = await dbArtists.getById(req.params.id);
 
     return res.send({
       data: artist,

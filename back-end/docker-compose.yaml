@@ -3,10 +3,12 @@ services:
   db-audio:
     container_name: db-audio
     image: postgres:13.1-alpine
-    env_file: 
+    env_file:
       - .env
     ports:
       - $EXTERNAL_POSTGRES_PORT:$POSTGRES_PORT
+    # volumes:
+    #   - ./.data:/var/lib/postgresql/data
 
   adminer-audio:
     container_name: adminer-audio
