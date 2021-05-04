@@ -3,6 +3,7 @@
 const fastify = require('fastify')();
 
 const { init } = require('./api/db');
+const seeds = require('./api/db/seeds');
 const {
   errors: { DATABASE },
 } = require('./api/config');
@@ -42,6 +43,8 @@ fastify.register(require('./api/routes/auth'));
 
 async function boot() {
   await init();
+
+  await seeds();
 
   // LISTNER
   fastify.listen(PORT, (err /* , adress */) => {

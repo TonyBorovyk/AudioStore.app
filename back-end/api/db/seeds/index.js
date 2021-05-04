@@ -200,10 +200,9 @@ async function plantSeeds() {
       SELECT "Insert_Playlist" ('Rock', 5, '[3, 4]');
   `);
   } catch (err) {
-    console.error(err);
+    // console.error('Cannot plant seeds');
   }
-
-  process.exit(0);
+  console.log('Seeds planted');
 }
 
-plantSeeds();
+module.exports = plantSeeds;
