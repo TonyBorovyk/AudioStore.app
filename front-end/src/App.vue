@@ -11,7 +11,7 @@
       <router-view></router-view>
     </div>
     <CreateRoomPopUp :user_id="getUser.user_id" />
-    <AddPlaylist :user_id="getUser.user_id"/>
+    <AddPlaylist :user_id="getUser.user_id" />
   </div>
 </template>
 

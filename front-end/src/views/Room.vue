@@ -1,6 +1,12 @@
 <template>
   <div class="room-wrapper">
-    <button class="btn btn-margin" v-if="connection!=null" @click="leaveRoom()">Leave Room</button>
+    <button
+      class="btn btn-margin"
+      v-if="connection != null"
+      @click="leaveRoom()"
+    >
+      Leave Room
+    </button>
     <AdminRoom v-if="admin" />
     <UserRoom v-if="!admin" />
   </div>
@@ -32,9 +38,9 @@ export default {
       console.log(this.connection);
       this.connection.send(JSON.stringify(message));
     },
-    leaveRoom(){
+    leaveRoom() {
       this.connection.close();
-      this.$router.push('/');
+      this.$router.push("/");
     }
   },
   computed: {
@@ -99,12 +105,11 @@ export default {
         console.log(e);
         console.log(JSON.parse(e.data));
       };
-
     }
   },
-  beforeRouteLeave (to, from, next) {
-    if(from.name=="RoomPage" && to!=undefined){
-      if(this.connection!=null){
+  beforeRouteLeave(to, from, next) {
+    if (from.name == "RoomPage" && to != undefined) {
+      if (this.connection != null) {
         this.connection.close();
       }
     }

@@ -46,19 +46,19 @@ export default {
   name: "BaseSongItem",
   props: ["user_id"],
   components: {
-    ButtonSubmit,
+    ButtonSubmit
   },
   setup() {
     return { v$: useVuelidate() };
   },
   data() {
     return {
-      playlist_name: "",
+      playlist_name: ""
     };
   },
   validations() {
     return {
-      playlist_name: { required },
+      playlist_name: { required }
     };
   },
   methods: {
@@ -70,7 +70,7 @@ export default {
       }
       const data = {
         playlist_name: this.room_name,
-        user_id: this.user_id,
+        user_id: this.user_id
       };
 
       this.changeAddPlaylistActivity();
@@ -100,11 +100,11 @@ export default {
       //     console.log(e.message);
       //     return;
       //   }
-    },
+    }
   },
   computed: {
-    ...mapGetters(["isAddPlaylistActive", "isLoggedIn", "getUser"]),
-  },
+    ...mapGetters(["isAddPlaylistActive", "isLoggedIn", "getUser"])
+  }
 };
 </script>
 

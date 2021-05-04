@@ -3,7 +3,7 @@ import router from "@/router";
 const state = {
   playlists: [{}],
   playlist_popup_active: false,
-  playlist_add_active:false,
+  playlist_add_active: false
 };
 
 const getters = {
@@ -45,7 +45,7 @@ const mutations = {
   setActivityOfPlaylistPopUp: (state, playlist_popup_active) =>
     (state.playlist_popup_active = playlist_popup_active),
   setActivityOfAddPlaylist: (state, playlist_add_active) =>
-  (state.playlist_add_active = playlist_add_active),
+    (state.playlist_add_active = playlist_add_active)
 };
 
 export default {
