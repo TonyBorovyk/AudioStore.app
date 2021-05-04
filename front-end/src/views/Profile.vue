@@ -9,12 +9,12 @@
       <div class="list-margin list-container">
         <h3>Playlists</h3>
         <div
-            class="list-item flex-row"
-            v-for="playlist in getPlaylists"
-            :key="playlist.playlist_id"
+          class="list-item flex-row"
+          v-for="playlist in getPlaylists"
+          :key="playlist.playlist_id"
         >
           <router-link
-              :to="
+            :to="
               `/profile/${getUser.username}/playlists/${playlist.playlist_id}`
             "
           >
@@ -24,8 +24,8 @@
       </div>
     </div>
     <button
-        class="create-room btn btn-margin"
-        @click="changeCreateRoomPopUpActivity"
+      class="create-room btn btn-margin"
+      @click="changeCreateRoomPopUpActivity"
     >
       Create room
     </button>
