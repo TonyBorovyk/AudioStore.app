@@ -1,3 +1,4 @@
+
 /*var socket = new WebSocket("ws://localhost:8081");
 
 // A function to check if string contains JSON

@@ -1,3 +1,4 @@
+
 <template>
   <div class="player-container">
     <div class="progress-container" @click="setProgress">
@@ -8,9 +9,9 @@
         <h3>{{ song.track_name }}</h3>
         <div class="song-artists">
           <div
-            class="song-artist"
-            v-for="artist in song.artists"
-            :key="artist.artist_id"
+              class="song-artist"
+              v-for="artist in song.artists"
+              :key="artist.artist_id"
           >
             <p>{{ artist.artist_name }}</p>
           </div>
@@ -21,12 +22,12 @@
         <p>Undefined</p>
       </div>
       <audio
-        @timeupdate="updateProgress"
-        v-if="song_exist"
-        ref="audio"
-        :src="song.track_url"
-        :autoplay="play_now"
-        @ended="nextSong()"
+          @timeupdate="updateProgress"
+          v-if="song_exist"
+          ref="audio"
+          :src="song.track_url"
+          :autoplay="play_now"
+          @ended="nextSong()"
       ></audio>
       <div class="buttons-play-block flex-row">
         <button class="btn btn-action" v-if="list" @click="prevSong()">
@@ -36,7 +37,7 @@
           <img v-if="play_now" src="../assets/icons/pause.png" /><img
             v-if="!play_now"
             src="../assets/icons/play.png"
-          />
+        />
         </button>
         <button class="btn btn-action" v-if="list" @click="nextSong()">
           <img src="../assets/icons/next_song.png" />
@@ -48,7 +49,6 @@
 
 <script>
 import { mapActions } from "vuex";
-
 export default {
   name: "BasePlayer",
   props: ["song_id", "songs", "song_exist", "autoplay", "list"],
@@ -64,15 +64,15 @@ export default {
     nextSong() {
       for (let i = 0; i < this.songs.length; i++) {
         if (
-          i < this.songs.length - 1 &&
-          this.songs[i].track_id === this.song_id_now
+            i < this.songs.length - 1 &&
+            this.songs[i].track_id === this.song_id_now
         ) {
           this.getSongById(this.songs[i + 1].track_id);
           break;
         }
         if (
-          i === this.songs.length - 1 &&
-          this.songs[i].track_id === this.song_id_now
+            i === this.songs.length - 1 &&
+            this.songs[i].track_id === this.song_id_now
         ) {
           i = 0;
           this.getSongById(this.songs[i].track_id);
@@ -203,7 +203,6 @@ export default {
           transform: rotate(180deg);
         }
       }
-
       .btn-action-big {
         img {
           height: 25px;

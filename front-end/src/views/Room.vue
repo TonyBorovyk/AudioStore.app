@@ -16,7 +16,6 @@
 import AdminRoom from "@/components/AdminRoom.vue";
 import UserRoom from "@/components/UserRoom.vue";
 import { mapActions, mapGetters } from "vuex";
-
 export default {
   name: "Room",
   components: {
@@ -100,7 +99,6 @@ export default {
         console.log(e);
         console.log("Successfully connected to websocket");
       };
-
       this.connection.onmessage = e => {
         console.log(e);
         console.log(JSON.parse(e.data));

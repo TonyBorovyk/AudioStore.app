@@ -6,21 +6,19 @@
       <SongArtists :song="getSongDetails" />
     </div>
     <BasePlayer
-      :song_id="getSongDetails.track_id"
-      :songs="[getSongDetails]"
-      :song_exist="song_exist"
-      :list="false"
-      :autoplay="autoplay"
+        :song_id="getSongDetails.track_id"
+        :songs="[getSongDetails]"
+        :song_exist="song_exist"
+        :list="false"
+        :autoplay="autoplay"
     />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-
 import BasePlayer from "@/components/BasePlayer.vue";
 import SongArtists from "@/components/SongArtists.vue";
-
 export default {
   name: "UserRoom",
   components: {
