@@ -52,7 +52,7 @@ const getPlaylistById = async (req, res) => {
         song = {
           ...song,
           artists: song.artists.map((artistId) =>
-              getArtistByIdService(artistId)
+            getArtistByIdService(artistId)
           ),
         };
         return song;

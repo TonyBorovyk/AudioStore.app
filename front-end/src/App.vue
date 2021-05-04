@@ -10,7 +10,8 @@
       <BaseSearch v-if="$route.name != 'RoomPage'" />
       <router-view></router-view>
     </div>
-    <CreateRoomPopUp :username="getUser.username" />
+    <CreateRoomPopUp :user_id="getUser.user_id" />
+    <AddPlaylist :user_id="getUser.user_id" />
   </div>
 </template>
 
@@ -19,12 +20,14 @@ import { mapGetters } from "vuex";
 import NavBar from "@/views/NavBar.vue";
 import BaseSearch from "@/components/BaseSearch.vue";
 import CreateRoomPopUp from "@/components/CreateRoomPopUp.vue";
+import AddPlaylist from "@/components/AddPlaylist.vue";
 
 export default {
   components: {
     NavBar,
     BaseSearch,
-    CreateRoomPopUp
+    CreateRoomPopUp,
+    AddPlaylist
   },
   computed: {
     ...mapGetters("data_upload", ["isDataUploaded"]),

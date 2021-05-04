@@ -2,12 +2,14 @@ import router from "@/router";
 
 const state = {
   playlists: [{}],
-  playlist_popup_active: false
+  playlist_popup_active: false,
+  playlist_add_active: false
 };
 
 const getters = {
   getPlaylists: state => state.playlists,
-  isPlaylistPopUpActive: state => state.playlist_popup_active
+  isPlaylistPopUpActive: state => state.playlist_popup_active,
+  isAddPlaylistActive: state => state.playlist_add_active
 };
 
 const actions = {
@@ -32,13 +34,18 @@ const actions = {
     if (state.playlist_popup_active) {
       dispatch("fetchAllUserPlaylists");
     }
+  },
+  changeAddPlaylistActivity({ commit, state }) {
+    commit("setActivityOfAddPlaylist", !state.playlist_add_active);
   }
 };
 
 const mutations = {
   setPlaylists: (state, playlists) => (state.playlists = playlists),
   setActivityOfPlaylistPopUp: (state, playlist_popup_active) =>
-    (state.playlist_popup_active = playlist_popup_active)
+    (state.playlist_popup_active = playlist_popup_active),
+  setActivityOfAddPlaylist: (state, playlist_add_active) =>
+    (state.playlist_add_active = playlist_add_active)
 };
 
 export default {
