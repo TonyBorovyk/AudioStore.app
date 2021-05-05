@@ -1,5 +1,8 @@
 const state = {
   song_id: "",
+  play: null,
+  song_time: 0,
+  current_time: 0,
   songs_list: [],
   room_data: {}
 };
@@ -7,7 +10,10 @@ const state = {
 const getters = {
   getSongId: state => state.song_id,
   getSongList: state => state.songs_list,
-  getRoomData: state => state.room_data
+  getRoomData: state => state.room_data,
+  getPlay: state => state.play,
+  getSongTime: state => state.song_time,
+  getCurrentTime: state => state.current_time
 };
 
 const actions = {
@@ -16,6 +22,16 @@ const actions = {
   },
   changeSongList({ commit }, songs_list) {
     commit("setSongList", songs_list);
+  },
+  changePlay({ commit }, play) {
+    commit("setPlay", play);
+  },
+  changeSongTime({ commit }, song_time) {
+    commit("setSongTime", song_time);
+  },
+
+  changeCurrentTime({ commit }, current_time) {
+    commit("setCurrentTime", current_time);
   },
   fetchRoomData({ commit }) {
     //   const res = await fetch(`http://localhost:3000/songs/${id}`)
@@ -39,7 +55,10 @@ const actions = {
 const mutations = {
   setSongId: (state, song_id) => (state.song_id = song_id),
   setSongList: (state, songs_list) => (state.songs_list = songs_list),
-  setRoomData: (state, room_data) => (state.room_data = room_data)
+  setRoomData: (state, room_data) => (state.room_data = room_data),
+  setPlay: (state, play) => (state.play = play),
+  setSongTime: (state, song_time) => (state.song_time = song_time),
+  setCurrentTime: (state, current_time) => (state.current_time = current_time)
 };
 
 export default {

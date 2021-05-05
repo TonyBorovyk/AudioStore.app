@@ -31,7 +31,13 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["fetchSongDetails", "fetchRoomData", "fetchUser"]),
+    ...mapActions([
+      "fetchSongDetails",
+      "fetchRoomData",
+      "fetchUser",
+      "changePlay",
+      "changeSongTime"
+    ]),
     ...mapActions("data_upload", ["changeDataUploadStatus"]),
     sendMessage(message) {
       console.log(this.connection);
@@ -43,7 +49,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getRoomData", "getUser", "getSongId"])
+    ...mapGetters([
+      "getRoomData",
+      "getUser",
+      "getSongId",
+      "getPlay",
+      "getSongTime",
+      "getCurrentTime"
+    ])
   },
   watch: {
     getUser() {
@@ -70,16 +83,41 @@ export default {
         }
       }
     },
+    getPlay() {
+      if (this.admin) {
+        if (this.getPlay) {
+          this.sendMessage({
+            method: "play"
+          });
+        }
+        if (!this.getPlay) {
+          this.sendMessage({
+            method: "pause"
+          });
+        }
+      }
+    },
+    getSongTime() {
+      if (this.admin) {
+        this.sendMessage({
+          method: "new time",
+          new_time: this.getSongTime
+        });
+      }
+    },
     getSongId() {
       if (this.admin) {
         this.sendMessage({
           method: "new track",
           track_id: this.getSongId
         });
+        this.sendMessage({
+          method: "play"
+        });
       }
     },
     connection() {
-      this.connection.onopen = e => {
+      this.connection.onopen = () => {
         this.changeDataUploadStatus(true);
         if (this.admin) {
           this.sendMessage({
@@ -93,15 +131,43 @@ export default {
           this.sendMessage({
             method: "connect user to the room",
             roomId: this.$route.params.id,
-            adminId: this.getUser.user_id
+            userId: this.getUser.user_id
           });
         }
-        console.log(e);
         console.log("Successfully connected to websocket");
       };
       this.connection.onmessage = e => {
-        console.log(e);
-        console.log(JSON.parse(e.data));
+        const data = JSON.parse(e.data);
+        console.log(data);
+        if (this.admin) {
+          if (
+            data.method === "connect user to the room" &&
+            this.getSongId != ""
+          ) {
+            this.sendMessage({
+              method: "just connected",
+              userId: data.userId,
+              roomId: this.getRoomData.room_id,
+              songId: this.getSongId,
+              new_time: this.getCurrentTime,
+              play: this.getPlay
+            });
+          }
+        }
+        if (!this.admin) {
+          if (data.method === "new track") {
+            this.fetchSongDetails(data.track_id);
+          }
+          if (data.method === "play") {
+            this.changePlay(true);
+          }
+          if (data.method === "pause") {
+            this.changePlay(false);
+          }
+          if (data.method === "new time") {
+            this.changeSongTime(data.new_time);
+          }
+        }
       };
     }
   },

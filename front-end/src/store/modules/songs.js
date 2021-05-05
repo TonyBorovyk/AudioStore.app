@@ -13,7 +13,7 @@ const getters = {
 const actions = {
   async fetchRecAddedSongs({ commit, dispatch }) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
-    const res = await fetch(`http://localhost:3000/songs`)
+    const res = await fetch(`${process.env.VUE_APP_URL}/songs`)
       .then(response => response.json())
       .catch(error => {
         console.error(error);
@@ -24,11 +24,11 @@ const actions = {
     await sleep(1000);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   },
-  async moreRecAddedSongs({ commit, dispatch }) {
+  async moreRecAddedSongs({ commit, dispatch }, page) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
-    const res = await fetch(`http://localhost:3000/songs`).then(response =>
-      response.json()
-    );
+    const res = await fetch(
+      `${process.env.VUE_APP_URL}/songs/more?limit=20&page=${page}`
+    ).then(response => response.json());
 
     await commit("addSongs", res.data);
     await sleep(1000);

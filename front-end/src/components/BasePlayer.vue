@@ -59,7 +59,12 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["changeSongId"]),
+    ...mapActions([
+      "changeSongId",
+      "changePlay",
+      "changeSongTime",
+      "changeCurrentTime"
+    ]),
     nextSong() {
       for (let i = 0; i < this.songs.length; i++) {
         if (
@@ -101,22 +106,27 @@ export default {
         if (this.play_now) {
           this.play_now = !this.play_now;
           this.$refs.audio.pause();
+          this.changePlay(false);
         } else {
           this.play_now = !this.play_now;
           this.$refs.audio.play();
+          this.changePlay(true);
         }
       }
     },
     updateProgress(e) {
       const { duration, currentTime } = e.srcElement;
       const progPercent = (currentTime / duration) * 100;
+      this.changeCurrentTime(currentTime);
       this.$refs.progress.style.width = `${progPercent}%`;
     },
     setProgress(e) {
       const clientWidth = 376; //container has fixed with
       const clickX = e.offsetX;
       const duration = this.$refs.audio.duration;
-      this.$refs.audio.currentTime = (clickX / clientWidth) * duration;
+      const currTime = (clickX / clientWidth) * duration;
+      this.changeSongTime(currTime);
+      this.$refs.audio.currentTime = currTime;
     }
   },
   watch: {
@@ -127,6 +137,7 @@ export default {
       this.getSongById(this.song_id);
       if (this.list) {
         this.play_now = true;
+        this.changePlay(true);
       }
     },
     song_id_now() {
