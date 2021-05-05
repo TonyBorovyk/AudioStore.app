@@ -77,6 +77,7 @@ webSocketServer.on('connection', (socket) => {
       console.log('connected');
     } else if (messageObj.method === 'just connected') {
       sendInfoAfterConnection(messageObj);
+      console.log('message with connection info was sended');
     } else if (
       messageObj.method === 'play'
       || messageObj.method === 'pause'
