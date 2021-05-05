@@ -88,6 +88,7 @@ webSocketServer.on('connection', (socket) => {
       console.log('connected');
     } else if (messageObj.method === 'just connected') {
       sendInfoAfterConnection(messageObj);
+      console.log('message with connection info was sended');
     } else if (
       messageObj.method === 'play' ||
       messageObj.method === 'pause' ||
@@ -112,7 +113,11 @@ webSocketServer.on('connection', (socket) => {
     if (typeof foundObj !== 'undefined') {
       index = rooms.findIndex((room) => room.adminConnection === socket);
       rooms[index].usersConnections.forEach((connection) =>
-        connection.send('Connection is closed')
+        connection.send(
+          JSON.stringify({
+            method: 'Connection is closed',
+          })
+        )
       );
       rooms.splice(index, 1);
       console.log('disconnected admin');
@@ -125,7 +130,6 @@ webSocketServer.on('connection', (socket) => {
       );
       foundCon.usersConnections.splice(index);
       foundCon.usersIds.splice(index);
-      socket.send('Connection is closed');
       console.log('disconnected user');
     }
   });
