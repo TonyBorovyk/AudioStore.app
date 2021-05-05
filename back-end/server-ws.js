@@ -22,6 +22,7 @@ const addUserToRoom = (messageObj, connection) => {
   if (typeof neededRoom !== 'undefined') {
     neededRoom.usersIds.push(messageObj.userId);
     neededRoom.usersConnections.push(connection);
+    neededRoom.adminConnection.send(JSON.stringify(messageObj));
   } else {
     connection.send('No such a room found');
     console.log('No such a room found');
@@ -42,6 +43,29 @@ const sendToEveryoneInARoom = (messageObj, connection) => {
   }
 };
 
+const sendInfoAfterConnection = messageObj  => {
+  const userRoom = rooms.find(room => room.roomId === messageObj.roomId);
+  const index = userRoom.usersIds.findIndex(id => id === messageObj.userId);
+  const userConnection = userRoom.usersConnections[index];
+  userConnection.send(JSON.stringify({
+    method: 'new track',
+    songId: messageObj.songId
+  }));
+  if (messageObj.play === true) {
+    userConnection.send(JSON.stringify({
+      method: 'play'
+    }));
+  } else {
+    userConnection.send(JSON.stringify({
+      method: 'pause'
+    }));
+  }
+  userConnection.send(JSON.stringify({
+    method: 'new time',
+    new_time: messageObj.new_time
+  }));
+}
+
 webSocketServer.on('connection', (socket) => {
   socket.on('message', (message) => {
     const messageObj = JSON.parse(message);
@@ -51,6 +75,8 @@ webSocketServer.on('connection', (socket) => {
     } else if (messageObj.method === 'connect user to the room') {
       addUserToRoom(messageObj, socket);
       console.log('connected');
+    } else if (messageObj.method === 'just connected') {
+      sendInfoAfterConnection(messageObj);
     } else if (
       messageObj.method === 'play'
       || messageObj.method === 'pause'
@@ -61,6 +87,9 @@ webSocketServer.on('connection', (socket) => {
     } else if (messageObj.method === 'new track') {
       sendToEveryoneInARoom(messageObj, socket);
       console.log('track was changed')
+    } else if (messageObj.method === 'new time') {
+      sendToEveryoneInARoom(messageObj, socket);
+      console.log('time changed')
     }
   });
 
