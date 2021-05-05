@@ -103,7 +103,9 @@ webSocketServer.on('connection', (socket) => {
       index = rooms.findIndex(
         (room) => room.adminConnection === socket,
       );
-      rooms[index].usersConnections.forEach((connection) => connection.send('Connection is closed'));
+      rooms[index].usersConnections.forEach((connection) => connection.send(JSON.stringify({
+        method: 'Connection is closed'
+      })));
       rooms.splice(index, 1);
       console.log('disconnected admin');
     } else if (typeof foundObj === 'undefined' && exists === true) {
@@ -111,7 +113,6 @@ webSocketServer.on('connection', (socket) => {
       index = foundCon.usersConnections.findIndex((connection) => connection === socket);
       foundCon.usersConnections.splice(index);
       foundCon.usersIds.splice(index);
-      socket.send('Connection is closed');
       console.log('disconnected user');
     }
   });

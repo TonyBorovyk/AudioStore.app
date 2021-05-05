@@ -1,7 +1,9 @@
 const bcrypt = require('bcryptjs');
+
 const jwt = require('jsonwebtoken');
 
 const { users: dbUsers } = require('../db');
+const verify = require('./verifyToken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -27,6 +29,7 @@ const sendResponse = (res, status, success, message) => {
 
 async function routes(fastify) {
   fastify.post('/login', async (req, res) => {
+    verify.verifyToken(req.cookies.jwt, res);
     const user = await dbUsers.getByEmail(req.body.email);
 
     if (!user) {
@@ -46,6 +49,7 @@ async function routes(fastify) {
     return sendResponse(res, 200, true);
   });
   fastify.post('/signup', singUpOpts, async (req, res) => {
+    verify.verifyToken(req.cookies.jwt, res);
     const isUsernameExist = await dbUsers.usernameExists(req.body.username);
     if (isUsernameExist) {
       return sendResponse(res, 400, false, 'username exist');
@@ -68,6 +72,7 @@ async function routes(fastify) {
     return sendResponse(res, 201, true);
   });
   fastify.post('/logout', async (req, res) => {
+    verify.verifyToken(req.cookies.jwt, res);
     res.setCookie('jwt', '', { maxAge: 0 });
     return sendResponse(res, 201, true);
   });

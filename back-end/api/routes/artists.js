@@ -1,4 +1,8 @@
-const { artists: dbArtists } = require('../db');
+const jwt = require('jsonwebtoken');
+
+const verify = require('./verifyToken');
+
+const { artists: dbArtists, users: dbUsers } = require('../db');
 
 const createOpts = {
   schema: {
@@ -14,6 +18,14 @@ const createOpts = {
 
 async function routes(fastify) {
   fastify.post('/', createOpts, async (req, res) => {
+    const claims = verify.verifyToken(req.cookies.jwt, res);
+    const user = await dbUsers.getById(claims.id);
+    if (user.role !== 'admin') {
+      res.code(403).send({
+        message: 'Forbidden',
+        success: false,
+      });
+    }
     const newArtist = { artistName: req.body.artistName };
     const artist = await dbArtists.create(newArtist);
     return res.code(201).send({

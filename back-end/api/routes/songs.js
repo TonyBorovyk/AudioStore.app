@@ -1,8 +1,13 @@
+const jwt = require('jsonwebtoken');
+
 const {
   albums: dbAlbums,
   artists: dbArtists,
   track: dbTrack,
+  users: dbUsers,
 } = require('../db');
+
+const verify = require('./verifyToken');
 
 const PAGINATION = { LIMIT: 20, PAGE: 1 };
 
@@ -70,6 +75,14 @@ const getMoreOpts = {
 
 async function routes(fastify) {
   fastify.post('/', createOpts, async (req, res) => {
+    const claims = verify.verifyToken(req.cookies.jwt, res);
+    const user = await dbUsers.getById(claims.id);
+    if (user.role !== 'admin') {
+      res.code(403).send({
+        message: 'Forbidden',
+        success: false,
+      });
+    }
     const {
       album_name: albumName,
       artist_name: artistName,
@@ -106,6 +119,14 @@ async function routes(fastify) {
     });
   });
   fastify.post('/add', addOpts, async (req, res) => {
+    const claims = verify.verifyToken(req.cookies.jwt, res);
+    const user = await dbUsers.getById(claims.id);
+    if (user.role !== 'admin') {
+      res.code(403).send({
+        message: 'Forbidden',
+        success: false,
+      });
+    }
     const { track_name: trackName, artist_id: artistId } = req.body;
 
     const track = await dbTrack.info.getByTrackName(trackName);
