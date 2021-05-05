@@ -19,8 +19,13 @@ const addRoom = (messageObj, connection) => {
 
 const addUserToRoom = (messageObj, connection) => {
   const neededRoom = rooms.find(room => room.roomId === messageObj.roomId);
-  neededRoom.usersIds.push(messageObj.userId);
-  neededRoom.usersConnections.push(connection);
+  if (typeof neededRoom !== 'undefined') {
+    neededRoom.usersIds.push(messageObj.userId);
+    neededRoom.usersConnections.push(connection);
+  } else {
+    connection.send('No such a room found');
+    console.log('No such a room found');
+  }
 };
 
 const sendToEveryoneInARoom = (messageObj, connection) => {
@@ -47,9 +52,9 @@ webSocketServer.on('connection', (socket) => {
       addUserToRoom(messageObj, socket);
       console.log('connected');
     } else if (
-        messageObj.method === 'play'
-        || messageObj.method === 'pause'
-        || messageObj.method === 'stop'
+      messageObj.method === 'play'
+      || messageObj.method === 'pause'
+      || messageObj.method === 'stop'
     ) {
       sendToEveryoneInARoom(messageObj, socket);
       console.log(messageObj.method)
@@ -66,17 +71,18 @@ webSocketServer.on('connection', (socket) => {
     rooms.forEach(room => exists = room.usersConnections.includes(socket))
     if (typeof foundObj !== 'undefined') {
       index = rooms.findIndex(
-          (room) => room.adminConnection === socket,
+        (room) => room.adminConnection === socket,
       );
       rooms[index].usersConnections.forEach((connection) => connection.send('Connection is closed'));
       rooms.splice(index, 1);
+      console.log('disconnected admin');
     } else if (typeof foundObj === 'undefined' && exists === true) {
       const foundCon = rooms.find((room) => room.usersConnections.includes(socket));
       index = foundCon.usersConnections.findIndex((connection) => connection === socket);
-      foundObj.usersConnections.splice(index, 1);
-      foundObj.usersIds.splice(index);
+      foundCon.usersConnections.splice(index);
+      foundCon.usersIds.splice(index);
       socket.send('Connection is closed');
+      console.log('disconnected user');
     }
-    console.log('disconnected')
   });
 });
