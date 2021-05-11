@@ -33,14 +33,14 @@ async function plantSeeds() {
       END
       $$
         LANGUAGE 'plpgsql';
-
+        
 
       CREATE OR REPLACE FUNCTION "Insert_User"(
           "First_name_new" varchar(60),
           "Last_name_new" varchar(70),
           "UserName_new" varchar(60),
           "Email_new" varchar(100),
-          "Password_new" varchar(50),
+          "Password_new" varchar(100),
           "Role_new" varchar(10)
       ) RETURNS VOID AS
       $$
@@ -145,9 +145,7 @@ async function plantSeeds() {
 
       SELECT "Insert_User" ('Alexey', '', 'alexeykharenko', 'alexey@gmail.com', 'user1234', 'base');
 
-      SELECT "Insert_User" ('Alexey', '', 'alexkharenko', 'alexey16052002@gmail.com', 'user1234', 'base');
-
-      SELECT "Insert_User" ('Alexey', '', 'aleykharenko', 'alexey052002@gmail.com', 'user1234', 'base');
+      SELECT "Insert_User" ('Alexey', '', 'alexkharenko', 'alexey16052002@gmail.com', 'user1234', 'admin');
 
       SELECT "Insert_Room" (1, 'Room1');
 

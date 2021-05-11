@@ -18,7 +18,7 @@ async function routes(fastify) {
     verify.verifyToken(req.cookies.jwt, res);
     const searchString = req.body ? req.body.search : '';
 
-    const result = await dbSearch.global(searchString);
+    const result = await dbSearch.songs(searchString);
 
     res.send({
       data: result,

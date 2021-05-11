@@ -11,7 +11,7 @@
         :song="song"
       />
     </div>
-    <ButtonTenMore :AskMore="moreRecAddedSongs" />
+    <ButtonTenMore v-if="getTotalPages" :AskMore="moreSongs" />
   </div>
 </template>
 
@@ -28,13 +28,13 @@ export default {
     ButtonTenMore
   },
   computed: {
-    ...mapGetters(["getSongs", "isLoggedIn"])
+    ...mapGetters(["getSongs", "getTotalPages", "isLoggedIn"])
   },
   methods: {
-    ...mapActions(["fetchRecAddedSongs", "moreRecAddedSongs"])
+    ...mapActions(["fetchSongs", "moreSongs"])
   },
   created() {
-    this.fetchRecAddedSongs();
+    this.fetchSongs('Time_added');
   }
 };
 </script>

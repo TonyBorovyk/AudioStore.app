@@ -87,7 +87,13 @@ const routes = [
     path: "/error",
     name: "Error505",
     component: () => import(/* webpackChunkName: "about" */ "../views/505.vue")
-  }
+  },
+  {
+    path: "/404",
+    name: "Not found",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/404.vue")
+  },
 ];
 
 const router = createRouter({

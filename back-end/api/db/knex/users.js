@@ -12,6 +12,7 @@ async function create({
   password,
   role,
 }) {
+  console.log(firstName);
   const [result] = await knex(USER)
     .insert({
       First_name: firstName,
@@ -19,7 +20,7 @@ async function create({
       UserName: username,
       Email: email,
       Password: password,
-      Role: role,
+      Role: role || 'base',
     })
     .returning('*');
   return result;

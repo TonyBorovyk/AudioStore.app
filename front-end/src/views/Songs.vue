@@ -4,9 +4,9 @@
     <div class="sort-block">
       <label for="sort">Sort by:</label>
       <select id="sort" name="sort_type" v-model="sort" @change="sendSort">
-        <option value="time_added">Time added</option>
-        <option value="genre">Genre</option>
-        <option value="year">Year</option>
+        <option value="Time_added">Time added</option>
+        <option value="Duration">Duration</option>
+        <option value="Release_year">Year</option>
       </select>
     </div>
     <div class="items-container grid">
@@ -16,7 +16,7 @@
         :song="song"
       />
     </div>
-    <ButtonTenMore :AskMore="moreRecAddedSongs" />
+    <ButtonTenMore v-if="getTotalPages" :AskMore="moreSongs" />
   </div>
 </template>
 
@@ -29,7 +29,7 @@ export default {
   name: "Songs",
   data() {
     return {
-      sort: "time_added"
+      sort: "Time_added"
     };
   },
   components: {
@@ -37,16 +37,16 @@ export default {
     ButtonTenMore
   },
   computed: {
-    ...mapGetters(["getSongs"])
+    ...mapGetters(["getSongs", "getTotalPages"])
   },
   methods: {
-    ...mapActions(["fetchRecAddedSongs", "moreRecAddedSongs"]),
+    ...mapActions(["fetchSongs", "moreSongs"]),
     sendSort() {
-      console.log(this.sort);
+      this.fetchSongs(this.sort);
     }
   },
   created() {
-    this.fetchRecAddedSongs();
+    this.fetchSongs(this.sort);
   }
 };
 </script>

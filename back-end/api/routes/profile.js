@@ -75,7 +75,7 @@ async function routes(fastify) {
   fastify.get('/', async (req, res) => {
     const claims = verify.verifyToken(req.cookies.jwt, res);
     // eslint-disable-next-line no-unused-vars
-    const { password, ...user } = await dbUsers.getById(claims.id); // claims.id returns user id
+    const { Password, ...user } = await dbUsers.getById(claims.id); // claims.id returns user id
     return res.send({ user, success: true });
   });
 
