@@ -130,14 +130,13 @@ function playlistRemove(id) {
 function trackInfoCreate(trackInfo) {
   return funcWrapper(dbWrapper().track.info.create)(trackInfo);
 }
-function trackInfoGetAll() {
-  return funcWrapper(dbWrapper().track.info.getAll)();
-}
-function trackInfoGetAllOrderBy(orderBy) {
-  return funcWrapper(dbWrapper().track.info.getAllOrderBy)(orderBy);
-}
-function trackInfoGetMore(limit, page) {
-  return funcWrapper(dbWrapper().track.info.getMore)(limit, page);
+function trackInfoGetAll(orderBy, sortDesk, limit, page) {
+  return funcWrapper(dbWrapper().track.info.getAll)(
+    orderBy,
+    sortDesk,
+    limit,
+    page
+  );
 }
 function trackInfoGetById(id) {
   return funcWrapper(dbWrapper().track.info.getById)(id);
@@ -265,9 +264,7 @@ module.exports = {
     info: {
       create: trackInfoCreate,
       getAll: trackInfoGetAll,
-      getAllOrderBy: trackInfoGetAllOrderBy,
       getById: trackInfoGetById,
-      getMore: trackInfoGetMore,
       getByTrackName: trackInfoGetByTrackName,
       update: trackInfoUpdate,
       remove: trackInfoRemove,

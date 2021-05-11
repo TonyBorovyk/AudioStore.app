@@ -16,7 +16,7 @@ async function plantSeeds() {
       ) RETURNS VOID AS
       $$
       BEGIN
-          INSERT INTO "Artist" ("Artist_Name")
+          INSERT INTO "artist" ("artist_name")
         VALUES ("Artist_Name_new");
       END
       $$
@@ -28,7 +28,7 @@ async function plantSeeds() {
       ) RETURNS VOID AS
       $$
       BEGIN
-          INSERT INTO "Track_Category" ("Category_Name")
+          INSERT INTO "track_category" ("category_name")
         VALUES ("Category_Name_new");
       END
       $$
@@ -45,7 +45,7 @@ async function plantSeeds() {
       ) RETURNS VOID AS
       $$
       BEGIN
-          INSERT INTO "User" ("First_name", "Last_name", "UserName", "Email", "Password", "Role")
+          INSERT INTO "user" ("first_name", "last_name", "username", "email", "password", "role")
         VALUES ("First_name_new", "Last_name_new", "UserName_new", "Email_new", "Password_new", "Role_new");
       END
       $$
@@ -58,7 +58,7 @@ async function plantSeeds() {
       ) RETURNS VOID AS
       $$
       BEGIN
-          INSERT INTO "Room" ("Admin_ID", "Room_Name")
+          INSERT INTO "room" ("admin_id", "room_name")
         VALUES ("Admin_ID_new", "Room_Name_new");
       END
       $$
@@ -73,8 +73,8 @@ async function plantSeeds() {
       ) RETURNS VOID AS
       $$
       BEGIN
-          INSERT INTO "Album" ("Album_Name", "Artist_ID", "Cover", "Artist_List")
-        VALUES ("Album_Name_new", (SELECT "Artist_ID" FROM "Artist" WHERE "Artist_Name" = "Artist_Name_new"), "Cover_new", "Artist_List_new");
+          INSERT INTO "album" ("album_name", "artist_id", "cover", "artist_list")
+        VALUES ("Album_Name_new", (SELECT "artist_id" FROM "artist" WHERE "artist_name" = "Artist_Name_new"), "Cover_new", "Artist_List_new");
       END
       $$
         LANGUAGE 'plpgsql';
@@ -94,8 +94,8 @@ async function plantSeeds() {
       ) RETURNS VOID AS
       $$
       BEGIN
-          INSERT INTO "Track_Info" ("Album_ID", "Artist_ID", "Category_ID", "Track_name", "Lyrics", "Duration", "Cover", "Release_year", "Time_added", "Track_URL", "Artist_List")
-        VALUES ((SELECT "Album_ID" FROM "Album" WHERE "Album_Name" = "Album_Name_new"), (SELECT "Artist_ID" FROM "Artist" WHERE "Artist_Name" = "Artist_Name_new"), (SELECT "Category_ID" FROM "Track_Category" WHERE "Category_Name" = "Category_Name_new"), "Track_name_new", "Lyrics_new", "Duration_new", "Cover_new", "Release_year_new", NOW(), "Track_URL_new", "Artist_List_new");
+          INSERT INTO "track_info" ("album_id", "artist_id", "category_id", "track_name", "lyrics", "duration", "cover", "release_year", "time_added", "track_url", "artist_list")
+        VALUES ((SELECT "album_id" FROM "album" WHERE "album_name" = "Album_Name_new"), (SELECT "artist_id" FROM "artist" WHERE "artist_name" = "Artist_Name_new"), (SELECT "category_id" FROM "track_category" WHERE "category_name" = "Category_Name_new"), "Track_name_new", "Lyrics_new", "Duration_new", "Cover_new", "Release_year_new", NOW(), "Track_URL_new", "Artist_List_new");
       END
       $$
         LANGUAGE 'plpgsql';
@@ -108,7 +108,7 @@ async function plantSeeds() {
       ) RETURNS VOID AS
       $$
       BEGIN
-          INSERT INTO "Playlist" ("Playlist_title", "User_ID", "Last_update", "Track_List")
+          INSERT INTO "playlist" ("playlist_title", "user_id", "last_update", "track_list")
         VALUES ("Playlist_title_new", "User_ID_new", NOW(), "Track_List_new");
       END
       $$
@@ -118,9 +118,9 @@ async function plantSeeds() {
       CREATE OR REPLACE FUNCTION "Update_Playlist"("Playlist_title_new" varchar(80), "Track_List_new" TEXT) RETURNS VOID AS
       $$
       BEGIN
-        UPDATE "Playlist"
-          SET "Track_List" = "Track_List_new", "Last_update" = NOW()
-        WHERE ("Playlist_title" = "Playlist_title_new");
+        UPDATE "playlist"
+          SET "track_list" = "Track_List_new", "last_update" = NOW()
+        WHERE ("playlist_title" = "Playlist_title_new");
       END
       $$
         LANGUAGE 'plpgsql';

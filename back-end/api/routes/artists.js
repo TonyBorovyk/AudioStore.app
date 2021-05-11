@@ -5,16 +5,16 @@ const createOpts = {
     body: {
       type: 'object',
       properties: {
-        artistName: { type: 'string' },
+        artist_name: { type: 'string' },
       },
-      required: ['artistName'],
+      required: ['artist_name'],
     },
   },
 };
 
 async function routes(fastify) {
   fastify.post('/', createOpts, async (req, res) => {
-    const newArtist = { artistName: req.body.artistName };
+    const newArtist = { artistName: req.body.artist_name };
     const artist = await dbArtists.create(newArtist);
     return res.code(201).send({
       data: artist,

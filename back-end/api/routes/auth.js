@@ -32,11 +32,11 @@ async function routes(fastify) {
     if (!user) {
       return sendResponse(res, 404, false, 'User not found');
     }
-    if (!(await bcrypt.compare(req.body.password, user.Password))) {
+    if (!(await bcrypt.compare(req.body.password, user.password))) {
       return sendResponse(res, 400, false, 'Password is incorrect');
     }
 
-    const token = jwt.sign({ id: user.User_ID }, JWT_SECRET);
+    const token = jwt.sign({ id: user.user_id }, JWT_SECRET);
 
     res.setCookie('jwt', token, {
       httpOnly: true,

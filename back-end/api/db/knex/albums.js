@@ -8,10 +8,10 @@ let knex;
 async function create({ albumName, artistId, cover, artistList }) {
   const [result] = await knex(ALBUM)
     .insert({
-      Album_Name: albumName,
-      Artist_ID: artistId,
-      Cover: cover,
-      Artist_List: artistList,
+      album_name: albumName,
+      artist_id: artistId,
+      cover,
+      artist_list: artistList,
     })
     .returning('*');
   return result;
@@ -19,12 +19,14 @@ async function create({ albumName, artistId, cover, artistList }) {
 
 async function getAll() {
   return await knex(ALBUM)
-    .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .join(ARTIST, `${ALBUM}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
-      `${ARTIST}.Artist_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ALBUM}.Cover`,
-      `${ALBUM}.Artist_List`
+      `${ARTIST}.artist_id`,
+      `${ARTIST}.artist_name`,
+      `${ALBUM}.album_id`,
+      `${ALBUM}.album_name`,
+      `${ALBUM}.cover`,
+      `${ALBUM}.artist_list`
     );
 }
 
@@ -32,12 +34,14 @@ async function getMore(limit, page) {
   const [{ count }] = await knex(ALBUM).count();
   const offset = (page - 1) * limit;
   const albums = await knex(ALBUM)
-    .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .join(ARTIST, `${ALBUM}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
-      `${ARTIST}.Artist_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ALBUM}.Cover`,
-      `${ALBUM}.Artist_List`
+      `${ARTIST}.artist_id`,
+      `${ARTIST}.artist_name`,
+      `${ALBUM}.album_id`,
+      `${ALBUM}.album_name`,
+      `${ALBUM}.cover`,
+      `${ALBUM}.artist_list`
     )
     .limit(limit)
     .offset(offset);
@@ -53,13 +57,15 @@ async function getMore(limit, page) {
 
 async function getById(id) {
   const album = await knex(ALBUM)
-    .where({ Album_ID: id })
-    .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .where({ album_id: id })
+    .join(ARTIST, `${ALBUM}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
-      `${ARTIST}.Artist_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ALBUM}.Cover`,
-      `${ALBUM}.Artist_List`
+      `${ARTIST}.artist_id`,
+      `${ARTIST}.artist_name`,
+      `${ALBUM}.album_id`,
+      `${ALBUM}.album_name`,
+      `${ALBUM}.cover`,
+      `${ALBUM}.artist_list`
     )
     .first();
   if (!album) {
@@ -70,13 +76,15 @@ async function getById(id) {
 
 async function getByAlbumName(albumName) {
   const album = await knex(ALBUM)
-    .where({ Album_Name: albumName })
-    .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .where({ album_name: albumName })
+    .join(ARTIST, `${ALBUM}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
-      `${ARTIST}.Artist_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ALBUM}.Cover`,
-      `${ALBUM}.Artist_List`
+      `${ARTIST}.artist_id`,
+      `${ARTIST}.artist_name`,
+      `${ALBUM}.album_id`,
+      `${ALBUM}.album_name`,
+      `${ALBUM}.cover`,
+      `${ALBUM}.artist_list`
     )
     .first();
   if (!album) {
@@ -88,12 +96,12 @@ async function getByAlbumName(albumName) {
 async function update({ albumId, artistId, cover, artistList }) {
   const updatedAlbum = {};
 
-  if (artistId) updatedAlbum.Artist_ID = artistId;
-  if (cover) updatedAlbum.Cover = cover;
-  if (artistList) updatedAlbum.Artist_List = artistList;
+  if (artistId) updatedAlbum.artist_id = artistId;
+  if (cover) updatedAlbum.cover = cover;
+  if (artistList) updatedAlbum.artist_list = artistList;
 
   const [response] = await knex(ALBUM)
-    .where({ Album_ID: albumId })
+    .where({ album_id: albumId })
     .update(updatedAlbum)
     .returning('*');
   if (!response) {
@@ -103,7 +111,7 @@ async function update({ albumId, artistId, cover, artistList }) {
 }
 
 async function remove(id) {
-  await knex(ALBUM).where({ Album_ID: id }).del();
+  await knex(ALBUM).where({ album_id: id }).del();
 }
 
 module.exports = (client) => {

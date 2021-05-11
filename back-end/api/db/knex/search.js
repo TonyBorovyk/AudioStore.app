@@ -8,19 +8,21 @@ async function global(searchString) {
   const likeString = `%${searchString}%`;
 
   const albums = await knex(ALBUM)
-    .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .join(ARTIST, `${ALBUM}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
-      `${ARTIST}.Artist_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ALBUM}.Cover`,
-      `${ALBUM}.Artist_List`
+      `${ARTIST}.artist_id`,
+      `${ARTIST}.artist_name`,
+      `${ALBUM}.album_id`,
+      `${ALBUM}.album_name`,
+      `${ALBUM}.cover`,
+      `${ALBUM}.artist_list`
     )
-    .where('Album_Name', 'like', likeString);
+    .where('album_name', 'like', likeString);
 
-  const artists = await knex(ARTIST).where('Artist_Name', 'like', likeString);
+  const artists = await knex(ARTIST).where('artist_name', 'like', likeString);
 
   const playlists = await knex(PLAYLIST).where(
-    'Playlist_title',
+    'playlist_title',
     'like',
     likeString
   );
@@ -28,26 +30,30 @@ async function global(searchString) {
   const tracks = await knex(TRACK_INFO)
     .join(
       TRACK_CATEGORY,
-      `${TRACK_INFO}.Category_ID`,
+      `${TRACK_INFO}.category_id`,
       '=',
-      `${TRACK_CATEGORY}.Category_ID`
+      `${TRACK_CATEGORY}.category_id`
     )
-    .join(ALBUM, `${TRACK_INFO}.Album_ID`, '=', `${ALBUM}.Album_ID`)
-    .join(ARTIST, `${TRACK_INFO}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .join(ALBUM, `${TRACK_INFO}.album_id`, '=', `${ALBUM}.album_id`)
+    .join(ARTIST, `${TRACK_INFO}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
-      `${TRACK_CATEGORY}.Category_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ARTIST}.Artist_Name`,
-      `${TRACK_INFO}.Track_name`,
-      `${TRACK_INFO}.Lyrics`,
-      `${TRACK_INFO}.Duration`,
-      `${TRACK_INFO}.Cover`,
-      `${TRACK_INFO}.Release_year`,
-      `${TRACK_INFO}.Time_added`,
-      `${TRACK_INFO}.Track_URL`,
-      `${TRACK_INFO}.Artist_List`
+      `${TRACK_CATEGORY}.category_name`,
+      `${ALBUM}.album_name`,
+      `${ARTIST}.artist_name`,
+      `${TRACK_INFO}.album_id`,
+      `${TRACK_INFO}.track_id`,
+      `${TRACK_INFO}.artist_id`,
+      `${TRACK_INFO}.category_id`,
+      `${TRACK_INFO}.track_name`,
+      `${TRACK_INFO}.lyrics`,
+      `${TRACK_INFO}.duration`,
+      `${TRACK_INFO}.cover`,
+      `${TRACK_INFO}.release_year`,
+      `${TRACK_INFO}.time_added`,
+      `${TRACK_INFO}.track_url`,
+      `${TRACK_INFO}.artist_list`
     )
-    .where('Track_name', 'like', likeString);
+    .where('track_name', 'like', likeString);
 
   return { albums, artists, playlists, tracks };
 }
@@ -58,26 +64,30 @@ async function songs(searchString) {
   return await knex(TRACK_INFO)
     .join(
       TRACK_CATEGORY,
-      `${TRACK_INFO}.Category_ID`,
+      `${TRACK_INFO}.category_id`,
       '=',
-      `${TRACK_CATEGORY}.Category_ID`
+      `${TRACK_CATEGORY}.category_id`
     )
-    .join(ALBUM, `${TRACK_INFO}.Album_ID`, '=', `${ALBUM}.Album_ID`)
-    .join(ARTIST, `${TRACK_INFO}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .join(ALBUM, `${TRACK_INFO}.album_id`, '=', `${ALBUM}.album_id`)
+    .join(ARTIST, `${TRACK_INFO}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
-      `${TRACK_CATEGORY}.Category_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ARTIST}.Artist_Name`,
-      `${TRACK_INFO}.Track_name`,
-      `${TRACK_INFO}.Lyrics`,
-      `${TRACK_INFO}.Duration`,
-      `${TRACK_INFO}.Cover`,
-      `${TRACK_INFO}.Release_year`,
-      `${TRACK_INFO}.Time_added`,
-      `${TRACK_INFO}.Track_URL`,
-      `${TRACK_INFO}.Artist_List`
+      `${TRACK_CATEGORY}.category_name`,
+      `${ALBUM}.album_name`,
+      `${ARTIST}.artist_name`,
+      `${TRACK_INFO}.album_id`,
+      `${TRACK_INFO}.track_id`,
+      `${TRACK_INFO}.artist_id`,
+      `${TRACK_INFO}.category_id`,
+      `${TRACK_INFO}.track_name`,
+      `${TRACK_INFO}.lyrics`,
+      `${TRACK_INFO}.duration`,
+      `${TRACK_INFO}.cover`,
+      `${TRACK_INFO}.release_year`,
+      `${TRACK_INFO}.time_added`,
+      `${TRACK_INFO}.track_url`,
+      `${TRACK_INFO}.artist_list`
     )
-    .where('Track_name', 'like', likeString);
+    .where('track_name', 'like', likeString);
 }
 
 module.exports = (client) => {

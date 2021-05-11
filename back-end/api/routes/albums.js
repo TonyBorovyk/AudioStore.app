@@ -38,7 +38,7 @@ const getMoreOpts = {
     },
   },
 };
-//
+
 async function routes(fastify) {
   fastify.post('/', createOpts, async (req, res) => {
     const {
@@ -47,7 +47,7 @@ async function routes(fastify) {
       cover,
       artist_id: artistList,
     } = req.body;
-    const { Artist_ID: artistId } = await dbArtists.getByArtistName(artistName);
+    const { artist_id: artistId } = await dbArtists.getByArtistName(artistName);
     const newAlbum = { albumName, artistId, cover, artistList };
     const album = await dbAlbums.create(newAlbum);
     res.code(201).send({
@@ -75,8 +75,8 @@ async function routes(fastify) {
     const albums = await dbAlbums.getAll();
     const response = [];
     for await (const album of albums) {
-      album.Artists = await Promise.all(
-        JSON.parse(album.Artist_List).map((artistsId) =>
+      album.artists = await Promise.all(
+        JSON.parse(album.artist_list).map((artistsId) =>
           dbArtists.getById(artistsId)
         )
       );
@@ -93,8 +93,8 @@ async function routes(fastify) {
     const { albums, total, totalPages } = await dbAlbums.getMore(limit, page);
     const response = { albums: [], total, totalPages };
     for await (const album of albums) {
-      album.Artists = await Promise.all(
-        JSON.parse(album.Artist_List).map((artistsId) =>
+      album.artists = await Promise.all(
+        JSON.parse(album.artist_list).map((artistsId) =>
           dbArtists.getById(artistsId)
         )
       );
@@ -110,8 +110,8 @@ async function routes(fastify) {
     if (album) {
       album = {
         ...album,
-        Artists: await Promise.all(
-          JSON.parse(album.Artist_List).map((artistsId) =>
+        artists: await Promise.all(
+          JSON.parse(album.artist_list).map((artistsId) =>
             dbArtists.getById(artistsId)
           )
         ),

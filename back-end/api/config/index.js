@@ -4,13 +4,13 @@ const fatalError = require('../utils/fatalError.js');
 
 module.exports = {
   tables: {
-    ARTIST: 'Artist',
-    TRACK_CATEGORY: 'Track_Category',
-    USER: 'User',
-    ROOM: 'Room',
-    ALBUM: 'Album',
-    PLAYLIST: 'Playlist',
-    TRACK_INFO: 'Track_Info',
+    ARTIST: 'artist',
+    TRACK_CATEGORY: 'track_category',
+    USER: 'user',
+    ROOM: 'room',
+    ALBUM: 'album',
+    PLAYLIST: 'playlist',
+    TRACK_INFO: 'track_info',
   },
 
   errors: {

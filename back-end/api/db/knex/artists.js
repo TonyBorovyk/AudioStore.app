@@ -7,7 +7,7 @@ let knex;
 
 async function create({ artistName }) {
   const [result] = await knex(ARTIST)
-    .insert({ Artist_Name: artistName })
+    .insert({ artist_name: artistName })
     .returning('*');
   return result;
 }
@@ -17,7 +17,7 @@ async function getAll() {
 }
 
 async function getById(id) {
-  const response = await knex(ARTIST).where({ Artist_ID: id }).first();
+  const response = await knex(ARTIST).where({ artist_id: id }).first();
   if (!response) {
     throw new DatabaseError(`No Artist with id: ${id}`);
   }
@@ -26,7 +26,7 @@ async function getById(id) {
 
 async function getByArtistName(artistName) {
   const response = await knex(ARTIST)
-    .where({ Artist_Name: artistName })
+    .where({ artist_name: artistName })
     .first();
   if (!response) {
     throw new DatabaseError(`No Artist with artistName: ${artistName}`);
@@ -35,7 +35,7 @@ async function getByArtistName(artistName) {
 }
 
 async function remove(id) {
-  await knex(ARTIST).where({ Artist_ID: id }).del();
+  await knex(ARTIST).where({ artist_id: id }).del();
 }
 
 module.exports = (client) => {

@@ -8,8 +8,8 @@ let knex;
 async function create({ adminId, roomName }) {
   const [result] = await knex(ROOM)
     .insert({
-      Admin_ID: adminId,
-      Room_Name: roomName,
+      admin_id: adminId,
+      room_name: roomName,
     })
     .returning('*');
   return result;
@@ -33,7 +33,7 @@ async function getMore(limit, page) {
 }
 
 async function getById(id) {
-  const room = await knex(ROOM).where({ Room_ID: id }).select('*').first();
+  const room = await knex(ROOM).where({ room_id: id }).select('*').first();
   if (!room) {
     throw new DatabaseError(`No Room with id: ${id}`);
   }
@@ -42,7 +42,7 @@ async function getById(id) {
 
 async function getByRoomName(roomName) {
   const room = await knex(ROOM)
-    .where({ Room_Name: roomName })
+    .where({ room_name: roomName })
     .select('*')
     .first();
   if (!room) {
@@ -54,11 +54,11 @@ async function getByRoomName(roomName) {
 async function update({ roomId, adminId, roomName }) {
   const updatedRoom = {};
 
-  if (adminId) updatedRoom.Admin_ID = adminId;
-  if (roomName) updatedRoom.Room_Name = roomName;
+  if (adminId) updatedRoom.admin_id = adminId;
+  if (roomName) updatedRoom.room_name = roomName;
 
   const [response] = await knex(ROOM)
-    .where({ Room_ID: roomId })
+    .where({ room_id: roomId })
     .update(updatedRoom)
     .returning('*');
   if (!response) {
@@ -68,7 +68,7 @@ async function update({ roomId, adminId, roomName }) {
 }
 
 async function remove(id, adminId) {
-  await knex(ROOM).where({ Room_ID: id, Admin_ID: adminId }).del();
+  await knex(ROOM).where({ room_id: id, admin_id: adminId }).del();
 }
 
 module.exports = (client) => {
