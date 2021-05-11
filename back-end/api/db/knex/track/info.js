@@ -19,98 +19,52 @@ async function create({
 }) {
   const [result] = await knex(TRACK_INFO)
     .insert({
-      Album_ID: albumId,
-      Artist_ID: artistId,
-      Category_ID: categoryId,
-      Track_name: trackName,
-      Lyrics: lyrics,
-      Duration: duration,
-      Cover: cover,
-      Release_year: releaseYear,
-      Time_added: new Date(),
-      Track_URL: trackURL,
-      Artist_List: artistList,
+      album_id: albumId,
+      artist_id: artistId,
+      category_id: categoryId,
+      track_name: trackName,
+      lyrics,
+      duration,
+      cover,
+      release_year: releaseYear,
+      time_added: new Date(),
+      track_url: trackURL,
+      artist_list: artistList,
     })
     .returning('*');
   return result;
 }
 
-async function getAll() {
-  return await knex(TRACK_INFO)
-    .join(
-      TRACK_CATEGORY,
-      `${TRACK_INFO}.Category_ID`,
-      '=',
-      `${TRACK_CATEGORY}.Category_ID`
-    )
-    .join(ALBUM, `${TRACK_INFO}.Album_ID`, '=', `${ALBUM}.Album_ID`)
-    .join(ARTIST, `${TRACK_INFO}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
-    .select(
-      `${TRACK_CATEGORY}.Category_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ARTIST}.Artist_Name`,
-      `${TRACK_INFO}.Track_name`,
-      `${TRACK_INFO}.Lyrics`,
-      `${TRACK_INFO}.Duration`,
-      `${TRACK_INFO}.Cover`,
-      `${TRACK_INFO}.Release_year`,
-      `${TRACK_INFO}.Time_added`,
-      `${TRACK_INFO}.Track_URL`,
-      `${TRACK_INFO}.Artist_List`
-    );
-}
-
-async function getAllOrderBy(orderBy) {
-  return await knex(TRACK_INFO)
-    .join(
-      TRACK_CATEGORY,
-      `${TRACK_INFO}.Category_ID`,
-      '=',
-      `${TRACK_CATEGORY}.Category_ID`
-    )
-    .join(ALBUM, `${TRACK_INFO}.Album_ID`, '=', `${ALBUM}.Album_ID`)
-    .join(ARTIST, `${TRACK_INFO}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
-    .select(
-      `${TRACK_CATEGORY}.Category_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ARTIST}.Artist_Name`,
-      `${TRACK_INFO}.Track_name`,
-      `${TRACK_INFO}.Lyrics`,
-      `${TRACK_INFO}.Duration`,
-      `${TRACK_INFO}.Cover`,
-      `${TRACK_INFO}.Release_year`,
-      `${TRACK_INFO}.Time_added`,
-      `${TRACK_INFO}.Track_URL`,
-      `${TRACK_INFO}.Artist_List`
-    )
-    .orderBy(orderBy);
-}
-
-async function getMore(limit, page) {
+async function getAll(orderBy, sortDesk, limit, page) {
   const [{ count }] = await knex(TRACK_INFO).count();
   const offset = (page - 1) * limit;
   const tracks = await knex(TRACK_INFO)
     .join(
       TRACK_CATEGORY,
-      `${TRACK_INFO}.Category_ID`,
+      `${TRACK_INFO}.category_id`,
       '=',
-      `${TRACK_CATEGORY}.Category_ID`
+      `${TRACK_CATEGORY}.category_id`
     )
-    .join(ALBUM, `${TRACK_INFO}.Album_ID`, '=', `${ALBUM}.Album_ID`)
-    .join(ARTIST, `${TRACK_INFO}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .join(ALBUM, `${TRACK_INFO}.album_id`, '=', `${ALBUM}.album_id`)
+    .join(ARTIST, `${TRACK_INFO}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
-      `${TRACK_CATEGORY}.Category_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ARTIST}.Artist_Name`,
-      `${TRACK_INFO}.Track_name`,
-      `${TRACK_INFO}.Lyrics`,
-      `${TRACK_INFO}.Duration`,
-      `${TRACK_INFO}.Cover`,
-      `${TRACK_INFO}.Release_year`,
-      `${TRACK_INFO}.Time_added`,
-      `${TRACK_INFO}.Track_URL`,
-      `${TRACK_INFO}.Artist_List`
+      `${TRACK_CATEGORY}.category_name`,
+      `${ALBUM}.album_name`,
+      `${ARTIST}.artist_name`,
+      `${TRACK_INFO}.album_id`,
+      `${TRACK_INFO}.track_id`,
+      `${TRACK_INFO}.artist_id`,
+      `${TRACK_INFO}.category_id`,
+      `${TRACK_INFO}.track_name`,
+      `${TRACK_INFO}.lyrics`,
+      `${TRACK_INFO}.duration`,
+      `${TRACK_INFO}.cover`,
+      `${TRACK_INFO}.release_year`,
+      `${TRACK_INFO}.time_added`,
+      `${TRACK_INFO}.track_url`,
+      `${TRACK_INFO}.artist_list`
     )
+    .orderBy(orderBy, sortDesk ? 'desc' : 'asc')
     .limit(limit)
     .offset(offset);
 
@@ -125,27 +79,31 @@ async function getMore(limit, page) {
 
 async function getById(id) {
   const response = await knex(TRACK_INFO)
-    .where({ Track_ID: id })
+    .where({ track_id: id })
     .join(
       TRACK_CATEGORY,
-      `${TRACK_INFO}.Category_ID`,
+      `${TRACK_INFO}.category_id`,
       '=',
-      `${TRACK_CATEGORY}.Category_ID`
+      `${TRACK_CATEGORY}.category_id`
     )
-    .join(ALBUM, `${TRACK_INFO}.Album_ID`, '=', `${ALBUM}.Album_ID`)
-    .join(ARTIST, `${TRACK_INFO}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .join(ALBUM, `${TRACK_INFO}.album_id`, '=', `${ALBUM}.album_id`)
+    .join(ARTIST, `${TRACK_INFO}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
-      `${TRACK_CATEGORY}.Category_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ARTIST}.Artist_Name`,
-      `${TRACK_INFO}.Track_name`,
-      `${TRACK_INFO}.Lyrics`,
-      `${TRACK_INFO}.Duration`,
-      `${TRACK_INFO}.Cover`,
-      `${TRACK_INFO}.Release_year`,
-      `${TRACK_INFO}.Time_added`,
-      `${TRACK_INFO}.Track_URL`,
-      `${TRACK_INFO}.Artist_List`
+      `${TRACK_CATEGORY}.category_name`,
+      `${ALBUM}.album_name`,
+      `${ARTIST}.artist_name`,
+      `${TRACK_INFO}.album_id`,
+      `${TRACK_INFO}.track_id`,
+      `${TRACK_INFO}.artist_id`,
+      `${TRACK_INFO}.category_id`,
+      `${TRACK_INFO}.track_name`,
+      `${TRACK_INFO}.lyrics`,
+      `${TRACK_INFO}.duration`,
+      `${TRACK_INFO}.cover`,
+      `${TRACK_INFO}.release_year`,
+      `${TRACK_INFO}.time_added`,
+      `${TRACK_INFO}.track_url`,
+      `${TRACK_INFO}.artist_list`
     )
     .first();
   if (!response) {
@@ -156,27 +114,31 @@ async function getById(id) {
 
 async function getByTrackName(trackName) {
   const response = await knex(TRACK_INFO)
-    .where({ Track_name: trackName })
+    .where({ track_name: trackName })
     .join(
       TRACK_CATEGORY,
-      `${TRACK_INFO}.Category_ID`,
+      `${TRACK_INFO}.category_id`,
       '=',
-      `${TRACK_CATEGORY}.Category_ID`
+      `${TRACK_CATEGORY}.category_id`
     )
-    .join(ALBUM, `${TRACK_INFO}.Album_ID`, '=', `${ALBUM}.Album_ID`)
-    .join(ARTIST, `${TRACK_INFO}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .join(ALBUM, `${TRACK_INFO}.album_id`, '=', `${ALBUM}.album_id`)
+    .join(ARTIST, `${TRACK_INFO}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
-      `${TRACK_CATEGORY}.Category_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ARTIST}.Artist_Name`,
-      `${TRACK_INFO}.Track_name`,
-      `${TRACK_INFO}.Lyrics`,
-      `${TRACK_INFO}.Duration`,
-      `${TRACK_INFO}.Cover`,
-      `${TRACK_INFO}.Release_year`,
-      `${TRACK_INFO}.Time_added`,
-      `${TRACK_INFO}.Track_URL`,
-      `${TRACK_INFO}.Artist_List`
+      `${TRACK_CATEGORY}.category_name`,
+      `${ALBUM}.album_name`,
+      `${ARTIST}.artist_name`,
+      `${TRACK_INFO}.album_id`,
+      `${TRACK_INFO}.track_id`,
+      `${TRACK_INFO}.artist_id`,
+      `${TRACK_INFO}.category_id`,
+      `${TRACK_INFO}.track_name`,
+      `${TRACK_INFO}.lyrics`,
+      `${TRACK_INFO}.duration`,
+      `${TRACK_INFO}.cover`,
+      `${TRACK_INFO}.release_year`,
+      `${TRACK_INFO}.time_added`,
+      `${TRACK_INFO}.track_url`,
+      `${TRACK_INFO}.artist_list`
     )
     .first();
   if (!response) {
@@ -200,20 +162,20 @@ async function update({
 }) {
   const updatedTrack = {};
 
-  if (artistId) updatedTrack.Artist_ID = artistId;
-  if (albumId) updatedTrack.Album_ID = albumId;
-  if (categoryId) updatedTrack.Category_ID = categoryId;
-  if (trackName) updatedTrack.Track_name = trackName;
-  if (lyrics) updatedTrack.Lyrics = lyrics;
-  if (duration) updatedTrack.Duration = duration;
-  if (cover) updatedTrack.Cover = cover;
-  if (releaseYear) updatedTrack.Release_year = releaseYear;
-  if (trackURL) updatedTrack.Track_URL = trackURL;
-  if (artistList) updatedTrack.Artist_List = artistList;
+  if (albumId) updatedTrack.album_id = albumId;
+  if (artistId) updatedTrack.artist_id = artistId;
+  if (categoryId) updatedTrack.category_id = categoryId;
+  if (trackName) updatedTrack.track_name = trackName;
+  if (lyrics) updatedTrack.lyrics = lyrics;
+  if (duration) updatedTrack.duration = duration;
+  if (cover) updatedTrack.cover = cover;
+  if (releaseYear) updatedTrack.release_year = releaseYear;
+  if (trackURL) updatedTrack.track_url = trackURL;
+  if (artistList) updatedTrack.artist_list = artistList;
 
   const [result] = await knex(TRACK_INFO)
     .update(updatedTrack)
-    .where({ Track_ID: trackId })
+    .where({ track_id: trackId })
     .returning('*');
   if (!result) {
     throw new DatabaseError(`No Track with trackId: ${trackId}`);
@@ -222,7 +184,7 @@ async function update({
 }
 
 async function remove(id) {
-  await knex(TRACK_INFO).where({ Track_ID: id }).del();
+  await knex(TRACK_INFO).where({ track_id: id }).del();
 }
 
 module.exports = (client) => {
@@ -231,8 +193,8 @@ module.exports = (client) => {
   return {
     create,
     getAll,
-    getAllOrderBy,
-    getMore,
+    // getAllOrderBy,
+    // getMore,
     getById,
     getByTrackName,
     update,

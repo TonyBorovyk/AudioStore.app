@@ -24,7 +24,7 @@ const createOpts = {
         duration: { type: 'string' },
         cover: { type: 'string' },
         release_year: { type: 'string' },
-        track_URL: { type: 'string' },
+        track_url: { type: 'string' },
         artist_list: { type: 'string' },
       },
       required: [
@@ -36,7 +36,7 @@ const createOpts = {
         'duration',
         'cover',
         'release_year',
-        'track_URL',
+        'track_url',
         'artist_list',
       ],
     },
@@ -56,17 +56,11 @@ const addOpts = {
   },
 };
 
-const getAllOrderByOpts = {
+const getAllOpts = {
   schema: {
     querystring: {
-      order_by: { type: 'string' },
-    },
-  },
-};
-
-const getMoreOpts = {
-  schema: {
-    querystring: {
+      order_by: { type: 'string', default: 'time_added' },
+      sort_desk: { type: 'string', default: 'true' },
       limit: { type: 'string', default: PAGINATION.LIMIT },
       page: { type: 'string', default: PAGINATION.PAGE },
     },
@@ -92,13 +86,13 @@ async function routes(fastify) {
       duration,
       cover,
       release_year: releaseYear,
-      track_URL: trackURL,
+      track_url: trackURL,
       artist_list: artistList,
     } = req.body;
-    const { Album_ID: albumId } = await dbAlbums.getByAlbumName(albumName);
-    const { Artist_ID: artistId } = await dbArtists.getByArtistName(artistName);
+    const { album_id: albumId } = await dbAlbums.getByAlbumName(albumName);
+    const { artist_id: artistId } = await dbArtists.getByArtistName(artistName);
     const {
-      Category_ID: categoryId,
+      category_id: categoryId,
     } = await dbTrack.category.getByCategoryName(categoryName);
     const newTrackInfo = {
       albumId,
@@ -131,9 +125,9 @@ async function routes(fastify) {
 
     const track = await dbTrack.info.getByTrackName(trackName);
     const updatedTrack = {
-      trackId: track.Track_ID,
+      trackId: track.track_id,
       trackList: JSON.stringify(
-        JSON.parse(track.Artist_List).concat([artistId])
+        JSON.parse(track.artist_list).concat([artistId])
       ),
     };
     const result = await dbTrack.info.update(updatedTrack);
@@ -143,36 +137,22 @@ async function routes(fastify) {
       success: true,
     });
   });
-  fastify.get('/', getAllOrderByOpts, async (req, res) => {
-    const orderBy = req.query.order_by || 'Time_added';
-    const tracks = await dbTrack.info.getAllOrderBy(orderBy);
-    const response = [];
-    for await (const track of tracks) {
-      track.Artists = await Promise.all(
-        JSON.parse(track.Artist_List).map((artistsId) =>
-          dbArtists.getById(artistsId)
-        )
-      );
-      response.push(track);
-    }
-
-    return res.send({
-      data: response,
-      success: true,
-    });
-  });
-  fastify.get('/more', getMoreOpts, async (req, res) => {
+  fastify.get('/', getAllOpts, async (req, res) => {
+    const orderBy = req.query.order_by;
+    const sortDesk = req.query.sort_desk === 'true';
     const limit = parseInt(req.query.limit, 10);
     const page = parseInt(req.query.page, 10);
 
-    const { tracks, total, totalPages } = await dbTrack.info.getMore(
+    const { tracks, total, totalPages } = await dbTrack.info.getAll(
+      orderBy,
+      sortDesk,
       limit,
       page
     );
     const response = { tracks: [], total, total_pages: totalPages };
     for await (const track of tracks) {
-      track.Artists = await Promise.all(
-        JSON.parse(track.Artist_List).map((artistsId) =>
+      track.artists = await Promise.all(
+        JSON.parse(track.artist_list).map((artistsId) =>
           dbArtists.getById(artistsId)
         )
       );
@@ -186,8 +166,8 @@ async function routes(fastify) {
   });
   fastify.get('/:id', async (req, res) => {
     let track = await dbTrack.info.getById(req.params.id);
-    track.Artists = await Promise.all(
-      JSON.parse(track.Artist_List).map((artistsId) =>
+    track.artists = await Promise.all(
+      JSON.parse(track.artist_list).map((artistsId) =>
         dbArtists.getById(artistsId)
       )
     );

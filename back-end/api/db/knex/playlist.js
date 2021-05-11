@@ -8,10 +8,10 @@ let knex;
 async function create({ playlistTitle, userId, trackList }) {
   const [result] = await knex(PLAYLIST)
     .insert({
-      Playlist_title: playlistTitle,
-      User_ID: userId,
-      Last_update: new Date(),
-      Track_List: trackList,
+      playlist_title: playlistTitle,
+      user_id: userId,
+      last_update: new Date(),
+      track_list: trackList,
     })
     .returning('*');
   return result;
@@ -22,9 +22,9 @@ async function getAll() {
 }
 
 async function getById(id, userId) {
-  const where = { Playlist_ID: id };
+  const where = { playlist_id: id };
   if (userId) {
-    where.User_ID = userId;
+    where.user_id = userId;
   }
   const response = await knex(PLAYLIST).where(where).first();
   if (!response) {
@@ -35,7 +35,7 @@ async function getById(id, userId) {
 
 async function getByPlaylistTitle(playlistTitle) {
   const response = await knex(PLAYLIST)
-    .where({ Playlist_title: playlistTitle })
+    .where({ playlist_title: playlistTitle })
     .first();
   if (!response) {
     throw new DatabaseError(`No Playlist with playlistTitle: ${playlistTitle}`);
@@ -44,7 +44,7 @@ async function getByPlaylistTitle(playlistTitle) {
 }
 
 async function getByUserId(userId) {
-  const response = await knex(PLAYLIST).where({ User_ID: userId }).first();
+  const response = await knex(PLAYLIST).where({ user_id: userId }).first();
   if (!response) {
     throw new DatabaseError(`No Playlist with userId: ${userId}`);
   }
@@ -53,21 +53,21 @@ async function getByUserId(userId) {
 
 async function update({ playlistId, userId, playlistTitle, trackList }) {
   const updatedPlaylist = {
-    Last_update: new Date(),
+    last_update: new Date(),
   };
 
-  if (playlistTitle) updatedPlaylist.Playlist_title = playlistTitle;
-  if (trackList) updatedPlaylist.Track_List = trackList;
+  if (playlistTitle) updatedPlaylist.playlist_title = playlistTitle;
+  if (trackList) updatedPlaylist.track_list = trackList;
 
   const [response] = await knex(PLAYLIST)
     .update(updatedPlaylist)
-    .where({ Playlist_ID: playlistId, User_ID: userId })
+    .where({ playlist_id: playlistId, user_id: userId })
     .returning('*');
   return response;
 }
 
 async function remove(id) {
-  await knex(PLAYLIST).where({ Playlist_ID: id }).del();
+  await knex(PLAYLIST).where({ playlist_id: id }).del();
 }
 
 module.exports = (client) => {

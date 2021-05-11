@@ -7,7 +7,7 @@ let knex;
 
 async function create({ categoryName }) {
   const [result] = await knex(TRACK_CATEGORY)
-    .insert({ Category_Name: categoryName })
+    .insert({ category_name: categoryName })
     .returning('*');
   return result;
 }
@@ -18,7 +18,7 @@ async function getAll() {
 
 async function getById(id) {
   const response = await knex(TRACK_CATEGORY)
-    .where({ Category_ID: id })
+    .where({ category_id: id })
     .first();
   if (!response) {
     throw new DatabaseError(`No TrackCategory with id: ${id}`);
@@ -28,7 +28,7 @@ async function getById(id) {
 
 async function getByCategoryName(categoryName) {
   const response = await knex(TRACK_CATEGORY)
-    .where({ Category_Name: categoryName })
+    .where({ category_name: categoryName })
     .first();
   if (!response) {
     throw new DatabaseError(
@@ -39,7 +39,7 @@ async function getByCategoryName(categoryName) {
 }
 
 async function remove(id) {
-  await knex(TRACK_CATEGORY).where({ Category_ID: id }).del();
+  await knex(TRACK_CATEGORY).where({ category_id: id }).del();
 }
 
 module.exports = (client) => {

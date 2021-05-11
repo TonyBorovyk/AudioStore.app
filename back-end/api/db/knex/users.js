@@ -14,12 +14,12 @@ async function create({
 }) {
   const [result] = await knex(USER)
     .insert({
-      First_name: firstName,
-      Last_name: lastName,
-      UserName: username,
-      Email: email,
-      Password: password,
-      Role: role,
+      first_name: firstName,
+      last_name: lastName,
+      username,
+      email,
+      password,
+      role,
     })
     .returning('*');
   return result;
@@ -30,15 +30,15 @@ async function getAll() {
 }
 
 async function getById(id) {
-  return await knex(USER).where({ User_ID: id }).first();
+  return await knex(USER).where({ user_id: id }).first();
 }
 
 async function getByEmail(email) {
-  return await knex(USER).where({ Email: email }).first();
+  return await knex(USER).where({ email }).first();
 }
 
 async function emailExists(email) {
-  const user = await knex(USER).where({ Email: email }).first();
+  const user = await knex(USER).where({ email }).first();
   if (user) {
     return true;
   }
@@ -46,7 +46,7 @@ async function emailExists(email) {
 }
 
 async function usernameExists(username) {
-  const user = await knex(USER).where({ UserName: username }).first();
+  const user = await knex(USER).where({ username }).first();
   if (user) {
     return true;
   }
@@ -54,7 +54,7 @@ async function usernameExists(username) {
 }
 
 async function remove(id) {
-  await knex(USER).where({ User_ID: id }).del();
+  await knex(USER).where({ user_id: id }).del();
 }
 
 module.exports = (client) => {

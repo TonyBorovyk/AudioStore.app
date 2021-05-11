@@ -95,10 +95,10 @@ async function routes(fastify) {
     const { playlist_title: playlistTitle, track_id: trackId } = req.body;
     const playlist = await dbPlaylist.getByPlaylistTitle(playlistTitle);
     const updatedPlaylist = {
-      playlistId: playlist.Playlist_ID,
+      playlistId: playlist.playlist_id,
       userId: claims.id,
       trackList: JSON.stringify(
-        JSON.parse(playlist.Track_List).concat([trackId])
+        JSON.parse(playlist.track_list).concat([trackId])
       ),
     };
     const result = await dbPlaylist.update(updatedPlaylist);
@@ -112,14 +112,14 @@ async function routes(fastify) {
     const playlists = await dbPlaylist.getByUserId(claims.id);
     const response = [];
     for await (const playlist of playlists) {
-      playlist.Tracks = await Promise.all(
-        JSON.parse(playlist.Track_List).map((trackId) =>
+      playlist.tracks = await Promise.all(
+        JSON.parse(playlist.track_list).map((trackId) =>
           dbTrack.info.getById(trackId)
         )
       );
       for await (const [key, track] of Object.entries(playlist.tracks)) {
-        playlist.Tracks[[Number(key)]].Artists = await Promise.all(
-          JSON.parse(track.Artist_List).map((artistsId) =>
+        playlist.tracks[[Number(key)]].artists = await Promise.all(
+          JSON.parse(track.artist_list).map((artistsId) =>
             dbArtists.getById(artistsId)
           )
         );
@@ -134,14 +134,14 @@ async function routes(fastify) {
   fastify.get('/playlists/:id', async (req, res) => {
     const claims = verify.verifyToken(req.cookies.jwt, res);
     let playlist = await dbPlaylist.getById(req.params.id, claims.id);
-    playlist.Tracks = await Promise.all(
-      JSON.parse(playlist.Track_List).map((trackId) =>
+    playlist.tracks = await Promise.all(
+      JSON.parse(playlist.track_list).map((trackId) =>
         dbTrack.info.getById(trackId)
       )
     );
     for await (const [key, track] of Object.entries(playlist.tracks)) {
-      playlist.Tracks[[Number(key)]].Artists = await Promise.all(
-        JSON.parse(track.Artist_List).map((artistsId) =>
+      playlist.tracks[[Number(key)]].artists = await Promise.all(
+        JSON.parse(track.artist_list).map((artistsId) =>
           dbArtists.getById(artistsId)
         )
       );
