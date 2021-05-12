@@ -27,7 +27,7 @@ const playlistCreateOpts = {
       type: 'object',
       properties: {
         playlist_title: { type: 'string' },
-        track_list: { type: 'string' },
+        track_list: { type: 'array' },
       },
       required: ['playlist_title', 'track_list'],
     },
@@ -39,10 +39,10 @@ const playlistAddOpts = {
     body: {
       type: 'object',
       properties: {
-        playlist_title: { type: 'string' },
+        playlist_id: { type: 'string' },
         track_id: { type: 'string' },
       },
-      required: ['playlist_title', 'track_id'],
+      required: ['playlist_id', 'track_id'],
     },
   },
 };
@@ -82,89 +82,102 @@ const roomsGetMoreOpts = {
   },
 };
 
+async function getTracks(trackIds) {
+  const tracks = await Promise.all(
+    trackIds.map((trackId) => dbTrack.info.getById(trackId))
+  );
+
+  const artistsList = await Promise.all(
+    tracks.map((track) =>
+      Promise.all(
+        track.artist_list.map((artistId) => dbArtists.getById(artistId))
+      )
+    )
+  );
+
+  const result = tracks.map((track, index) => {
+    track.artists = artistsList[index];
+    return track;
+  });
+
+  return result;
+}
+
+async function getFullPlaylists(playlists) {
+  const tracksList = await Promise.all(
+    playlists.map((playlist) => getTracks(playlist.track_list))
+  );
+
+  return playlists.map((playlist, index) => {
+    playlist.tracks = tracksList[index];
+    return playlist;
+  });
+}
+
 async function routes(fastify) {
   fastify.get('/', async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
     const user = await dbUsers.getById(claims.id); // claims.id returns user id
-    return res.send({ user, success: true });
+    return { user, success: true };
   });
 
   fastify.post('/playlists', playlistCreateOpts, async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
-    const { playlist_title: playlistTitle, track_list: trackList } = req.body;
-    const newPlaylist = { userId: claims.id, playlistTitle, trackList };
-    const playlist = await dbPlaylist.create(newPlaylist);
+    const newPlaylist = {
+      user_id: claims.id,
+      playlist_title: req.body.playlist_title,
+      track_list: req.body.track_list,
+    };
+
+    const response = await dbPlaylist.create(newPlaylist);
     return res.code(201).send({
-      data: playlist,
+      data: response,
       success: true,
     });
   });
   fastify.post('/playlists/add', playlistAddOpts, async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
-    const { playlist_title: playlistTitle, track_id: trackId } = req.body;
-    const playlist = await dbPlaylist.getByPlaylistTitle(playlistTitle);
+    const { playlist_id: playlistId, track_id: trackId } = req.body;
+    const playlist = await dbPlaylist.getById(playlistId);
+
     const updatedPlaylist = {
-      playlistId: playlist.playlist_id,
-      userId: claims.id,
-      trackList: JSON.stringify(
-        JSON.parse(playlist.track_list).concat([trackId])
-      ),
+      playlist_id: playlistId,
+      user_id: claims.id,
+      track_list: playlist.track_list.concat([trackId]),
     };
+
     const result = await dbPlaylist.update(updatedPlaylist);
-    return res.send({
+    return {
       data: result,
       success: true,
-    });
+    };
   });
   fastify.get('/playlists', async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
     const playlists = await dbPlaylist.getByUserId(claims.id);
-    const response = [];
-    for await (const playlist of playlists) {
-      playlist.tracks = await Promise.all(
-        JSON.parse(playlist.track_list).map((trackId) =>
-          dbTrack.info.getById(trackId)
-        )
-      );
-      for await (const [key, track] of Object.entries(playlist.tracks)) {
-        playlist.tracks[[Number(key)]].artists = await Promise.all(
-          JSON.parse(track.artist_list).map((artistsId) =>
-            dbArtists.getById(artistsId)
-          )
-        );
-      }
-      response.push(playlist);
-    }
-    return res.send({
-      data: playlists,
+
+    const response = await getFullPlaylists(playlists);
+
+    return {
+      data: response,
       success: true,
-    });
+    };
   });
   fastify.get('/playlists/:id', async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
-    let playlist = await dbPlaylist.getById(req.params.id, claims.id);
-    playlist.tracks = await Promise.all(
-      JSON.parse(playlist.track_list).map((trackId) =>
-        dbTrack.info.getById(trackId)
-      )
-    );
-    for await (const [key, track] of Object.entries(playlist.tracks)) {
-      playlist.tracks[[Number(key)]].artists = await Promise.all(
-        JSON.parse(track.artist_list).map((artistsId) =>
-          dbArtists.getById(artistsId)
-        )
-      );
-    }
-    return res.send({
+    const playlist = await dbPlaylist.getById(req.params.id, claims.id);
+    playlist.tracks = await getTracks(playlist.track_list);
+
+    return {
       data: playlist,
       success: true,
-    });
+    };
   });
-  fastify.delete('/:id', async (req, res) => {
+  fastify.delete('/:id', async (req) => {
     await dbPlaylist.remove(req.params.id);
-    return res.send({
+    return {
       success: true,
-    });
+    };
   });
 
   fastify.post('/rooms', roomsCreateOpts, async (req, res) => {
@@ -181,40 +194,40 @@ async function routes(fastify) {
     verifyToken(req.cookies.jwt, res);
     const { room_name: roomName, admin_id: adminId } = req.body;
     const room = await dbRooms.create({ roomName, adminId });
-    res.send({
+    ({
       data: room,
       success: true,
     });
   });
-  fastify.get('/rooms', async (req, res) => {
+  fastify.get('/rooms', async () => {
     const result = await dbRooms.getAll();
-    return res.send({
+    return {
       data: result,
       success: true,
-    });
+    };
   });
-  fastify.get('/rooms/more', roomsGetMoreOpts, async (req, res) => {
+  fastify.get('/rooms/more', roomsGetMoreOpts, async (req) => {
     const limit = parseInt(req.query.limit, 10);
     const page = parseInt(req.query.page, 10);
     const result = await dbRooms.getAll(limit, page);
-    return res.send({
+    return {
       data: result,
       success: true,
-    });
+    };
   });
-  fastify.get('/rooms/:id', async (req, res) => {
+  fastify.get('/rooms/:id', async (req) => {
     const room = await dbRooms.getById(req.params.id);
-    return res.send({
+    return {
       data: room,
       success: true,
-    });
+    };
   });
   fastify.delete('/rooms/:id', async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
     await dbRooms.remove(req.params.id, claims.id);
-    return res.send({
+    return {
       success: true,
-    });
+    };
   });
 }
 

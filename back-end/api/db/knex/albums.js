@@ -5,20 +5,29 @@ const {
 
 let knex;
 
-async function create({ albumName, artistId, cover, artistList }) {
-  const [result] = await knex(ALBUM)
-    .insert({
-      album_name: albumName,
-      artist_id: artistId,
-      cover,
-      artist_list: artistList,
-    })
-    .returning('*');
-  return result;
+function addDTO(album) {
+  const albumList = Object.entries(album).map(([key, value]) => {
+    if (key === 'artist_list') {
+      return [key, `[${value.join(', ')}]`];
+    }
+    return [key, value];
+  });
+
+  return Object.fromEntries(albumList);
+}
+
+function getDTO(album) {
+  album.artist_list = JSON.parse(album.artist_list);
+  return album;
+}
+
+async function create(newAlbum) {
+  const [result] = await knex(ALBUM).insert(addDTO(newAlbum)).returning('*');
+  return getDTO(result);
 }
 
 async function getAll() {
-  return await knex(ALBUM)
+  const result = await knex(ALBUM)
     .join(ARTIST, `${ALBUM}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
       `${ARTIST}.artist_id`,
@@ -28,6 +37,8 @@ async function getAll() {
       `${ALBUM}.cover`,
       `${ALBUM}.artist_list`
     );
+
+  return result.map(getDTO);
 }
 
 async function getMore(limit, page) {
@@ -51,7 +62,7 @@ async function getMore(limit, page) {
   return {
     total: total,
     totalPages: Math.ceil(total / limit),
-    albums,
+    albums: albums.map(getDTO),
   };
 }
 
@@ -71,7 +82,7 @@ async function getById(id) {
   if (!album) {
     throw new DatabaseError(`No Album with id: ${id}`);
   }
-  return album;
+  return getDTO(album);
 }
 
 async function getByAlbumName(albumName) {
@@ -90,15 +101,11 @@ async function getByAlbumName(albumName) {
   if (!album) {
     throw new DatabaseError(`No Album with albumName: ${albumName}`);
   }
-  return album;
+  return getDTO(album);
 }
 
-async function update({ albumId, artistId, cover, artistList }) {
-  const updatedAlbum = {};
-
-  if (artistId) updatedAlbum.artist_id = artistId;
-  if (cover) updatedAlbum.cover = cover;
-  if (artistList) updatedAlbum.artist_list = artistList;
+async function update({ album_id: albumId, ...album }) {
+  const updatedAlbum = addDTO(album);
 
   const [response] = await knex(ALBUM)
     .where({ album_id: albumId })
@@ -107,7 +114,7 @@ async function update({ albumId, artistId, cover, artistList }) {
   if (!response) {
     throw new DatabaseError(`No Album with albumId: ${albumId}`);
   }
-  return response;
+  return getDTO(response);
 }
 
 async function remove(id) {

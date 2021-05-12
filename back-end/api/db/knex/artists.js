@@ -16,6 +16,20 @@ async function getAll() {
   return await knex(ARTIST).select('*');
 }
 
+async function getMore(limit, page) {
+  const [{ count }] = await knex(ARTIST).count();
+  const offset = (page - 1) * limit;
+  const artists = await knex(ARTIST).select('*').limit(limit).offset(offset);
+
+  const total = Number(count);
+
+  return {
+    total: total,
+    totalPages: Math.ceil(total / limit),
+    artists,
+  };
+}
+
 async function getById(id) {
   const response = await knex(ARTIST).where({ artist_id: id }).first();
   if (!response) {
@@ -44,6 +58,7 @@ module.exports = (client) => {
   return {
     create,
     getAll,
+    getMore,
     getById,
     getByArtistName,
     remove,

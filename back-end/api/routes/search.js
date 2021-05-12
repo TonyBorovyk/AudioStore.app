@@ -1,25 +1,25 @@
 const { search: dbSearch } = require('../db');
 
 async function routes(fastify) {
-  fastify.post('/', async (req, res) => {
+  fastify.post('/', async (req) => {
     const searchString = req.body ? req.body.search : '';
 
     const result = await dbSearch.global(searchString);
 
-    res.send({
+    return {
       data: result,
       success: true,
-    });
+    };
   });
-  fastify.post('/songs', async (req, res) => {
+  fastify.post('/songs', async (req) => {
     const searchString = req.body ? req.body.search : '';
 
     const result = await dbSearch.global(searchString);
 
-    res.send({
+    return {
       data: result,
       success: true,
-    });
+    };
   });
 }
 

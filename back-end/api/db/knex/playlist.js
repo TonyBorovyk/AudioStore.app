@@ -5,20 +5,33 @@ const {
 
 let knex;
 
-async function create({ playlistTitle, userId, trackList }) {
-  const [result] = await knex(PLAYLIST)
-    .insert({
-      playlist_title: playlistTitle,
-      user_id: userId,
-      last_update: new Date(),
-      track_list: trackList,
-    })
-    .returning('*');
-  return result;
+function addDTO(playlist) {
+  const playlistList = Object.entries(playlist).map(([key, value]) => {
+    if (key === 'track_list') {
+      return [key, `[${value.join(', ')}]`];
+    }
+    return [key, value];
+  });
+
+  return Object.fromEntries(playlistList);
+}
+
+function getDTO(playlist) {
+  playlist.track_list = JSON.parse(playlist.track_list);
+  return playlist;
+}
+
+async function create(playlist) {
+  const newPlaylist = addDTO(playlist);
+  newPlaylist.last_update = new Date();
+
+  const [result] = await knex(PLAYLIST).insert(newPlaylist).returning('*');
+  return getDTO(result);
 }
 
 async function getAll() {
-  return await knex(PLAYLIST).select('*');
+  const result = await knex(PLAYLIST).select('*');
+  return result.map(getDTO);
 }
 
 async function getById(id, userId) {
@@ -30,7 +43,7 @@ async function getById(id, userId) {
   if (!response) {
     throw new DatabaseError(`No Playlist with id: ${id}`);
   }
-  return response;
+  return getDTO(response);
 }
 
 async function getByPlaylistTitle(playlistTitle) {
@@ -40,7 +53,7 @@ async function getByPlaylistTitle(playlistTitle) {
   if (!response) {
     throw new DatabaseError(`No Playlist with playlistTitle: ${playlistTitle}`);
   }
-  return response;
+  return getDTO(response);
 }
 
 async function getByUserId(userId) {
@@ -48,22 +61,22 @@ async function getByUserId(userId) {
   if (!response) {
     throw new DatabaseError(`No Playlist with userId: ${userId}`);
   }
-  return response;
+  return getDTO(response);
 }
 
-async function update({ playlistId, userId, playlistTitle, trackList }) {
-  const updatedPlaylist = {
-    last_update: new Date(),
-  };
-
-  if (playlistTitle) updatedPlaylist.playlist_title = playlistTitle;
-  if (trackList) updatedPlaylist.track_list = trackList;
+async function update({
+  playlist_id: playlistId,
+  user_id: userId,
+  ...playlist
+}) {
+  const updatedPlaylist = addDTO(playlist);
+  updatedPlaylist.last_update = new Date();
 
   const [response] = await knex(PLAYLIST)
     .update(updatedPlaylist)
     .where({ playlist_id: playlistId, user_id: userId })
     .returning('*');
-  return response;
+  return getDTO(response);
 }
 
 async function remove(id) {
