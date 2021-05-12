@@ -36,7 +36,8 @@ export default {
       "fetchRoomData",
       "fetchUser",
       "changePlay",
-      "changeSongTime"
+      "changeSongTime",
+      "deleteRoom"
     ]),
     ...mapActions("data_upload", ["changeDataUploadStatus"]),
     sendMessage(message) {
@@ -44,8 +45,17 @@ export default {
       this.connection.send(JSON.stringify(message));
     },
     leaveRoom() {
+      if (this.admin) {
+        this.deleteRoom(this.$route.params.id);
+      }
       this.connection.close();
       this.$router.push("/");
+    },
+    wsConenction() {
+      this.connection = new WebSocket("ws://localhost:8081");
+      if (this.getRoomData.admin_id == this.getUser.user_id) {
+        this.admin = true;
+      }
     }
   },
   computed: {
@@ -62,24 +72,16 @@ export default {
     getUser() {
       if (this.getUser != { username: "" }) {
         this.user_exist = true;
-        console.log("getUser", this.getUser);
         if (this.room_exist && this.connection === null) {
-          this.connection = new WebSocket("ws://localhost:8081");
-          if (this.getRoomData.admin_id === this.getUser.user_id) {
-            this.admin = true;
-          }
+          this.wsConenction();
         }
       }
     },
     getRoomData() {
       if (this.getRoomData != {}) {
         this.room_exist = true;
-        console.log("getRoomData", this.getRoomData);
         if (this.user_exist && this.connection === null) {
-          this.connection = new WebSocket("ws://localhost:8081");
-          if (this.getRoomData.admin_id === this.getUser.user_id) {
-            this.admin = true;
-          }
+          this.wsConenction();
         }
       }
     },
@@ -155,6 +157,10 @@ export default {
           }
         }
         if (!this.admin) {
+          if (data.method === "Connection is closed") {
+            alert("Admin close the room!");
+            this.leaveRoom();
+          }
           if (data.method === "new track") {
             this.fetchSongDetails(data.track_id);
           }
@@ -174,13 +180,16 @@ export default {
   beforeRouteLeave(to, from, next) {
     if (from.name == "RoomPage" && to != undefined) {
       if (this.connection != null) {
+        if (this.admin) {
+          this.deleteRoom(this.$route.params.id);
+        }
         this.connection.close();
       }
     }
     next();
   },
   created() {
-    this.fetchRoomData();
+    this.fetchRoomData(this.$route.params.id);
     this.fetchUser();
   }
 };

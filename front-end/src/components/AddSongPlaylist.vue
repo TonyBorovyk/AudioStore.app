@@ -1,9 +1,6 @@
 <template>
   <div class="pop-up-playlist-container" v-if="isLoggedIn">
-    <button
-      class="btn btn-playlist-pop-up"
-      @click="changePlaylistPopUpActivity"
-    >
+    <button class="btn btn-playlist-pop-up" @click="handleClick">
       <img src="../assets/icons/plus.png" />
     </button>
     <AddSongPlaylistPopUp v-if="isPlaylistPopUpActive" />
@@ -21,7 +18,11 @@ export default {
     AddSongPlaylistPopUp
   },
   methods: {
-    ...mapActions(["changePlaylistPopUpActivity"])
+    ...mapActions(["changePlaylistPopUpActivity", "changePlaylistId"]),
+    handleClick() {
+      this.changePlaylistId(this.song);
+      this.changePlaylistPopUpActivity();
+    }
   },
   computed: {
     ...mapGetters(["isPlaylistPopUpActive", "isLoggedIn"])

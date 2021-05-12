@@ -2,12 +2,12 @@
   <div class="item-container">
     <img :src="song.cover" />
     <router-link :to="`/songs/${song.track_id}`">
-      <h3 class="song-name">{{ song.Track_name }}</h3>
+      <h3 class="song-name">{{ song.track_name }}</h3>
     </router-link>
     <SongArtists :song="song" />
     <div class="buttons flex-row">
       <ButtonMore :route="`/songs/${song.track_id}`" />
-      <AddSongPlaylist :song="song.track_id" />
+      <AddSongPlaylist :song="song.track_id" :key="song.track_id" />
     </div>
   </div>
 </template>

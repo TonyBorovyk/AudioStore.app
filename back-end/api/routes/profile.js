@@ -28,10 +28,10 @@ const playlistAddOpts = {
     body: {
       type: 'object',
       properties: {
-        playlist_title: { type: 'string' },
+        playlist_id: { type: 'string' },
         track_id: { type: 'string' },
       },
-      required: ['playlist_title', 'track_id'],
+      required: ['playlist_id', 'track_id'],
     },
   },
 };
@@ -75,7 +75,7 @@ async function routes(fastify) {
   fastify.get('/', async (req, res) => {
     const claims = verify.verifyToken(req.cookies.jwt, res);
     // eslint-disable-next-line no-unused-vars
-    const { Password, ...user } = await dbUsers.getById(claims.id); // claims.id returns user id
+    const { password, ...user } = await dbUsers.getById(claims.id); // claims.id returns user id
     return res.send({ user, success: true });
   });
 
@@ -91,8 +91,8 @@ async function routes(fastify) {
   });
   fastify.post('/playlists/add', playlistAddOpts, async (req, res) => {
     const claims = verify.verifyToken(req.cookies.jwt, res);
-    const { playlist_title: playlistTitle, track_id: trackId } = req.body;
-    const playlist = await dbPlaylist.getByPlaylistTitle(playlistTitle);
+    const { playlist_id: playlistId, track_id: trackId } = req.body;
+    const playlist = await dbPlaylist.getById(playlistId, claims.id);
     const updatedPlaylist = {
       playlistId: playlist.Playlist_ID,
       userId: claims.id,

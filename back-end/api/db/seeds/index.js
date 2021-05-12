@@ -146,6 +146,8 @@ async function plantSeeds() {
       SELECT "Insert_User" ('Alexey', '', 'alexeykharenko', 'alexey@gmail.com', 'user1234', 'base');
 
       SELECT "Insert_User" ('Alexey', '', 'alexkharenko', 'alexey16052002@gmail.com', 'user1234', 'admin');
+      
+      SELECT "Insert_User" ('Alexey', '', 'aleykharenko', 'alexey052002@gmail.com', 'user1234', 'base');
 
       SELECT "Insert_Room" (1, 'Room1');
 
@@ -198,7 +200,7 @@ async function plantSeeds() {
       SELECT "Insert_Playlist" ('Rock', 5, '[3, 4]');
   `);
   } catch (err) {
-    // console.error('Cannot plant seeds');
+    console.error('Cannot plant seeds', err);
   }
   console.log('Seeds planted');
 }

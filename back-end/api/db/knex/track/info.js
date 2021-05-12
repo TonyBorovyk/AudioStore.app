@@ -135,17 +135,22 @@ async function getById(id) {
     .join(ALBUM, `${TRACK_INFO}.Album_ID`, '=', `${ALBUM}.Album_ID`)
     .join(ARTIST, `${TRACK_INFO}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
     .select(
-      `${TRACK_CATEGORY}.Category_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ARTIST}.Artist_Name`,
-      `${TRACK_INFO}.Track_name`,
-      `${TRACK_INFO}.Lyrics`,
-      `${TRACK_INFO}.Duration`,
-      `${TRACK_INFO}.Cover`,
-      `${TRACK_INFO}.Release_year`,
-      `${TRACK_INFO}.Time_added`,
-      `${TRACK_INFO}.Track_URL`,
-      `${TRACK_INFO}.Artist_List`
+      `${TRACK_CATEGORY}.category_name`,
+      `${ALBUM}.album_name`,
+      `${ARTIST}.artist_name`,
+      `${ALBUM}.cover as album_cover`,
+      `${TRACK_INFO}.album_id`,
+      `${TRACK_INFO}.track_id`,
+      `${TRACK_INFO}.artist_id`,
+      `${TRACK_INFO}.category_id`,
+      `${TRACK_INFO}.track_name`,
+      `${TRACK_INFO}.lyrics`,
+      `${TRACK_INFO}.duration`,
+      `${TRACK_INFO}.cover`,
+      `${TRACK_INFO}.release_year`,
+      `${TRACK_INFO}.time_added`,
+      `${TRACK_INFO}.track_url`,
+      `${TRACK_INFO}.artist_list`
     )
     .first();
   if (!response) {

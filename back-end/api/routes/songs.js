@@ -162,8 +162,9 @@ async function routes(fastify) {
   fastify.get('/more', getMoreOpts, async (req, res) => {
     const limit = parseInt(req.query.limit, 10);
     const page = parseInt(req.query.page, 10);
-
-    const { tracks, total, totalPages } = await dbTrack.info.getMore(
+    const { tracks, total, totalPages } = await dbTrack.info.getAll(
+      orderBy,
+      sortDesk,
       limit,
       page
     );

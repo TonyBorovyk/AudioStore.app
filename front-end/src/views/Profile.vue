@@ -5,7 +5,7 @@
       <p class="username">{{ getUser.username }}</p>
       <span class="email">{{ getUser.email }}</span>
     </div>
-    <div class="playlists-block">
+    <div class="playlists-block" v-if="getPlaylists != [{}]">
       <div class="list-margin list-container">
         <h3>Playlists</h3>
         <div

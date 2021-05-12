@@ -2,7 +2,7 @@
   <div class="song-wrapper">
     <div class="main-song-info grid">
       <div class="left-song-info">
-        <img :src="getSongDetails.song_cover" />
+        <img :src="getSongDetails.cover" />
       </div>
       <div class="right-song-info">
         <h2 class="track-name">{{ getSongDetails.track_name }}</h2>
@@ -26,10 +26,10 @@
     </div>
     <div class="another-song-info grid">
       <div class="song-album-info">
-        <img :src="getSongAlbum.album_cover" />
-        <router-link :to="`/albums/${getSongAlbum.album_id}`"
+        <img :src="getSongDetails.album_cover" />
+        <router-link :to="`/albums/${getSongDetails.album_id}`"
           ><h4 class="song-album-name">
-            {{ getSongAlbum.album_name }}
+            {{ getSongDetails.album_name }}
           </h4></router-link
         >
       </div>
@@ -61,7 +61,7 @@ export default {
     BasePlayer
   },
   computed: {
-    ...mapGetters(["getSongDetails", "getSongAlbum", "isShowMorePopUpActive"])
+    ...mapGetters(["getSongDetails", "isShowMorePopUpActive"])
   },
   methods: {
     ...mapActions(["fetchSongDetails", "changeShowMorePopUpActivity"])
@@ -118,6 +118,8 @@ export default {
     margin-bottom: 0px;
     .song-lyrics {
       text-align: left;
+      overflow: hidden;
+      max-height: 300px;
     }
     img {
       height: 300px;

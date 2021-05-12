@@ -2,41 +2,114 @@ import { sleep } from "@/functions/sleep.js";
 import router from "@/router";
 
 const state = {
-  songs: [{ artists: [] }],
-  cur_page: 1,
-  total_pages: true,
+  songs: [{ artists: [] }]
 };
 
 const getters = {
-  getSongs: state => state.songs,
-  getCurPage: state => state.cur_page,
-  getTotalPages: state => state.total_pages
+  getSongs: state => state.songs
 };
 
-//catch not working
 const actions = {
-  async fetchSongs({ commit, dispatch }, order_by) {
+  async searchSongs({ commit, dispatch }, search) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
-    const res = await fetch(`${process.env.VUE_APP_URL}/songs?order_by=${order_by}`)
-      .then(response => response.json())
+    dispatch("page/changeCurPage", 1, { root: true });
+    const res = await fetch(`${process.env.VUE_APP_URL}/search/song`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify(search)
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        if (response.status == 404) {
+          return { data: [{ artists: [] }] };
+        }
+        if (response.status == 500) {
+          router.push("/error");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+      })
       .catch(error => {
         console.error(error);
+        dispatch("data_upload/changeDataUploadStatus", true, { root: true });
         router.push("/error");
       });
-    console.log(res.data)
+    console.log(res.data);
     await commit("setSongs", res.data);
+    dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+  },
+  async fetchSongs({ commit, dispatch, rootGetters }, { order_by, asc }) {
+    dispatch("data_upload/changeDataUploadStatus", false, { root: true });
+    dispatch("page/changeCurPage", 1, { root: true });
+    const res = await fetch(
+      `${process.env.VUE_APP_URL}/songs?order_by=${order_by}&sort_desk=${asc}&limit=3&page=${rootGetters["page/getCurPage"]}`
+    )
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        if (response.status == 404) {
+          router.push("/404");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+        if (response.status == 500) {
+          router.push("/error");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+        router.push("/error");
+      });
+    console.log(res.data);
+    dispatch("page/changeTotalPages", true, { root: true });
+    if (res.data.total_pages <= rootGetters["page/getCurPage"]) {
+      dispatch("page/changeTotalPages", false, { root: true });
+    }
+    await commit("setSongs", res.data.tracks);
     await sleep(1000);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   },
-  async moreSongs({ commit, dispatch, state }) {
-    await commit("setCurPage", state.cur_page+1);
+  async moreSongs({ commit, dispatch, rootGetters }, { order_by, asc }) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
+    dispatch("page/changeCurPage", rootGetters["page/getCurPage"] + 1, {
+      root: true
+    });
     const res = await fetch(
-      `${process.env.VUE_APP_URL}/songs/more?limit=3&page=${state.cur_page}`
-    ).then(response => response.json());
-    console.log(res)
-    if(res.data.total_pages<=state.cur_page){
-      await commit("setTotalPages", false);
+      `${process.env.VUE_APP_URL}/songs?order_by=${order_by}&sort_desk=${asc}&limit=3&page=${rootGetters["page/getCurPage"]}`
+    )
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        if (response.status == 404) {
+          router.push("/404");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+        if (response.status == 500) {
+          router.push("/error");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+        router.push("/error");
+      });
+    console.log(res.data);
+    dispatch("page/changeTotalPages", true, { root: true });
+    if (res.data.total_pages <= rootGetters["page/getCurPage"]) {
+      dispatch("page/changeTotalPages", false, { root: true });
     }
     await commit("addSongs", res.data.tracks);
     await sleep(1000);
@@ -46,9 +119,7 @@ const actions = {
 
 const mutations = {
   setSongs: (state, songs) => (state.songs = songs),
-  addSongs: (state, songs) => (state.songs = state.songs.concat(songs)),
-  setCurPage: (state, cur_page) => (state.cur_page = cur_page),
-  setTotalPages: (state, total_pages) => (state.total_pages = total_pages),
+  addSongs: (state, songs) => (state.songs = state.songs.concat(songs))
 };
 
 export default {

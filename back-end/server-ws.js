@@ -47,19 +47,13 @@ const sendToEveryoneInARoom = (messageObj, connection) => {
 };
 
 const sendInfoAfterConnection = (messageObj) => {
-  const userRoom = rooms.find((room) => +room.roomId === messageObj.roomId);
+  const userRoom = rooms.find((room) => room.roomId === messageObj.roomId);
   const index = userRoom.usersIds.findIndex((id) => id === messageObj.userId);
   const userConnection = userRoom.usersConnections[index];
   userConnection.send(
     JSON.stringify({
       method: 'new track',
-      track_id: messageObj.songId,
-    })
-  );
-  userConnection.send(
-    JSON.stringify({
-      method: 'new time',
-      new_time: messageObj.new_time,
+      songId: messageObj.songId,
     })
   );
   if (messageObj.play === true) {
@@ -75,6 +69,12 @@ const sendInfoAfterConnection = (messageObj) => {
       })
     );
   }
+  userConnection.send(
+    JSON.stringify({
+      method: 'new time',
+      new_time: messageObj.new_time,
+    })
+  );
 };
 
 webSocketServer.on('connection', (socket) => {

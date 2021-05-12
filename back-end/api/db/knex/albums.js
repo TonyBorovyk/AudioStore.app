@@ -21,10 +21,12 @@ async function getAll() {
   return await knex(ALBUM)
     .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
     .select(
-      `${ARTIST}.Artist_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ALBUM}.Cover`,
-      `${ALBUM}.Artist_List`
+      `${ARTIST}.artist_id`,
+      `${ARTIST}.artist_name`,
+      `${ALBUM}.album_id`,
+      `${ALBUM}.album_name`,
+      `${ALBUM}.cover as album_cover`,
+      `${ALBUM}.artist_list`
     );
 }
 
@@ -34,10 +36,12 @@ async function getMore(limit, page) {
   const albums = await knex(ALBUM)
     .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
     .select(
-      `${ARTIST}.Artist_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ALBUM}.Cover`,
-      `${ALBUM}.Artist_List`
+      `${ARTIST}.artist_id`,
+      `${ARTIST}.artist_name`,
+      `${ALBUM}.album_id`,
+      `${ALBUM}.album_name`,
+      `${ALBUM}.cover as album_cover`,
+      `${ALBUM}.artist_list`
     )
     .limit(limit)
     .offset(offset);
@@ -56,10 +60,12 @@ async function getById(id) {
     .where({ Album_ID: id })
     .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
     .select(
-      `${ARTIST}.Artist_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ALBUM}.Cover`,
-      `${ALBUM}.Artist_List`
+      `${ARTIST}.artist_id`,
+      `${ARTIST}.artist_name`,
+      `${ALBUM}.album_id`,
+      `${ALBUM}.album_name`,
+      `${ALBUM}.cover as album_cover`,
+      `${ALBUM}.artist_list`
     )
     .first();
   if (!album) {
@@ -73,10 +79,12 @@ async function getByAlbumName(albumName) {
     .where({ Album_Name: albumName })
     .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
     .select(
-      `${ARTIST}.Artist_Name`,
-      `${ALBUM}.Album_Name`,
-      `${ALBUM}.Cover`,
-      `${ALBUM}.Artist_List`
+      `${ARTIST}.artist_id`,
+      `${ARTIST}.artist_name`,
+      `${ALBUM}.album_id`,
+      `${ALBUM}.album_name`,
+      `${ALBUM}.cover as album_cover`,
+      `${ALBUM}.artist_list`
     )
     .first();
   if (!album) {

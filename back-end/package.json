@@ -10,7 +10,8 @@
     "lint": "npx eslint .",
     "format": "npx eslint . --fix",
     "prettier": "npx prettier -c .",
-    "prettier:format": "npx prettier -w ."
+    "prettier:format": "npx prettier -w .",
+    "seeds": "node api/db/seeds/index.js"
   },
   "author": "",
   "license": "ISC",

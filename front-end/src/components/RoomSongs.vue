@@ -1,20 +1,38 @@
 <template>
-  <div class="items-continer">
+  <div>
     <h2>Songs</h2>
-    <div class="list-margin list-container">
-      <div
-        class="list-item playlist-item"
-        v-for="track in getSongs"
-        :key="track.track_id"
-      >
-        <div class="play" @click="changeSongId(track.track_id)">
-          <img src="../assets/icons/play.png" />
-        </div>
-        <div class="song-name text">{{ track.track_name }}</div>
-        <div class="song-artists text">
-          {{ trackArtists(track.artists) }}
+    <div class="items-continer">
+      <div class="list-margin list-container">
+        <div
+          class="list-item playlist-item"
+          v-for="track in getSongs"
+          :key="track.track_id"
+        >
+          <div class="play" @click="changeSongId(track.track_id)">
+            <img src="../assets/icons/play.png" />
+          </div>
+          <div class="song-name text">{{ track.track_name }}</div>
+          <div class="song-artists text">
+            {{ trackArtists(track.artists) }}
+          </div>
         </div>
       </div>
+    </div>
+    <div>
+      <button
+        v-if="getTotalPages"
+        class="btn btn-ten-more"
+        @click="moreSongs({ order_by: 'time_added', asc: true })"
+      >
+        Show More
+      </button>
+      <button
+        v-if="getTotalPages"
+        class="btn btn-ten-more"
+        @click="fetchSongs({ order_by: 'time_added', asc: true })"
+      >
+        Refresh songs
+      </button>
     </div>
   </div>
 </template>
@@ -24,7 +42,12 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   name: "RoomPlaylists",
   methods: {
-    ...mapActions(["changeSongId", "changeSongList"]),
+    ...mapActions([
+      "changeSongId",
+      "changeSongList",
+      "moreSongs",
+      "fetchSongs"
+    ]),
     trackArtists(artists) {
       let artists_string = "";
       artists.forEach(artist => {
@@ -34,7 +57,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getSongs"])
+    ...mapGetters(["getSongs"]),
+    ...mapGetters("page", ["getTotalPages"])
   },
   watch: {
     getSongs() {

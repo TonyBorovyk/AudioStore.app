@@ -8,7 +8,6 @@
       <router-link :to="`/artists/${artist.artist_id}`"
         ><h3>{{ artist.artist_name }}</h3></router-link
       >
-      <p>Songs: {{ artist.count_of_songs }}</p>
     </div>
   </div>
 </template>

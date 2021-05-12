@@ -49,13 +49,13 @@ async function createDBWithTablesIfNotExists() {
     );
 
     CREATE TABLE IF NOT EXISTS "${tables.USER}" (
-        "User_ID" SERIAL PRIMARY KEY NOT NULL,
-        "First_name" varchar(60) NOT NULL,
-        "Last_name" varchar(70) NOT NULL,
-        "UserName" varchar(60) NOT NULL,
-        "Email" varchar(100) NOT NULL,
-        "Password" varchar(50) NOT NULL,
-        "Role" varchar(10) NOT NULL default 'base'
+        "user_id" SERIAL PRIMARY KEY NOT NULL,
+        "first_name" varchar(60) NOT NULL,
+        "last_name" varchar(70) NOT NULL,
+        "username" varchar(60) NOT NULL,
+        "email" varchar(100) NOT NULL,
+        "password" varchar(150) NOT NULL,
+        "role" varchar(10) NOT NULL default 'base'
     );
 
     CREATE TABLE IF NOT EXISTS "${tables.ROOM}" (

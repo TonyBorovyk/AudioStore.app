@@ -10,8 +10,8 @@
       <BaseSearch v-if="$route.name != 'RoomPage'" />
       <router-view></router-view>
     </div>
-    <CreateRoomPopUp :user_id="getUser.user_id" />
-    <AddPlaylist :user_id="getUser.user_id" />
+    <CreateRoomPopUp />
+    <AddPlaylist />
   </div>
 </template>
 

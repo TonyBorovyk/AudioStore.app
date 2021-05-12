@@ -1,3 +1,5 @@
+import router from "@/router";
+
 const state = {
   song_id: "",
   play: null,
@@ -33,22 +35,71 @@ const actions = {
   changeCurrentTime({ commit }, current_time) {
     commit("setCurrentTime", current_time);
   },
-  fetchRoomData({ commit }) {
-    //   const res = await fetch(`http://localhost:3000/songs/${id}`)
-    //   .then(response => response.json())
-    //   .catch(error => {
-    //     console.error(error);
-    //     router.push("/error");
-    //   });
-    // console.log(res);
+  async fetchRoomData({ commit, dispatch }, id) {
+    dispatch("data_upload/changeDataUploadStatus", false, { root: true });
+    const res = await fetch(`${process.env.VUE_APP_URL}/profile/rooms/${id}`)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        if (response.status == 404) {
+          router.push("/404");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+        if (response.status == 409) {
+          router.push("/404");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+        if (response.status == 500) {
+          router.push("/error");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+        router.push("/error");
+      });
+    console.log(res);
 
-    // await commit("setSongDetails", res.data);
-
-    commit("setRoomData", {
-      room_id: 1,
-      room_name: "Hello world!",
-      admin_id: "alexkharenko"
-    });
+    await commit("setRoomData", res.data);
+    dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+  },
+  async deleteRoom({ dispatch }, id) {
+    dispatch("data_upload/changeDataUploadStatus", false, { root: true });
+    const res = await fetch(`${process.env.VUE_APP_URL}/profile/rooms/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        if (response.status == 404) {
+          router.push("/404");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+        if (response.status == 500) {
+          router.push("/error");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+        router.push("/error");
+      });
+    console.log(res);
+    dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+    return res.success;
   }
 };
 
