@@ -163,8 +163,6 @@ async function routes(fastify) {
     const limit = parseInt(req.query.limit, 10);
     const page = parseInt(req.query.page, 10);
     const { tracks, total, totalPages } = await dbTrack.info.getAll(
-      orderBy,
-      sortDesk,
       limit,
       page
     );
