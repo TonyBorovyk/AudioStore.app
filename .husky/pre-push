@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+
+git pull
+cd back-end
+npm run lint
+npm run prettier
+cd ../front-end
+npm run lint
