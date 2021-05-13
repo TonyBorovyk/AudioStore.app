@@ -48,7 +48,7 @@ async function getByUserId(userId) {
   if (!response) {
     throw new DatabaseError(`No Playlist with userId: ${userId}`);
   }
-  return getDTO(response);
+  return response;
 }
 
 async function update({

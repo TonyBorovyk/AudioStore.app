@@ -31,7 +31,6 @@ const actions = {
         console.error(error);
         router.push("/error");
       });
-    console.log(res.data);
     await commit("setAlbumDetails", res.data);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   }

@@ -30,7 +30,6 @@
         Show More
       </button>
       <button
-        v-if="getTotalPages"
         class="btn btn-ten-more"
         @click="fetchSongs({ order_by: 'time_added', asc: true })"
       >

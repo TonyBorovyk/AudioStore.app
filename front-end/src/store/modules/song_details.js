@@ -18,8 +18,6 @@ const actions = {
         console.error(error);
         router.push("/error");
       });
-    console.log(res);
-
     await commit("setSongDetails", res.data);
     await sleep(1000);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });

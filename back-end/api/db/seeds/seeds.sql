@@ -126,24 +126,6 @@ SELECT "Insert_Track_Category" ('Classic rock');
 
 SELECT "Insert_Track_Category" ('Alternative hip hop');
 
-SELECT "Insert_User" ('Mykola', 'Onyshchuk', 'nick1', 'mykolaon1@gmail.com', 'user1234', 'base');
-
-SELECT "Insert_User" ('Anton', 'Borovyk', 'anton', 'antonbovik@gmail.com', 'user1234', 'base');
-
-SELECT "Insert_User" ('Alexey', '', 'alexeykharenko', 'alexey@gmail.com', 'user1234', 'base');
-
-SELECT "Insert_User" ('Alexey', '', 'alexkharenko', 'alexey16052002@gmail.com', 'user1234', 'base');
-
-SELECT "Insert_User" ('Alexey', '', 'aleykharenko', 'alexey052002@gmail.com', 'user1234', 'base');
-
-SELECT "Insert_Room" (1, 'Room1');
-
-SELECT "Insert_Room" (2, 'Room_Anton');
-
-SELECT "Insert_Room" (3, 'Room_Alexey');
-
-SELECT "Insert_Room" (5, 'room_Alexey');
-
 SELECT "Insert_Album" ('Origins', 'Imagine Dragons', 'https://upload.wikimedia.org/wikipedia/ru/5/59/Origins_cover_%28Imagine_Dragons%29.jpg', '[1]');
 
 SELECT "Insert_Album" ('Greatest Hits', 'Queen', 'https://www.udiscovermusic.com/wp-content/uploads/2017/11/Queen-Greatest-Hits.jpg', '[3]');
@@ -166,22 +148,3 @@ SELECT "Insert_Track_Info" ('Blurryface', 'Twenty One Pilots', 'Alternative hip 
 
 SELECT "Insert_Track_Info" ('Trench', 'Twenty One Pilots', 'Alternative hip hop', 'Chlorine', 'So where are you? It''s been a little while\n Sippin'' on straight chlorine, let the vibes slide over me\n This beat is a chemical, beat is a chemical\n When I leave don''t save my seat, I''ll be back when it''s all complete\n The moment is medical, moment is medical\n Sippin'' on straight chlorine\n Lovin'' what I''m tastin''\n Venom on my tongue\n Dependant at times\n Poisonous vibration\n Help my body run\n I''m runnin'' for my li-i-i-i-i-i-fe\n Runnin'' for my li-i-i-i-i-i-fe\n Sippin'' on straight chlorine, let the vibes slide over me\n This beat is a chemical, beat is a chemical\n When I leave don''t save my seat, I''ll be back when it''s all complete\n The moment is medical, moment is medical\n Sippin'' on straight chlorine\n Fall out of formation\n I plan my escape from walls they confined\n Rebel red carnation\n Grows while I decay\n I''m runnin'' for my li-i-i-i-i-i-fe\n Runnin'' for my li-i-i-i-i-i-fe\n Yeah, I''m runnin'' for my li-i-i-i-i-i-fe\n Runnin'' for my li-i-i-i-i-i-fe\n Had you in my coat pocket, where I kept my rebel red\n I felt I was invincible, you wrapped around my head\n Now different lives I lead, my body lives on lead\n The last two lines may read incorrect until said\n The lead is terrible in flavor\n But now you double as a papermaker\n I despise you sometimes\n I love to hate the fight and you in my life is like\n Sippin'' on straight chlorine, let the vibes slide over me\n This beat is a chemical, beat is a chemical\n When I leave don''t save my seat, I''ll be back when it''s all complete\n The moment is medical, moment is medical\n Sippin'' on straight chlorine\n Let the vibe, let the vibe\n Let the vibe, let the vibe\n Beat is a chemical, yeah\n Let the vibe, let the vibe\n Let the vibe, let the vibe\n Moment is medical, yeah\n Sippin'' on straight chlorine\n Let the vibe, let the vibe\n Let the vibe, let the vibe\n Beat is a chemical, yeah\n Let the vibe, let the vibe\n Let the vibe, let the vibe\n Moment is medical, yeah\n I''m so sorry, I forgot you\n Let me catch you up to speed\n I''ve been tested like the ends of\n A weathered flag that''s by the sea\n Can you build my house with pieces?\n I''m just a chemical\n Can you build my house with pieces?\n I''m just a chemical\n Can you build my house with pieces?\n I''m just a chemical\n Can you build my house with pieces?\n I''m just a chemical', '5:25', 'https://www.discogs.com/Twenty-One-Pilots-Chlorine-Alt-Mix/release/13189226/image/SW1hZ2U6Mzg1MzQwMzI=', 2018, 'https://mp3xi.net/mp3/YzM2NGQyMGNmZjYyYjMyNGIwZGJiN2Y3MDE4ZWFmNWZ8bG9hZA.mp3', '[4]');
 
-SELECT "Insert_Playlist" ('Imagine', 1, '[1, 2]');
-
-SELECT "Insert_Playlist" ('My playlist', 1, '[1, 3, 4, 7]');
-
-SELECT "Insert_Playlist" ('Favorites', 2, '[1, 3, 7]');
-
-SELECT "Insert_Playlist" ('TOP', 2, '[5, 7]');
-
-SELECT "Insert_Playlist" ('Music to relax', 3, '[2, 3, 6]');
-
-SELECT "Insert_Playlist" ('Best tracks', 3, '[1, 2, 5, 6, 7]');
-
-SELECT "Insert_Playlist" ('Fav tracks', 4, '[2, 3, 5]');
-
-SELECT "Insert_Playlist" ('playlist', 4, '[1, 3, 4, 6]');
-
-SELECT "Insert_Playlist" ('Energetic', 5, '[2, 4, 6]');
-
-SELECT "Insert_Playlist" ('Rock', 5, '[3, 4]');

@@ -84,7 +84,6 @@ const actions = {
         console.error(error);
         router.push("/error");
       });
-    console.log(res);
     await commit("setUser", res.user);
     dispatch("changeLogInStatus", res.success);
   },

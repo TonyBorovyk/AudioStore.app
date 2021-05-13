@@ -21,9 +21,13 @@ const actions = {
       credentials: "include",
       body: JSON.stringify({ search })
     })
-      .then(response => {
+      .then(async response => {
         if (response.ok) {
-          return response.json();
+          const data_json = await response.json();
+          if (data_json.data.length == 0) {
+            data_json.data = [{ artists: [] }];
+          }
+          return data_json;
         }
         if (response.status == 404) {
           return { data: [{ artists: [] }] };
@@ -39,7 +43,6 @@ const actions = {
         dispatch("data_upload/changeDataUploadStatus", true, { root: true });
         router.push("/error");
       });
-    console.log(res.data);
     await commit("setSongs", res.data);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   },
@@ -121,7 +124,6 @@ const actions = {
         dispatch("data_upload/changeDataUploadStatus", true, { root: true });
         router.push("/error");
       });
-    console.log(res.data);
     dispatch("page/changeTotalPages", true, { root: true });
     if (res.data.total_pages <= rootGetters["page/getCurPage"]) {
       dispatch("page/changeTotalPages", false, { root: true });
@@ -158,7 +160,6 @@ const actions = {
         dispatch("data_upload/changeDataUploadStatus", true, { root: true });
         router.push("/error");
       });
-    console.log(res.data);
     dispatch("page/changeTotalPages", true, { root: true });
     if (res.data.total_pages <= rootGetters["page/getCurPage"]) {
       dispatch("page/changeTotalPages", false, { root: true });

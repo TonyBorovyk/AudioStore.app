@@ -6,7 +6,7 @@ const {
   rooms: dbRooms,
 } = require('../db');
 const {
-  transform: { getTracks, getFullPlaylists },
+  transform: { getTracks },
 } = require('../services');
 
 const PAGINATION = { LIMIT: 20, PAGE: 1 };
@@ -86,7 +86,8 @@ const roomsGetMoreOpts = {
 async function routes(fastify) {
   fastify.get('/', async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
-    const user = await dbUsers.getById(claims.id); // claims.id returns user id
+    // eslint-disable-next-line no-unused-vars
+    const { password, ...user } = await dbUsers.getById(claims.id); // claims.id returns user id
     return { user, success: true };
   });
 
@@ -124,10 +125,8 @@ async function routes(fastify) {
     const claims = verifyToken(req.cookies.jwt, res);
     const playlists = await dbPlaylist.getByUserId(claims.id);
 
-    const response = await getFullPlaylists(playlists);
-
     return {
-      data: response,
+      data: playlists,
       success: true,
     };
   });

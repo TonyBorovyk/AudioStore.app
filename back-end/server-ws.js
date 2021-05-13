@@ -47,13 +47,13 @@ const sendToEveryoneInARoom = (messageObj, connection) => {
 };
 
 const sendInfoAfterConnection = (messageObj) => {
-  const userRoom = rooms.find((room) => room.roomId === messageObj.roomId);
-  const index = userRoom.usersIds.findIndex((id) => id === messageObj.userId);
+  const userRoom = rooms.find((room) => room.roomId == messageObj.roomId);
+  const index = userRoom.usersIds.findIndex((id) => id == messageObj.userId);
   const userConnection = userRoom.usersConnections[index];
   userConnection.send(
     JSON.stringify({
       method: 'new track',
-      songId: messageObj.songId,
+      track_id: messageObj.songId,
     })
   );
   if (messageObj.play === true) {

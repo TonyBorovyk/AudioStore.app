@@ -63,7 +63,6 @@ const actions = {
         dispatch("data_upload/changeDataUploadStatus", true, { root: true });
         router.push("/error");
       });
-    console.log(res);
 
     await commit("setRoomData", res.data);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
@@ -97,7 +96,6 @@ const actions = {
         dispatch("data_upload/changeDataUploadStatus", true, { root: true });
         router.push("/error");
       });
-    console.log(res);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
     return res.success;
   }
