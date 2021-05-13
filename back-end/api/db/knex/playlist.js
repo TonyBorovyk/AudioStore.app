@@ -2,24 +2,11 @@ const { DatabaseError } = require('../databaseError');
 const {
   tables: { PLAYLIST },
 } = require('../../config');
+const {
+  dbDTO: { playlistAdd: addDTO, playlistGet: getDTO },
+} = require('../../services');
 
 let knex;
-
-function addDTO(playlist) {
-  const playlistList = Object.entries(playlist).map(([key, value]) => {
-    if (key === 'track_list') {
-      return [key, `[${value.join(', ')}]`];
-    }
-    return [key, value];
-  });
-
-  return Object.fromEntries(playlistList);
-}
-
-function getDTO(playlist) {
-  playlist.track_list = JSON.parse(playlist.track_list);
-  return playlist;
-}
 
 async function create(playlist) {
   const newPlaylist = addDTO(playlist);

@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     "last_name" varchar(70) NOT NULL,
     "username" varchar(60) NOT NULL,
     "email" varchar(100) NOT NULL,
-    "password" varchar(50) NOT NULL,
+    "password" varchar(100) NOT NULL,
     "role" varchar(10) NOT NULL default 'base'
 );
 

@@ -3,10 +3,11 @@ const jwt = require('jsonwebtoken');
 const {
   users: dbUsers,
   playlist: dbPlaylist,
-  track: dbTrack,
-  artists: dbArtists,
   rooms: dbRooms,
 } = require('../db');
+const {
+  transform: { getTracks, getFullPlaylists },
+} = require('../services');
 
 const PAGINATION = { LIMIT: 20, PAGE: 1 };
 
@@ -81,38 +82,6 @@ const roomsGetMoreOpts = {
     },
   },
 };
-
-async function getTracks(trackIds) {
-  const tracks = await Promise.all(
-    trackIds.map((trackId) => dbTrack.info.getById(trackId))
-  );
-
-  const artistsList = await Promise.all(
-    tracks.map((track) =>
-      Promise.all(
-        track.artist_list.map((artistId) => dbArtists.getById(artistId))
-      )
-    )
-  );
-
-  const result = tracks.map((track, index) => {
-    track.artists = artistsList[index];
-    return track;
-  });
-
-  return result;
-}
-
-async function getFullPlaylists(playlists) {
-  const tracksList = await Promise.all(
-    playlists.map((playlist) => getTracks(playlist.track_list))
-  );
-
-  return playlists.map((playlist, index) => {
-    playlist.tracks = tracksList[index];
-    return playlist;
-  });
-}
 
 async function routes(fastify) {
   fastify.get('/', async (req, res) => {
