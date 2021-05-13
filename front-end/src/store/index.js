@@ -13,6 +13,7 @@ import data_upload from "./modules/data_upload";
 import rooms from "./modules/rooms";
 import room from "./modules/room";
 import page from "./modules/page";
+import search from "./modules/search";
 
 export default createStore({
   modules: {
@@ -29,6 +30,7 @@ export default createStore({
     data_upload,
     rooms,
     room,
-    page
+    page,
+    search
   }
 });

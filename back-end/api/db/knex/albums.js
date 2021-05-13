@@ -5,36 +5,47 @@ const {
 
 let knex;
 
-async function create({ albumName, artistId, cover, artistList }) {
-  const [result] = await knex(ALBUM)
-    .insert({
-      Album_Name: albumName,
-      Artist_ID: artistId,
-      Cover: cover,
-      Artist_List: artistList,
-    })
-    .returning('*');
-  return result;
+function addDTO(album) {
+  const albumList = Object.entries(album).map(([key, value]) => {
+    if (key === 'artist_list') {
+      return [key, `[${value.join(', ')}]`];
+    }
+    return [key, value];
+  });
+
+  return Object.fromEntries(albumList);
+}
+
+function getDTO(album) {
+  album.artist_list = JSON.parse(album.artist_list);
+  return album;
+}
+
+async function create(newAlbum) {
+  const [result] = await knex(ALBUM).insert(addDTO(newAlbum)).returning('*');
+  return getDTO(result);
 }
 
 async function getAll() {
-  return await knex(ALBUM)
-    .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+  const result = await knex(ALBUM)
+    .join(ARTIST, `${ALBUM}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
       `${ARTIST}.artist_id`,
       `${ARTIST}.artist_name`,
       `${ALBUM}.album_id`,
       `${ALBUM}.album_name`,
-      `${ALBUM}.cover as album_cover`,
+      `${ALBUM}.cover`,
       `${ALBUM}.artist_list`
     );
+
+  return result.map(getDTO);
 }
 
 async function getMore(limit, page) {
   const [{ count }] = await knex(ALBUM).count();
   const offset = (page - 1) * limit;
   const albums = await knex(ALBUM)
-    .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .join(ARTIST, `${ALBUM}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
       `${ARTIST}.artist_id`,
       `${ARTIST}.artist_name`,
@@ -51,14 +62,14 @@ async function getMore(limit, page) {
   return {
     total: total,
     totalPages: Math.ceil(total / limit),
-    albums,
+    albums: albums.map(getDTO),
   };
 }
 
 async function getById(id) {
   const album = await knex(ALBUM)
-    .where({ Album_ID: id })
-    .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .where({ album_id: id })
+    .join(ARTIST, `${ALBUM}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
       `${ARTIST}.artist_id`,
       `${ARTIST}.artist_name`,
@@ -71,47 +82,43 @@ async function getById(id) {
   if (!album) {
     throw new DatabaseError(`No Album with id: ${id}`);
   }
-  return album;
+  return getDTO(album);
 }
 
 async function getByAlbumName(albumName) {
   const album = await knex(ALBUM)
-    .where({ Album_Name: albumName })
-    .join(ARTIST, `${ALBUM}.Artist_ID`, '=', `${ARTIST}.Artist_ID`)
+    .where({ album_name: albumName })
+    .join(ARTIST, `${ALBUM}.artist_id`, '=', `${ARTIST}.artist_id`)
     .select(
       `${ARTIST}.artist_id`,
       `${ARTIST}.artist_name`,
       `${ALBUM}.album_id`,
       `${ALBUM}.album_name`,
-      `${ALBUM}.cover as album_cover`,
+      `${ALBUM}.cover`,
       `${ALBUM}.artist_list`
     )
     .first();
   if (!album) {
     throw new DatabaseError(`No Album with albumName: ${albumName}`);
   }
-  return album;
+  return getDTO(album);
 }
 
-async function update({ albumId, artistId, cover, artistList }) {
-  const updatedAlbum = {};
-
-  if (artistId) updatedAlbum.Artist_ID = artistId;
-  if (cover) updatedAlbum.Cover = cover;
-  if (artistList) updatedAlbum.Artist_List = artistList;
+async function update({ album_id: albumId, ...album }) {
+  const updatedAlbum = addDTO(album);
 
   const [response] = await knex(ALBUM)
-    .where({ Album_ID: albumId })
+    .where({ album_id: albumId })
     .update(updatedAlbum)
     .returning('*');
   if (!response) {
     throw new DatabaseError(`No Album with albumId: ${albumId}`);
   }
-  return response;
+  return getDTO(response);
 }
 
 async function remove(id) {
-  await knex(ALBUM).where({ Album_ID: id }).del();
+  await knex(ALBUM).where({ album_id: id }).del();
 }
 
 module.exports = (client) => {

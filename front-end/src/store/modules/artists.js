@@ -35,9 +35,8 @@ const actions = {
         router.push("/error");
         dispatch("data_upload/changeDataUploadStatus", true, { root: true });
       });
-    console.log(res);
     dispatch("page/changeTotalPages", true, { root: true });
-    if (res.data.totalPages <= rootGetters["page/getCurPage"]) {
+    if (res.data.total_pages <= rootGetters["page/getCurPage"]) {
       dispatch("page/changeTotalPages", false, { root: true });
     }
     await commit("setArtists", res.data.artists);
@@ -71,24 +70,11 @@ const actions = {
         router.push("/error");
         dispatch("data_upload/changeDataUploadStatus", true, { root: true });
       });
-    console.log(res);
     dispatch("page/changeTotalPages", true, { root: true });
-    if (res.data.totalPages <= rootGetters["page/getCurPage"]) {
+    if (res.data.total_pages <= rootGetters["page/getCurPage"]) {
       dispatch("page/changeTotalPages", false, { root: true });
     }
     await commit("addArtists", res.data.artists);
-    dispatch("data_upload/changeDataUploadStatus", true, { root: true });
-  },
-  async fetchAllArtists({ commit, dispatch }) {
-    dispatch("data_upload/changeDataUploadStatus", false, { root: true });
-    const res = await fetch(`http://localhost:3000/artists`)
-      .then(response => response.json())
-      .catch(error => {
-        console.error(error);
-        router.push("/error");
-      });
-
-    await commit("setArtists", res.data);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   }
 };

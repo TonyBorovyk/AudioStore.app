@@ -35,9 +35,8 @@ const actions = {
         router.push("/error");
         dispatch("data_upload/changeDataUploadStatus", true, { root: true });
       });
-    console.log(res);
     dispatch("page/changeTotalPages", true, { root: true });
-    if (res.data.totalPages <= rootGetters["page/getCurPage"]) {
+    if (res.data.total_pages <= rootGetters["page/getCurPage"]) {
       dispatch("page/changeTotalPages", false, { root: true });
     }
     await commit("setAlbums", res.data.albums);
@@ -71,9 +70,8 @@ const actions = {
         router.push("/error");
         dispatch("data_upload/changeDataUploadStatus", true, { root: true });
       });
-    console.log(res);
     dispatch("page/changeTotalPages", true, { root: true });
-    if (res.data.totalPages <= rootGetters["page/getCurPage"]) {
+    if (res.data.total_pages <= rootGetters["page/getCurPage"]) {
       dispatch("page/changeTotalPages", false, { root: true });
     }
     await commit("addAlbums", res.data.albums);

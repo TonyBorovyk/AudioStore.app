@@ -18,14 +18,15 @@ export default {
     ButtonTenMore
   },
   methods: {
-    ...mapActions(["fetchAllArtists", "moreArtists"]),
-    ...mapGetters("page", ["getTotalPages"])
+    ...mapActions(["fetchArtists", "moreArtists"])
   },
   computed: {
-    ...mapGetters(["getArtists"])
+    ...mapGetters(["getArtists"]),
+
+    ...mapGetters("page", ["getTotalPages"])
   },
   created() {
-    this.fetchAllArtists();
+    this.fetchArtists();
   }
 };
 </script>

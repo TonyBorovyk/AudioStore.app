@@ -1,10 +1,11 @@
 const Knex = require('knex');
+const path = require('path');
+const fsp = require('fs').promises;
 
 const {
   db: {
     names: { KNEX },
   },
-  tables,
 } = require('../../config');
 
 const dbAlbums = require('./albums');
@@ -27,79 +28,12 @@ const throwIfInvalid = (isValid, message = '') => {
 };
 
 async function createDBWithTablesIfNotExists() {
-  // await knex.raw(`
-  //   DROP TABLE IF EXISTS "${tables.TRACK_INFO}";
-  //   DROP TABLE IF EXISTS "${tables.PLAYLIST}";
-  //   DROP TABLE IF EXISTS "${tables.ALBUM}";
-  //   DROP TABLE IF EXISTS "${tables.ROOM}";
-  //   DROP TABLE IF EXISTS "${tables.USER}";
-  //   DROP TABLE IF EXISTS "${tables.TRACK_CATEGORY}";
-  //   DROP TABLE IF EXISTS "${tables.ARTIST}";
-  // `);
-
-  await knex.raw(`
-    CREATE TABLE IF NOT EXISTS "${tables.ARTIST}" (
-        "Artist_ID" SERIAL PRIMARY KEY NOT NULL,
-        "Artist_Name" varchar(70) NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS "${tables.TRACK_CATEGORY}" (
-        "Category_ID" SERIAL PRIMARY KEY NOT NULL,
-        "Category_Name" varchar(70) NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS "${tables.USER}" (
-        "user_id" SERIAL PRIMARY KEY NOT NULL,
-        "first_name" varchar(60) NOT NULL,
-        "last_name" varchar(70) NOT NULL,
-        "username" varchar(60) NOT NULL,
-        "email" varchar(100) NOT NULL,
-        "password" varchar(150) NOT NULL,
-        "role" varchar(10) NOT NULL default 'base'
-    );
-
-    CREATE TABLE IF NOT EXISTS "${tables.ROOM}" (
-        "Room_ID" SERIAL PRIMARY KEY NOT NULL,
-        "Admin_ID" bigint NOT NULL,
-        "Room_Name" varchar(255) NOT NULL,
-      CONSTRAINT "Room_fk0" FOREIGN KEY ("Admin_ID") REFERENCES "User"("User_ID") ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS "${tables.ALBUM}" (
-        "Album_ID" SERIAL PRIMARY KEY  NOT NULL,
-        "Album_Name" varchar(70) NOT NULL,
-        "Artist_ID" bigint NOT NULL,
-        "Cover" TEXT,
-        "Artist_List" TEXT NOT NULL,
-      CONSTRAINT "Album_fk0" FOREIGN KEY ("Artist_ID") REFERENCES "Artist"("Artist_ID") ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS "${tables.PLAYLIST}" (
-        "Playlist_ID" SERIAL PRIMARY KEY NOT NULL,
-        "Playlist_title" varchar(80) NOT NULL,
-        "User_ID" bigint NOT NULL,
-        "Last_update" TIMESTAMP NOT NULL,
-        "Track_List" TEXT NOT NULL,
-      CONSTRAINT "Playlist_fk0" FOREIGN KEY ("User_ID") REFERENCES "User"("User_ID") ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS "${tables.TRACK_INFO}" (
-        "Track_ID" SERIAL PRIMARY KEY NOT NULL,
-        "Album_ID" bigint,
-        "Artist_ID" bigint NOT NULL,
-        "Category_ID" bigint,
-        "Track_name" varchar(100) NOT NULL,
-        "Lyrics" TEXT,
-        "Duration" varchar(40) NOT NULL,
-        "Cover" TEXT,
-        "Release_year" int NOT NULL,
-        "Time_added" TIMESTAMP,
-        "Track_URL" TEXT NOT NULL,
-        "Artist_List" TEXT NOT NULL,
-      CONSTRAINT "Track_Info_fk0" FOREIGN KEY ("Album_ID") REFERENCES "Album"("Album_ID") ON DELETE CASCADE,
-      CONSTRAINT "Track_Info_fk1" FOREIGN KEY ("Artist_ID") REFERENCES "Artist"("Artist_ID") ON DELETE CASCADE,
-      CONSTRAINT "Track_Info_fk2" FOREIGN KEY ("Category_ID") REFERENCES "Track_Category"("Category_ID") ON DELETE CASCADE
-    );`);
+  const createTablesSQL = (
+    await fsp.readFile(
+      path.join(process.cwd(), 'api', 'db', 'migration', 'createTables.sql')
+    )
+  ).toString();
+  await knex.raw(createTablesSQL);
 
   return true;
 }

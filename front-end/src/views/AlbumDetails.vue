@@ -4,7 +4,6 @@
     <h1>{{ getAlbumDetails.album_name }}</h1>
     <SongArtists :song="getAlbumDetails" :flex="true" />
     <SongsList :songs="getSongs" />
-    <ButtonTenMore />
   </div>
 </template>
 
@@ -12,24 +11,22 @@
 import { mapGetters, mapActions } from "vuex";
 import SongsList from "@/components/SongsList.vue";
 import SongArtists from "@/components/SongArtists.vue";
-import ButtonTenMore from "@/components/ButtonTenMore.vue";
 
 export default {
   name: "AlbumDetails",
   components: {
     SongsList,
-    SongArtists,
-    ButtonTenMore
+    SongArtists
   },
   computed: {
     ...mapGetters(["getAlbumDetails", "getSongs"])
   },
   methods: {
-    ...mapActions(["fetchAlbumDetails", "fetchRecAddedSongs"])
+    ...mapActions(["fetchAlbumDetails", "fetchSongsByAlbumId"])
   },
   created() {
     this.fetchAlbumDetails(this.$route.params.album_id);
-    this.fetchRecAddedSongs();
+    this.fetchSongsByAlbumId(this.$route.params.album_id);
   },
   beforeRouteUpdate(to, next) {
     if (to.name == "AlbumDetails") {

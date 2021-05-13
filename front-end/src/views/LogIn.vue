@@ -90,7 +90,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["changeLogInStatus", "fetchUser"]),
+    ...mapActions(["changeLogInStatus", "fetchUser", "LogIn"]),
     ...mapActions("data_upload", ["changeDataUploadStatus"]),
     async handleSubmit() {
       this.v$.$touch();
@@ -102,29 +102,8 @@ export default {
         password: this.password
       };
 
-      try {
-        let response = await fetch("http://localhost:3000/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          credentials: "include",
-          body: JSON.stringify(data)
-        });
-        if (response.status == 200) {
-          response = await response.json();
-          this.fetchUser();
-          await this.$router.push("/");
-          return;
-        } else {
-          response = await response.json();
-          this.error = response.message;
-          return 0;
-        }
-      } catch (e) {
-        console.error(e);
-        this.errer = "Invalid email or password";
-      }
+      const err = await this.LogIn(data);
+      this.error = err;
     }
   },
   created() {

@@ -1,7 +1,10 @@
 <template>
   <div>
     <h2>Songs</h2>
-    <div class="items-continer">
+    <div class="items-continer" v-if="getSongs[0].artists.length == 0">
+      No Songs Found
+    </div>
+    <div class="items-continer" v-if="getSongs[0].artists.length != 0">
       <div class="list-margin list-container">
         <div
           class="list-item playlist-item"

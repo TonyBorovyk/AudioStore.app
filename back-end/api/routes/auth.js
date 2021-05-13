@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs');
-
 const jwt = require('jsonwebtoken');
 
 const { users: dbUsers } = require('../db');
@@ -29,14 +28,15 @@ const sendResponse = (res, status, success, message) => {
 async function routes(fastify) {
   fastify.post('/login', async (req, res) => {
     const user = await dbUsers.getByEmail(req.body.email);
+
     if (!user) {
       return sendResponse(res, 404, false, 'User not found');
     }
-    if (!(await bcrypt.compare(req.body.password, user.Password))) {
+    if (!(await bcrypt.compare(req.body.password, user.password))) {
       return sendResponse(res, 400, false, 'Password is incorrect');
     }
 
-    const token = jwt.sign({ id: user.User_ID }, JWT_SECRET);
+    const token = jwt.sign({ id: user.user_id }, JWT_SECRET);
 
     res.setCookie('jwt', token, {
       httpOnly: true,

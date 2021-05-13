@@ -1,29 +1,35 @@
-const { search: dbSearch } = require('../db');
+const { search: dbSearch, artists: dbArtists } = require('../db');
 
-const verify = require('./verifyToken');
+async function getArtists(artistIds) {
+  return await Promise.all(
+    artistIds.map((artistsId) => dbArtists.getById(artistsId))
+  );
+}
 
 async function routes(fastify) {
-  fastify.post('/', async (req, res) => {
-    verify.verifyToken(req.cookies.jwt, res);
+  fastify.post('/', async (req) => {
     const searchString = req.body ? req.body.search : '';
 
     const result = await dbSearch.global(searchString);
 
-    res.send({
+    return {
       data: result,
       success: true,
-    });
+    };
   });
-  fastify.post('/songs', async (req, res) => {
-    verify.verifyToken(req.cookies.jwt, res);
+  fastify.post('/songs', async (req) => {
     const searchString = req.body ? req.body.search : '';
 
-    const result = await dbSearch.songs(searchString);
+    let result = await dbSearch.songs(searchString);
+    result.forEach(async (track) => {
+      track.artists = [];
+      track.artists = await getArtists(JSON.parse(track.artist_list));
+    });
 
-    res.send({
+    return {
       data: result,
       success: true,
-    });
+    };
   });
 }
 

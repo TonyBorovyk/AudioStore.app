@@ -95,6 +95,9 @@ function artistsCreate(artist) {
 function artistsGetAll() {
   return funcWrapper(dbWrapper().artists.getAll)();
 }
+function artistsGetMore(limit, page) {
+  return funcWrapper(dbWrapper().artists.getMore)(limit, page);
+}
 function artistsGetById(id) {
   return funcWrapper(dbWrapper().artists.getById)(id);
 }
@@ -130,20 +133,22 @@ function playlistRemove(id) {
 function trackInfoCreate(trackInfo) {
   return funcWrapper(dbWrapper().track.info.create)(trackInfo);
 }
-function trackInfoGetAll() {
-  return funcWrapper(dbWrapper().track.info.getAll)();
-}
-function trackInfoGetAllOrderBy(orderBy) {
-  return funcWrapper(dbWrapper().track.info.getAllOrderBy)(orderBy);
-}
-function trackInfoGetMore(limit, page) {
-  return funcWrapper(dbWrapper().track.info.getMore)(limit, page);
+function trackInfoGetAll(orderBy, sortDesk, limit, page) {
+  return funcWrapper(dbWrapper().track.info.getAll)(
+    orderBy,
+    sortDesk,
+    limit,
+    page
+  );
 }
 function trackInfoGetById(id) {
   return funcWrapper(dbWrapper().track.info.getById)(id);
 }
-function trackInfoGetByTrackName(trackName) {
-  return funcWrapper(dbWrapper().track.info.getByTrackName)(trackName);
+function trackInfoGetByAlbumId(albumId) {
+  return funcWrapper(dbWrapper().track.info.getByAlbumId)(albumId);
+}
+function trackInfoGetByArtistId(artistId) {
+  return funcWrapper(dbWrapper().track.info.getByArtistId)(artistId);
 }
 function trackInfoUpdate(track) {
   return funcWrapper(dbWrapper().track.info.update)(track);
@@ -246,6 +251,7 @@ module.exports = {
   artists: {
     create: artistsCreate,
     getAll: artistsGetAll,
+    getMore: artistsGetMore,
     getById: artistsGetById,
     getByArtistName: artistsGetByArtistName,
     remove: artistsRemove,
@@ -265,10 +271,9 @@ module.exports = {
     info: {
       create: trackInfoCreate,
       getAll: trackInfoGetAll,
-      getAllOrderBy: trackInfoGetAllOrderBy,
       getById: trackInfoGetById,
-      getMore: trackInfoGetMore,
-      getByTrackName: trackInfoGetByTrackName,
+      getByAlbumId: trackInfoGetByAlbumId,
+      getByArtistId: trackInfoGetByArtistId,
       update: trackInfoUpdate,
       remove: trackInfoRemove,
     },

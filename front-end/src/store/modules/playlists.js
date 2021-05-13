@@ -56,7 +56,7 @@ const actions = {
         "Content-Type": "application/json"
       },
       credentials: "include",
-      body: JSON.stringify({ playlist_title, track_list: "[]" })
+      body: JSON.stringify({ playlist_title, track_list: [] })
     })
       .then(response => {
         if (response.ok) {
