@@ -21,6 +21,8 @@ fastify.setErrorHandler(function (error, request, reply) {
   let status = 500;
   let response = { success: false };
 
+  console.error(error.message || error);
+
   if (error.name === 'JsonWebTokenError') {
     status = 401;
     response.message = 'Unauthenticated';

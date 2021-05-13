@@ -3,6 +3,9 @@ const {
   artists: dbArtists,
   track: dbTrack,
 } = require('../db');
+const {
+  transform: { getArtists, getFullTracks },
+} = require('../services');
 
 const PAGINATION = { LIMIT: 20, PAGE: 1 };
 
@@ -20,7 +23,7 @@ const createOpts = {
         cover: { type: 'string' },
         release_year: { type: 'string' },
         track_url: { type: 'string' },
-        artist_list: { type: 'string' },
+        artist_list: { type: 'array' },
       },
       required: [
         'album_name',
@@ -85,23 +88,6 @@ const getByArtistIdOpts = {
     },
   },
 };
-
-async function getArtists(artistIds) {
-  return await Promise.all(
-    artistIds.map((artistsId) => dbArtists.getById(artistsId))
-  );
-}
-
-async function getFullTracks(tracks) {
-  const artistsList = await Promise.all(
-    tracks.map((track) => getArtists(track.artist_list))
-  );
-
-  return tracks.map((track, index) => {
-    track.artists = artistsList[index];
-    return track;
-  });
-}
 
 async function routes(fastify) {
   fastify.post('/', createOpts, async (req, res) => {

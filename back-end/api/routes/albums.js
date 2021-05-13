@@ -1,5 +1,9 @@
 const { albums: dbAlbums, artists: dbArtists } = require('../db');
 
+const {
+  transform: { getArtists, getFullAlbums },
+} = require('../services');
+
 const PAGINATION = { LIMIT: 20, PAGE: 1 };
 
 const createOpts = {
@@ -10,7 +14,7 @@ const createOpts = {
         album_name: { type: 'string' },
         artist_name: { type: 'string' },
         cover: { type: 'string' },
-        artist_list: { type: 'string' },
+        artist_list: { type: 'array' },
       },
       required: ['album_name', 'artist_name', 'cover', 'artist_list'],
     },
@@ -38,23 +42,6 @@ const getMoreOpts = {
     },
   },
 };
-
-async function getArtists(artistIds) {
-  return await Promise.all(
-    artistIds.map((artistId) => dbArtists.getById(artistId))
-  );
-}
-
-async function getFullAlbums(albums) {
-  const artistsList = await Promise.all(
-    albums.map((album) => getArtists(album.artist_list))
-  );
-
-  return albums.map((album, index) => {
-    album.artists = artistsList[index];
-    return album;
-  });
-}
 
 async function routes(fastify) {
   fastify.post('/', createOpts, async (req, res) => {

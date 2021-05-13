@@ -1,16 +1,17 @@
-const { search: dbSearch, artists: dbArtists } = require('../db');
-
-async function getArtists(artistIds) {
-  return await Promise.all(
-    artistIds.map((artistsId) => dbArtists.getById(artistsId))
-  );
-}
+const { search: dbSearch } = require('../db');
+const {
+  transform: { getFullAlbums, getFullPlaylists, getFullTracks },
+} = require('../services');
 
 async function routes(fastify) {
   fastify.post('/', async (req) => {
     const searchString = req.body ? req.body.search : '';
 
     const result = await dbSearch.global(searchString);
+
+    result.albums = await getFullAlbums(result.albums);
+    result.playlists = await getFullPlaylists(result.playlists);
+    result.tracks = await getFullTracks(result.tracks);
 
     return {
       data: result,
@@ -20,11 +21,9 @@ async function routes(fastify) {
   fastify.post('/songs', async (req) => {
     const searchString = req.body ? req.body.search : '';
 
-    let result = await dbSearch.songs(searchString);
-    result.forEach(async (track) => {
-      track.artists = [];
-      track.artists = await getArtists(JSON.parse(track.artist_list));
-    });
+    const tracks = await dbSearch.global(searchString);
+
+    const result = await getFullTracks(tracks);
 
     return {
       data: result,
