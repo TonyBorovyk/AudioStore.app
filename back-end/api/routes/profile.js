@@ -82,6 +82,30 @@ const roomsGetMoreOpts = {
   },
 };
 
+async function getTracks(trackIds) {
+  const tracks = trackIds.map((trackId) => dbTrack.info.getById(trackId));
+  const artistsList = tracks.map((track) =>
+    track.artist_list.map((artistId) => dbArtists.getById(artistId))
+  );
+
+  const result = tracks.map((track, index) => {
+    track.artists = artistsList[index];
+    return track;
+  });
+
+  return result;
+}
+
+async function getFullPlaylists(playlists) {
+  const tracksList = playlists.map((playlist) =>
+    getTracks(playlist.track_list)
+  );
+  return playlists.map((playlist, index) => {
+    playlist.tracks = tracksList[index];
+    return playlist;
+  });
+}
+
 async function routes(fastify) {
   fastify.get('/', async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
@@ -122,7 +146,6 @@ async function routes(fastify) {
   fastify.get('/playlists', async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
     const playlists = await dbPlaylist.getByUserId(claims.id);
-    // console.log(playlists)
     const response = await getFullPlaylists(playlists);
     console.log(response);
 
