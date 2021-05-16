@@ -2,7 +2,7 @@
   <div class="artists-wrapper">
     <h1>Artists</h1>
     <ArtistsList :artists="getArtists" />
-    <ButtonTenMore :AskMore="fetchAllArtists" />
+    <ButtonTenMore v-if="getTotalPages" :AskMore="moreArtists" />
   </div>
 </template>
 
@@ -18,13 +18,15 @@ export default {
     ButtonTenMore
   },
   methods: {
-    ...mapActions(["fetchAllArtists"])
+    ...mapActions(["fetchArtists", "moreArtists"])
   },
   computed: {
-    ...mapGetters(["getArtists"])
+    ...mapGetters(["getArtists"]),
+
+    ...mapGetters("page", ["getTotalPages"])
   },
   created() {
-    this.fetchAllArtists();
+    this.fetchArtists();
   }
 };
 </script>

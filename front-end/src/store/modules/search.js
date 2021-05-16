@@ -1,17 +1,24 @@
 import router from "@/router";
 
 const state = {
-  album_details: {}
+  search_request: ""
 };
 
 const getters = {
-  getAlbumDetails: state => state.album_details
+  getSearchRequest: state => state.search_request
 };
 
 const actions = {
-  async fetchAlbumDetails({ commit, dispatch }, id) {
+  async searchAll({ dispatch, state }) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
-    const res = await fetch(`${process.env.VUE_APP_URL}/albums/${id}`)
+    const res = await fetch(`${process.env.VUE_APP_URL}/search`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ search: state.search_request })
+    })
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -31,14 +38,17 @@ const actions = {
         console.error(error);
         router.push("/error");
       });
-    await commit("setAlbumDetails", res.data);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+    return res.data;
+  },
+  changeSearchRequest({ commit }, search_request) {
+    commit("setSearchRequest", search_request);
   }
 };
 
 const mutations = {
-  setAlbumDetails: (state, album_details) =>
-    (state.album_details = album_details)
+  setSearchRequest: (state, search_request) =>
+    (state.search_request = search_request)
 };
 
 export default {

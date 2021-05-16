@@ -1,5 +1,10 @@
 <template>
-  <button class="btn btn-ten-more" @click="AskMore">Show More</button>
+  <button
+    class="btn btn-ten-more"
+    @click="AskMore({ order_by: 'time_added', asc: true })"
+  >
+    Show More
+  </button>
 </template>
 
 <script>

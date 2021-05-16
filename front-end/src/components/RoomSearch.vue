@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "RoomSearch",
   data() {
@@ -24,13 +25,12 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["searchSongs"]),
     SendSearch() {
-      //type code here
       if (this.searchRequest == "") {
         return;
       }
-      //fetch songs by name in vuex songs.js
-      console.log(this.searchRequest);
+      this.searchSongs(this.searchRequest);
     }
   }
 };

@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "BaseSearch",
   data() {
@@ -24,13 +26,14 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["changeSearchRequest"]),
     SendSearch() {
       //type code here
       if (this.searchRequest == "") {
         return;
       }
+      this.changeSearchRequest(this.searchRequest);
       this.$router.push("/search");
-      console.log(this.searchRequest);
     }
   }
 };

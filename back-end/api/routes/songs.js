@@ -1,13 +1,11 @@
-const jwt = require('jsonwebtoken');
-
 const {
   albums: dbAlbums,
   artists: dbArtists,
   track: dbTrack,
-  users: dbUsers,
 } = require('../db');
-
-const verify = require('./verifyToken');
+const {
+  transform: { getArtists, getFullTracks },
+} = require('../services');
 
 const PAGINATION = { LIMIT: 20, PAGE: 1 };
 
@@ -25,7 +23,7 @@ const createOpts = {
         cover: { type: 'string' },
         release_year: { type: 'string' },
         track_url: { type: 'string' },
-        artist_list: { type: 'string' },
+        artist_list: { type: 'array' },
       },
       required: [
         'album_name',
@@ -48,10 +46,10 @@ const addOpts = {
     body: {
       type: 'object',
       properties: {
-        track_name: { type: 'string' },
+        track_id: { type: 'string' },
         artist_id: { type: 'string' },
       },
-      required: ['track_name', 'artist_id'],
+      required: ['track_id', 'artist_id'],
     },
   },
 };
@@ -67,77 +65,79 @@ const getAllOpts = {
   },
 };
 
+const getByAlbumIdOpts = {
+  schema: {
+    querystring: {
+      type: 'object',
+      properties: {
+        album_id: { type: 'string' },
+      },
+      required: ['album_id'],
+    },
+  },
+};
+
+const getByArtistIdOpts = {
+  schema: {
+    querystring: {
+      type: 'object',
+      properties: {
+        artist_id: { type: 'string' },
+      },
+      required: ['artist_id'],
+    },
+  },
+};
+
 async function routes(fastify) {
   fastify.post('/', createOpts, async (req, res) => {
-    const claims = verify.verifyToken(req.cookies.jwt, res);
-    const user = await dbUsers.getById(claims.id);
-    if (user.role !== 'admin') {
-      res.code(403).send({
-        message: 'Forbidden',
-        success: false,
-      });
-    }
     const {
       album_name: albumName,
       artist_name: artistName,
       category_name: categoryName,
-      track_name: trackName,
-      lyrics,
-      duration,
-      cover,
-      release_year: releaseYear,
-      track_url: trackURL,
-      artist_list: artistList,
+      ...track
     } = req.body;
-    const { album_id: albumId } = await dbAlbums.getByAlbumName(albumName);
-    const { artist_id: artistId } = await dbArtists.getByArtistName(artistName);
-    const {
-      category_id: categoryId,
-    } = await dbTrack.category.getByCategoryName(categoryName);
+
+    const album = await dbAlbums.getByAlbumName(albumName);
+    const artist = await dbArtists.getByArtistName(artistName);
+    const category = await dbTrack.category.getByCategoryName(categoryName);
+
     const newTrackInfo = {
-      albumId,
-      artistId,
-      categoryId,
-      trackName,
-      lyrics,
-      duration,
-      cover,
-      releaseYear,
-      trackURL,
-      artistList,
+      album_id: album.album_id,
+      artist_id: artist.artist_id,
+      category_id: category.category_id,
+      track_name: track.track_name,
+      lyrics: track.lyrics,
+      duration: track.duration,
+      cover: track.cover,
+      release_year: track.release_year,
+      track_url: track.track_url,
+      artist_list: track.artist_list,
     };
+
     const trackInfo = await dbTrack.info.create(newTrackInfo);
-    res.send({
+
+    res.code(201).send({
       data: trackInfo,
       success: true,
     });
   });
-  fastify.post('/add', addOpts, async (req, res) => {
-    const claims = verify.verifyToken(req.cookies.jwt, res);
-    const user = await dbUsers.getById(claims.id);
-    if (user.role !== 'admin') {
-      res.code(403).send({
-        message: 'Forbidden',
-        success: false,
-      });
-    }
-    const { track_name: trackName, artist_id: artistId } = req.body;
+  fastify.post('/add', addOpts, async (req) => {
+    const { track_id: trackId, artist_id: artistId } = req.body;
 
-    const track = await dbTrack.info.getByTrackName(trackName);
+    const track = await dbTrack.info.getById(trackId);
     const updatedTrack = {
-      trackId: track.track_id,
-      trackList: JSON.stringify(
-        JSON.parse(track.artist_list).concat([artistId])
-      ),
+      track_id: trackId,
+      trackList: track.artist_list.concat([artistId]),
     };
     const result = await dbTrack.info.update(updatedTrack);
 
-    res.send({
+    return {
       data: result,
       success: true,
-    });
+    };
   });
-  fastify.get('/', getAllOpts, async (req, res) => {
+  fastify.get('/', getAllOpts, async (req) => {
     const orderBy = req.query.order_by;
     const sortDesk = req.query.sort_desk === 'true';
     const limit = parseInt(req.query.limit, 10);
@@ -149,38 +149,50 @@ async function routes(fastify) {
       limit,
       page
     );
-    const response = { tracks: [], total, total_pages: totalPages };
-    for await (const track of tracks) {
-      track.artists = await Promise.all(
-        JSON.parse(track.artist_list).map((artistsId) =>
-          dbArtists.getById(artistsId)
-        )
-      );
-      response.tracks.push(track);
-    }
 
-    return res.send({
-      data: response,
+    const response = await getFullTracks(tracks);
+
+    return {
+      data: {
+        tracks: response,
+        total,
+        total_pages: totalPages,
+      },
       success: true,
-    });
+    };
   });
-  fastify.get('/:id', async (req, res) => {
-    let track = await dbTrack.info.getById(req.params.id);
-    track.artists = await Promise.all(
-      JSON.parse(track.artist_list).map((artistsId) =>
-        dbArtists.getById(artistsId)
-      )
-    );
-    return res.send({
+  fastify.get('/:id', async (req) => {
+    const track = await dbTrack.info.getById(req.params.id);
+    track.artists = await getArtists(track.artist_list);
+
+    return {
       data: track,
       success: true,
-    });
+    };
   });
-  fastify.delete('/:id', async (req, res) => {
+  fastify.delete('/:id', async (req) => {
     await dbTrack.info.remove(req.params.id);
-    return res.send({
+    return {
       success: true,
-    });
+    };
+  });
+  fastify.get('/album', getByAlbumIdOpts, async (req) => {
+    const { album_id: albumId } = req.query;
+    const tracks = await dbTrack.info.getByAlbumId(albumId);
+
+    return {
+      data: tracks,
+      success: true,
+    };
+  });
+  fastify.get('/artist', getByArtistIdOpts, async (req) => {
+    const { artist_id: artistId } = req.query;
+    const tracks = await dbTrack.info.getByArtistId(artistId);
+
+    return {
+      data: tracks,
+      success: true,
+    };
   });
 }
 

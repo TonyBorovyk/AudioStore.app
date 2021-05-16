@@ -1,31 +1,34 @@
-const jwt = require('jsonwebtoken');
-
 const { search: dbSearch } = require('../db');
-
-const verify = require('./verifyToken');
+const {
+  transform: { getFullAlbums, getFullPlaylists, getFullTracks },
+} = require('../services');
 
 async function routes(fastify) {
-  fastify.post('/', async (req, res) => {
-    verify.verifyToken(req.cookies.jwt, res);
+  fastify.post('/', async (req) => {
     const searchString = req.body ? req.body.search : '';
 
     const result = await dbSearch.global(searchString);
 
-    res.send({
+    result.albums = await getFullAlbums(result.albums);
+    result.playlists = await getFullPlaylists(result.playlists);
+    result.tracks = await getFullTracks(result.tracks);
+
+    return {
       data: result,
       success: true,
-    });
+    };
   });
-  fastify.post('/songs', async (req, res) => {
-    verify.verifyToken(req.cookies.jwt, res);
+  fastify.post('/songs', async (req) => {
     const searchString = req.body ? req.body.search : '';
 
-    const result = await dbSearch.global(searchString);
+    const tracks = await dbSearch.songs(searchString);
 
-    res.send({
+    const result = await getFullTracks(tracks);
+
+    return {
       data: result,
       success: true,
-    });
+    };
   });
 }
 

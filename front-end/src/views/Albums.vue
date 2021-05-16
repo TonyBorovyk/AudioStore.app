@@ -8,7 +8,7 @@
         :album="album"
       />
     </div>
-    <ButtonTenMore />
+    <ButtonTenMore v-if="getTotalPages" :AskMore="moreAlbums" />
   </div>
 </template>
 
@@ -24,13 +24,14 @@ export default {
     ButtonTenMore
   },
   computed: {
-    ...mapGetters(["getAlbums"])
+    ...mapGetters(["getAlbums"]),
+    ...mapGetters("page", ["getTotalPages"])
   },
   methods: {
-    ...mapActions(["fetchAllAlbums"])
+    ...mapActions(["fetchAlbums", "moreAlbums"])
   },
   created() {
-    this.fetchAllAlbums();
+    this.fetchAlbums();
   }
 };
 </script>

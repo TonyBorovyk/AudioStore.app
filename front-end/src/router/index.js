@@ -82,6 +82,16 @@ const routes = [
     name: "Playlist",
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/Playlist.vue")
+  },
+  {
+    path: "/error",
+    name: "Error505",
+    component: () => import(/* webpackChunkName: "about" */ "../views/505.vue")
+  },
+  {
+    path: "/404",
+    name: "Not found",
+    component: () => import(/* webpackChunkName: "about" */ "../views/404.vue")
   }
 ];
 

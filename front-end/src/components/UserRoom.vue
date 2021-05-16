@@ -2,42 +2,75 @@
   <div class="room-container">
     <h1 class="room-name">{{ getRoomData.room_name }}</h1>
     <div class="room-data">
-      <h1 class="song-title">Playing now {{ getSongDetails.track_name }}</h1>
+      <button class="btn btn-margin" @click="changeMute()">
+        {{ MuteText }}
+      </button>
+      <h1 class="song-title">{{ playNow }} {{ getSongDetails.track_name }}</h1>
       <SongArtists :song="getSongDetails" />
     </div>
-    <BasePlayer
-      :song_id="getSongDetails.track_id"
-      :songs="[getSongDetails]"
-      :song_exist="song_exist"
-      :list="false"
-      :autoplay="autoplay"
+    <audio
+      @canplay="canPlay()"
+      ref="audio"
+      :src="getSongDetails.track_url"
+      muted
     />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import BasePlayer from "@/components/BasePlayer.vue";
 import SongArtists from "@/components/SongArtists.vue";
 export default {
   name: "UserRoom",
   components: {
-    SongArtists,
-    BasePlayer
+    SongArtists
   },
   data() {
     return {
-      song_exist: false,
-      autoplay: false
+      is_muted: true,
+      play_now: false
     };
   },
+  methods: {
+    changeMute() {
+      this.$refs.audio.muted = !this.$refs.audio.muted;
+      this.is_muted = this.$refs.audio.muted;
+    },
+    canPlay() {
+      if (this.getPlay) {
+        this.$refs.audio.play();
+      }
+    }
+  },
   computed: {
-    ...mapGetters(["getSongDetails", "getRoomData"])
+    ...mapGetters(["getSongDetails", "getRoomData", "getPlay", "getSongTime"]),
+    playNow() {
+      if (this.play_now) {
+        return "Playing now";
+      }
+      return "Paused";
+    },
+    MuteText() {
+      if (this.is_muted) {
+        return "Unmute";
+      }
+      return "Mute";
+    }
   },
   watch: {
-    getSongDetails() {
-      this.song_exist = true;
-      this.autoplay = true;
+    getPlay() {
+      if (this.getPlay) {
+        this.$refs.audio.play();
+        this.play_now = true;
+      }
+      if (!this.getPlay) {
+        this.$refs.audio.pause();
+        this.play_now = false;
+      }
+      this.$refs.audio.muted = false;
+    },
+    getSongTime() {
+      this.$refs.audio.currentTime = this.getSongTime;
     }
   }
 };

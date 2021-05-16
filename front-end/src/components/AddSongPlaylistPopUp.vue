@@ -39,23 +39,27 @@ import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "AddSongPlaylistPopUp",
-  props: ["song_id"],
   data() {
     return {
       checked_playlists: []
     };
   },
   computed: {
-    ...mapGetters(["getPlaylists"])
+    ...mapGetters(["getPlaylists", "getPlaylistId"])
   },
   methods: {
-    ...mapActions(["changePlaylistPopUpActivity"]),
-    AddSongToPlaylists() {
-      //type code here
+    ...mapActions(["changePlaylistPopUpActivity", "addSongPlaylist"]),
+    async AddSongToPlaylists() {
       if (this.checked_playlists.length == 0) {
         return;
       }
-      console.log(this.checked_playlists);
+      const res = await this.addSongPlaylist({
+        playlists: this.checked_playlists,
+        track_id: this.getPlaylistId
+      });
+      if (res == true) {
+        alert("Song successfully added in playlist!");
+      }
       this.changePlaylistPopUpActivity();
     }
   }

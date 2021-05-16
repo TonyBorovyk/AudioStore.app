@@ -97,7 +97,7 @@ export default {
     ]),
     async handleClick() {
       try {
-        await fetch("http://localhost:3000/logout", {
+        await fetch(`${process.env.VUE_APP_URL}/logout`, {
           method: "POST",
           credentials: "include"
         });

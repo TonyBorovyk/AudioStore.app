@@ -1,12 +1,8 @@
-const jwt = require('jsonwebtoken');
-
-const verify = require('./verifyToken');
+const { albums: dbAlbums, artists: dbArtists } = require('../db');
 
 const {
-  albums: dbAlbums,
-  artists: dbArtists,
-  users: dbUsers,
-} = require('../db');
+  transform: { getArtists, getFullAlbums },
+} = require('../services');
 
 const PAGINATION = { LIMIT: 20, PAGE: 1 };
 
@@ -18,7 +14,7 @@ const createOpts = {
         album_name: { type: 'string' },
         artist_name: { type: 'string' },
         cover: { type: 'string' },
-        artist_list: { type: 'string' },
+        artist_list: { type: 'array' },
       },
       required: ['album_name', 'artist_name', 'cover', 'artist_list'],
     },
@@ -30,10 +26,10 @@ const addOpts = {
     body: {
       type: 'object',
       properties: {
-        album_name: { type: 'string' },
+        album_id: { type: 'string' },
         artist_id: { type: 'string' },
       },
-      required: ['album_name', 'artist_id'],
+      required: ['album_id', 'artist_id'],
     },
   },
 };
@@ -49,108 +45,78 @@ const getMoreOpts = {
 
 async function routes(fastify) {
   fastify.post('/', createOpts, async (req, res) => {
-    const claims = verify.verifyToken(req.cookies.jwt, res);
-    const user = await dbUsers.getById(claims.id);
-    if (user.role !== 'admin') {
-      res.code(403).send({
-        message: 'Forbidden',
-        success: false,
-      });
-    }
-    const {
-      album_name: albumName,
-      artist_name: artistName,
-      cover,
-      artist_id: artistList,
-    } = req.body;
-    const { artist_id: artistId } = await dbArtists.getByArtistName(artistName);
-    const newAlbum = { albumName, artistId, cover, artistList };
-    const album = await dbAlbums.create(newAlbum);
-    res.send({
-      data: album,
-      success: true,
-    });
-  });
-  fastify.post('/add', addOpts, async (req, res) => {
-    const claims = verify.verifyToken(req.cookies.jwt, res);
-    const user = await dbUsers.getById(claims.id);
-    if (user.role !== 'admin') {
-      res.code(403).send({
-        message: 'Forbidden',
-        success: false,
-      });
-    }
-    const { album_name: albumName, artist_id: artistId } = req.body;
-
-    const album = await dbAlbums.getByAlbumName(albumName);
-    const updatedAlbum = {
-      albumId: album.Album_ID,
-      artistList: JSON.stringify(
-        JSON.parse(album.Artist_List).concat([artistId])
-      ),
+    const { artist_name: artistName, ...album } = req.body;
+    const newAlbum = {
+      album_name: album.album_name,
+      cover: album.cover,
+      artist_list: album.artist_list,
     };
-    const result = await dbAlbums.update(updatedAlbum);
-    res.send({
-      data: result,
-      success: true,
-    });
-  });
-  fastify.get('/', async (req, res) => {
-    const albums = await dbAlbums.getAll();
-    const response = [];
-    for await (const album of albums) {
-      album.artists = await Promise.all(
-        JSON.parse(album.artist_list).map((artistsId) =>
-          dbArtists.getById(artistsId)
-        )
-      );
-      response.push(album);
-    }
-    return res.code(201).send({
-      data: albums,
-      success: true,
-    });
-  });
-  fastify.get('/more', getMoreOpts, async (req, res) => {
-    const limit = parseInt(req.query.limit, 10);
-    const page = parseInt(req.query.page, 10);
-    const { albums, total, totalPages } = await dbAlbums.getMore(limit, page);
-    const response = { albums: [], total, totalPages };
-    for await (const album of albums) {
-      album.artists = await Promise.all(
-        JSON.parse(album.artist_list).map((artistsId) =>
-          dbArtists.getById(artistsId)
-        )
-      );
-      response.albums.push(album);
-    }
-    return res.send({
+
+    const { artist_id: artistId } = await dbArtists.getByArtistName(artistName);
+    newAlbum.artist_id = artistId;
+
+    const response = await dbAlbums.create(newAlbum);
+    res.code(201).send({
       data: response,
       success: true,
     });
   });
-  fastify.get('/:id', async (req, res) => {
-    let album = await dbAlbums.getById(req.params.id);
-    if (album) {
-      album = {
-        ...album,
-        artists: await Promise.all(
-          JSON.parse(album.artist_list).map((artistsId) =>
-            dbArtists.getById(artistsId)
-          )
-        ),
-      };
-    }
-    return res.send({
-      data: album,
+  fastify.post('/add', addOpts, async (req) => {
+    const { album_id: albumId, artist_id: artistId } = req.body;
+
+    const album = await dbAlbums.getById(albumId);
+    const updatedAlbum = {
+      album_id: albumId,
+      artist_list: album.concat(artistId),
+    };
+    const result = await dbAlbums.update(updatedAlbum);
+    ({
+      data: result,
       success: true,
     });
   });
-  fastify.delete('/:id', async (req, res) => {
-    await dbAlbums.remove(req.params.id);
-    return res.send({
+  fastify.get('/', async () => {
+    const albums = await dbAlbums.getAll();
+
+    const response = await getFullAlbums(albums);
+
+    return {
+      data: response,
       success: true,
-    });
+    };
+  });
+  fastify.get('/more', getMoreOpts, async (req) => {
+    const limit = parseInt(req.query.limit, 10);
+    const page = parseInt(req.query.page, 10);
+
+    const { albums, total, totalPages } = await dbAlbums.getMore(limit, page);
+
+    const response = await getFullAlbums(albums);
+
+    return {
+      data: {
+        albums: response,
+        total,
+        total_pages: totalPages,
+      },
+      success: true,
+    };
+  });
+  fastify.get('/:id', async (req) => {
+    let album = await dbAlbums.getById(req.params.id);
+    if (album) {
+      album.artists = await getArtists(album.artist_list);
+    }
+    return {
+      data: album,
+      success: true,
+    };
+  });
+  fastify.delete('/:id', async (req) => {
+    await dbAlbums.remove(req.params.id);
+    return {
+      success: true,
+    };
   });
 }
 

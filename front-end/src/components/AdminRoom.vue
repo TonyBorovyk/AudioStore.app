@@ -37,7 +37,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["fetchRecAddedSongs", "fetchAllUserPlaylists"])
+    ...mapActions(["fetchSongs", "fetchAllUserPlaylists"])
   },
   computed: {
     ...mapGetters(["getSongs", "getSongId", "getSongList"]),
@@ -58,7 +58,7 @@ export default {
     }
   },
   created() {
-    this.fetchRecAddedSongs();
+    this.fetchSongs({ order_by: "time_added", asc: true });
     this.fetchAllUserPlaylists();
   }
 };

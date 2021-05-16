@@ -210,7 +210,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["changeLogInStatus"]),
+    ...mapActions(["changeLogInStatus", "SignUp"]),
     ...mapActions("data_upload", ["changeDataUploadStatus"]),
     async handleSubmit() {
       this.v$.$touch();
@@ -225,31 +225,9 @@ export default {
         password: this.password,
         password_confirm: this.password_confirm
       };
-      try {
-        let response = await fetch("http://localhost:3000/signup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        });
-        if (response.status == 201) {
-          response = await response.json();
-          this.$router.push("/login");
-        } else {
-          response = await response.json();
-          if (response.message == "email exist") {
-            this.email_exist = true;
-          }
-          if (response.message == "username exist") {
-            this.username_exist = true;
-          }
-          return 0;
-        }
-      } catch (e) {
-        console.log(e.message);
-        return;
-      }
+      const { email_exist, username_exist } = await this.SignUp(data);
+      this.email_exist = email_exist || false;
+      this.username_exist = username_exist || false;
     }
   },
   created() {
