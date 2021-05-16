@@ -66,54 +66,62 @@ const sendInfoAfterConnection = messageObj  => {
   }));
 }
 
+const responseOnMessage = (message, socket) => {
+  const messageObj = JSON.parse(message);
+  if (messageObj.method === 'create new room') {
+    addRoom(messageObj, socket);
+    console.log('created');
+  } else if (messageObj.method === 'connect user to the room') {
+    addUserToRoom(messageObj, socket);
+    console.log('connected');
+  } else if (messageObj.method === 'just connected') {
+    sendInfoAfterConnection(messageObj);
+    console.log('message with connection info was sended');
+  } else if (
+    messageObj.method === 'play'
+    || messageObj.method === 'pause'
+    || messageObj.method === 'stop'
+  ) {
+    sendToEveryoneInARoom(messageObj, socket);
+    console.log(messageObj.method)
+  } else if (messageObj.method === 'new track') {
+    sendToEveryoneInARoom(messageObj, socket);
+    console.log('track was changed')
+  } else if (messageObj.method === 'new time') {
+    sendToEveryoneInARoom(messageObj, socket);
+    console.log('time changed')
+  }
+}
+
+const responseOnClose = (socket) => {
+  const foundObj = rooms.find((room) => room.adminConnection === socket);
+  let exists;
+  let index;
+  rooms.forEach(room => exists = room.usersConnections.includes(socket))
+  if (typeof foundObj !== 'undefined') {
+    index = rooms.findIndex(
+      (room) => room.adminConnection === socket,
+    );
+    rooms[index].usersConnections.forEach((connection) => connection.send(JSON.stringify({
+      method: 'Connection is closed'
+    })));
+    rooms.splice(index, 1);
+    console.log('disconnected admin');
+  } else if (typeof foundObj === 'undefined' && exists === true) {
+    const foundCon = rooms.find((room) => room.usersConnections.includes(socket));
+    index = foundCon.usersConnections.findIndex((connection) => connection === socket);
+    foundCon.usersConnections.splice(index);
+    foundCon.usersIds.splice(index);
+    console.log('disconnected user');
+  }
+}
+
 webSocketServer.on('connection', (socket) => {
   socket.on('message', (message) => {
-    const messageObj = JSON.parse(message);
-    if (messageObj.method === 'create new room') {
-      addRoom(messageObj, socket);
-      console.log('created');
-    } else if (messageObj.method === 'connect user to the room') {
-      addUserToRoom(messageObj, socket);
-      console.log('connected');
-    } else if (messageObj.method === 'just connected') {
-      sendInfoAfterConnection(messageObj);
-      console.log('message with connection info was sended');
-    } else if (
-      messageObj.method === 'play'
-      || messageObj.method === 'pause'
-      || messageObj.method === 'stop'
-    ) {
-      sendToEveryoneInARoom(messageObj, socket);
-      console.log(messageObj.method)
-    } else if (messageObj.method === 'new track') {
-      sendToEveryoneInARoom(messageObj, socket);
-      console.log('track was changed')
-    } else if (messageObj.method === 'new time') {
-      sendToEveryoneInARoom(messageObj, socket);
-      console.log('time changed')
-    }
+    responseOnMessage(message, socket);
   });
 
   socket.on('close', () => {
-    const foundObj = rooms.find((room) => room.adminConnection === socket);
-    let exists;
-    let index;
-    rooms.forEach(room => exists = room.usersConnections.includes(socket))
-    if (typeof foundObj !== 'undefined') {
-      index = rooms.findIndex(
-        (room) => room.adminConnection === socket,
-      );
-      rooms[index].usersConnections.forEach((connection) => connection.send(JSON.stringify({
-        method: 'Connection is closed'
-      })));
-      rooms.splice(index, 1);
-      console.log('disconnected admin');
-    } else if (typeof foundObj === 'undefined' && exists === true) {
-      const foundCon = rooms.find((room) => room.usersConnections.includes(socket));
-      index = foundCon.usersConnections.findIndex((connection) => connection === socket);
-      foundCon.usersConnections.splice(index);
-      foundCon.usersIds.splice(index);
-      console.log('disconnected user');
-    }
+    responseOnClose(socket)
   });
 });

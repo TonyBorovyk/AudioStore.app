@@ -66,7 +66,7 @@ async function routes(fastify) {
     const { artist_id: artistId } = await dbArtists.getByArtistName(artistName);
     const newAlbum = { albumName, artistId, cover, artistList };
     const album = await dbAlbums.create(newAlbum);
-    res.code(201).send({
+    res.send({
       data: album,
       success: true,
     });
@@ -106,7 +106,7 @@ async function routes(fastify) {
       );
       response.push(album);
     }
-    return res.send({
+    return res.code(201).send({
       data: albums,
       success: true,
     });
