@@ -80,6 +80,40 @@ const actions = {
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
     return res;
   },
+  async deletePlaylist({ dispatch }, id) {
+    dispatch("data_upload/changeDataUploadStatus", false, { root: true });
+    const res = await fetch(
+      `${process.env.VUE_APP_URL}/profile/playlists/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include"
+      }
+    )
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        if (response.status == 404) {
+          router.push("/404");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+        if (response.status == 500) {
+          router.push("/error");
+          dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+          return 0;
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        router.push("/error");
+      });
+    dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+    return res;
+  },
   async addSongPlaylist({ dispatch }, { playlists, track_id }) {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
     playlists.forEach(async playlist => {
@@ -115,6 +149,43 @@ const actions = {
           router.push("/error");
         });
     });
+
+    dispatch("data_upload/changeDataUploadStatus", true, { root: true });
+    return true;
+  },
+  async removeSongPlaylist({ dispatch }, { playlist_id, track_id }) {
+    dispatch("data_upload/changeDataUploadStatus", false, { root: true });
+    await fetch(`${process.env.VUE_APP_URL}/profile/playlists/delete`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ playlist_id, track_id })
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        if (response.status == 404) {
+          router.push("/404");
+          dispatch("data_upload/changeDataUploadStatus", true, {
+            root: true
+          });
+          return 0;
+        }
+        if (response.status == 500) {
+          router.push("/error");
+          dispatch("data_upload/changeDataUploadStatus", true, {
+            root: true
+          });
+          return 0;
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        router.push("/error");
+      });
 
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
     return true;

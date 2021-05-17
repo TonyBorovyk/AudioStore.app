@@ -44,7 +44,9 @@ async function getByPlaylistTitle(playlistTitle) {
 }
 
 async function getByUserId(userId) {
-  const response = await knex(PLAYLIST).where({ user_id: userId });
+  const response = await knex(PLAYLIST)
+    .where({ user_id: userId })
+    .orderBy('last_update', 'desc');
   if (!response) {
     throw new DatabaseError(`No Playlist with userId: ${userId}`);
   }

@@ -14,6 +14,12 @@
         <div class="song-artists text">
           {{ trackArtists(track.artists) }}
         </div>
+        <button
+          class="btn btn-delete"
+          @click="handleClick(getPlaylist.playlist_id, track.track_id)"
+        >
+          Delete
+        </button>
       </div>
     </div>
     <BasePlayer
@@ -43,7 +49,7 @@ export default {
     ...mapGetters(["getPlaylist"])
   },
   methods: {
-    ...mapActions(["fetchPlaylist"]),
+    ...mapActions(["fetchPlaylist", "removeSongPlaylist"]),
     trackArtists(artists) {
       let artists_string = "";
       artists.forEach(artist => {
@@ -54,6 +60,12 @@ export default {
     changeSong(track_id) {
       this.song_id = track_id;
       this.song_exist = true;
+    },
+    async handleClick(playlist_id, track_id) {
+      const res = await this.removeSongPlaylist({ playlist_id, track_id });
+      if (res) {
+        this.fetchPlaylist(playlist_id);
+      }
     }
   },
   created() {
