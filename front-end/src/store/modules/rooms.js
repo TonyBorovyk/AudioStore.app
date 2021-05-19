@@ -41,7 +41,7 @@ const actions = {
     if (res.data.total_pages <= rootGetters["page/getCurPage"]) {
       dispatch("page/changeTotalPages", false, { root: true });
     }
-    await commit("setRooms", res.data);
+    await commit("setRooms", res.data.rooms);
     dispatch("data_upload/changeDataUploadStatus", true, { root: true });
   },
   async moreRooms({ commit, dispatch, rootGetters }) {

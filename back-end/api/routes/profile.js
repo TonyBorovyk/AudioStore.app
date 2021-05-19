@@ -193,9 +193,13 @@ async function routes(fastify) {
   fastify.get('/rooms/more', roomsGetMoreOpts, async (req) => {
     const limit = parseInt(req.query.limit, 10);
     const page = parseInt(req.query.page, 10);
-    const result = await dbRooms.getAll(limit, page);
+    const { rooms, total, totalPages } = await dbRooms.getMore(limit, page);
     return {
-      data: result,
+      data: {
+        rooms,
+        total,
+        total_pages: totalPages,
+      },
       success: true,
     };
   });

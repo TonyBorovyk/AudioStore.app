@@ -16,7 +16,6 @@
 import SongArtists from "./SongArtists.vue";
 import ButtonMore from "./ButtonMore.vue";
 import AddSongPlaylist from "./AddSongPlaylist.vue";
-import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "BaseSongItem",
@@ -25,12 +24,6 @@ export default {
     ButtonMore,
     AddSongPlaylist,
     SongArtists
-  },
-  methods: {
-    ...mapActions(["changePlaylistPopUpActivity"])
-  },
-  computed: {
-    ...mapGetters(["isPlaylistPopUpActive", "isLoggedIn"])
   }
 };
 </script>

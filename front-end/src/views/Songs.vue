@@ -24,7 +24,7 @@
       class="btn btn-ten-more"
       @click="moreSongs({ order_by: this.sort, asc: this.asc })"
     >
-      Show More
+      Show More {{ getTotalPages }}
     </button>
   </div>
 </template>

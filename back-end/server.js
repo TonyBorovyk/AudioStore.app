@@ -9,11 +9,16 @@ const {
 } = require('./api/config');
 
 const PORT = process.env.PORT || 3000;
+const ADDRESS = process.env.ADDRESS || 'localhost';
 
 fastify.register(require('fastify-cookie'));
 fastify.register(require('fastify-cors'), {
   credentials: true,
-  origin: ['http://localhost:3000', 'http://localhost:8080'],
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:8080',
+    `http://${ADDRESS}:8080`,
+  ],
 });
 
 // GLOBAL ERROR HANDLER
@@ -49,13 +54,16 @@ async function boot() {
   await seeds();
 
   // LISTNER
-  fastify.listen(PORT, (err /* , adress */) => {
-    if (err) {
-      console.log(err);
-      process.exit(1);
+  fastify.listen(
+    PORT,
+    /*ADDRESS,*/ (err /* , adress */) => {
+      if (err) {
+        console.log(err);
+        process.exit(1);
+      }
+      console.log(`Server is listening on Port:${PORT}`);
     }
-    console.log(`Server is listening on Port:${PORT}`);
-  });
+  );
 }
 
 boot();
