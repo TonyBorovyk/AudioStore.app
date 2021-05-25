@@ -42,6 +42,7 @@ async function routes(fastify) {
       httpOnly: true,
       maxAge: 12 * 60 * 1000,
       SameSite: None,
+      Secure
     });
 
     return sendResponse(res, 200, true);
