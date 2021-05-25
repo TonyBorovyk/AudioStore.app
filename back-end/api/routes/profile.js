@@ -88,6 +88,7 @@ async function routes(fastify) {
     const claims = verifyToken(req.cookies.jwt, res);
     // eslint-disable-next-line no-unused-vars
     const { password, ...user } = await dbUsers.getById(claims.id); // claims.id returns user id
+
     return { user, success: true };
   });
 
@@ -121,6 +122,7 @@ async function routes(fastify) {
       success: true,
     };
   });
+
   fastify.delete('/playlists/delete', playlistAddOpts, async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
     const { playlist_id: playlistId, track_id: trackId } = req.body;
@@ -157,7 +159,9 @@ async function routes(fastify) {
       success: true,
     };
   });
+
   fastify.delete('/playlists/:id', async (req) => {
+
     await dbPlaylist.remove(req.params.id);
     return {
       success: true,
@@ -193,6 +197,7 @@ async function routes(fastify) {
   fastify.get('/rooms/more', roomsGetMoreOpts, async (req) => {
     const limit = parseInt(req.query.limit, 10);
     const page = parseInt(req.query.page, 10);
+
     const { rooms, total, totalPages } = await dbRooms.getMore(limit, page);
     return {
       data: {
