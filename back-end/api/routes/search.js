@@ -21,7 +21,7 @@ async function routes(fastify) {
   fastify.post('/songs', async (req) => {
     const searchString = req.body ? req.body.search : '';
 
-    const tracks = await dbSearch.global(searchString);
+    const tracks = await dbSearch.songs(searchString);
 
     const result = await getFullTracks(tracks);
 

@@ -3,6 +3,7 @@ require('dotenv').config({
   path: path.join(process.cwd(), 'back-end', '.env'),
 });
 
+// eslint-disable-next-line no-unused-vars
 const fatalError = require('../utils/fatalError.js');
 
 module.exports = {

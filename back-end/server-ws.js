@@ -1,9 +1,11 @@
 const WebSocketServer = require('ws');
 
+require('dotenv').config();
+
 const rooms = [];
 
 const webSocketServer = new WebSocketServer.Server({
-  port: 8081,
+  port: process.env.WS_PORT,
 });
 
 const addRoom = (messageObj, connection) => {

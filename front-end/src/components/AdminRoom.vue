@@ -72,6 +72,13 @@ export default {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
+    background: var(--second-button-color);
+  }
+}
+
+@media (max-height: 770px) {
+  .room-container {
+    min-height: 120vh;
   }
 }
 </style>

@@ -6,7 +6,7 @@ const {
   rooms: dbRooms,
 } = require('../db');
 const {
-  transform: { getTracks, getFullPlaylists },
+  transform: { getTracks },
 } = require('../services');
 
 const PAGINATION = { LIMIT: 20, PAGE: 1 };
@@ -86,7 +86,9 @@ const roomsGetMoreOpts = {
 async function routes(fastify) {
   fastify.get('/', async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
-    const user = await dbUsers.getById(claims.id); // claims.id returns user id
+    // eslint-disable-next-line no-unused-vars
+    const { password, ...user } = await dbUsers.getById(claims.id); // claims.id returns user id
+
     return { user, success: true };
   });
 
@@ -97,7 +99,6 @@ async function routes(fastify) {
       playlist_title: req.body.playlist_title,
       track_list: req.body.track_list,
     };
-
     const response = await dbPlaylist.create(newPlaylist);
     return res.code(201).send({
       data: response,
@@ -121,14 +122,30 @@ async function routes(fastify) {
       success: true,
     };
   });
+
+  fastify.delete('/playlists/delete', playlistAddOpts, async (req, res) => {
+    const claims = verifyToken(req.cookies.jwt, res);
+    const { playlist_id: playlistId, track_id: trackId } = req.body;
+    const playlist = await dbPlaylist.getById(playlistId);
+
+    const updatedPlaylist = {
+      playlist_id: playlistId,
+      user_id: claims.id,
+      track_list: playlist.track_list.filter((word) => word != trackId),
+    };
+
+    const result = await dbPlaylist.update(updatedPlaylist);
+    return {
+      data: result,
+      success: true,
+    };
+  });
   fastify.get('/playlists', async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
     const playlists = await dbPlaylist.getByUserId(claims.id);
 
-    const response = await getFullPlaylists(playlists);
-
     return {
-      data: response,
+      data: playlists,
       success: true,
     };
   });
@@ -142,7 +159,9 @@ async function routes(fastify) {
       success: true,
     };
   });
-  fastify.delete('/:id', async (req) => {
+
+  fastify.delete('/playlists/:id', async (req) => {
+
     await dbPlaylist.remove(req.params.id);
     return {
       success: true,
@@ -178,9 +197,14 @@ async function routes(fastify) {
   fastify.get('/rooms/more', roomsGetMoreOpts, async (req) => {
     const limit = parseInt(req.query.limit, 10);
     const page = parseInt(req.query.page, 10);
-    const result = await dbRooms.getAll(limit, page);
+
+    const { rooms, total, totalPages } = await dbRooms.getMore(limit, page);
     return {
-      data: result,
+      data: {
+        rooms,
+        total,
+        total_pages: totalPages,
+      },
       success: true,
     };
   });
