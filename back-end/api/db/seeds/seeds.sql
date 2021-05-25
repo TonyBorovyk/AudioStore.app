@@ -112,8 +112,6 @@ END
 $$
   LANGUAGE 'plpgsql';
 
-SELECT "Insert_Artist" ('Imagine Dragons');
-
 SELECT "Insert_Artist" ('The Chainsmokers');
 
 SELECT "Insert_Artist" ('Queen');
