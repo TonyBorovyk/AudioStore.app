@@ -161,7 +161,6 @@ async function routes(fastify) {
   });
 
   fastify.delete('/playlists/:id', async (req) => {
-
     await dbPlaylist.remove(req.params.id);
     return {
       success: true,
