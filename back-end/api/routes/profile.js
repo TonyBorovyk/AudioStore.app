@@ -191,6 +191,23 @@ async function routes(fastify) {
       success: true,
     };
   });
+  fastify.delete('/playlists/delete', playlistAddOpts, async (req, res) => {
+    const claims = verifyToken(req.cookies.jwt, res);
+    const { playlist_id: playlistId, track_id: trackId } = req.body;
+    const playlist = await dbPlaylist.getById(playlistId);
+
+    const updatedPlaylist = {
+      playlist_id: playlistId,
+      user_id: claims.id,
+      track_list: playlist.track_list.filter((word) => word != trackId),
+    };
+
+    const result = await dbPlaylist.update(updatedPlaylist);
+    return {
+      data: result,
+      success: true,
+    };
+  });
   fastify.delete('/rooms/:id', async (req, res) => {
     const claims = verifyToken(req.cookies.jwt, res);
     await dbRooms.remove(req.params.id, claims.id);
