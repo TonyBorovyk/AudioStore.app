@@ -28,16 +28,16 @@ export default {
     RoomSearch,
     RoomPlaylists,
     BasePlayer,
-    RoomSongs,
+    RoomSongs
   },
   data() {
     return {
       song_exist: false,
-      playlist: false,
+      playlist: false
     };
   },
   methods: {
-    ...mapActions(["fetchSongs", "fetchAllUserPlaylists"]),
+    ...mapActions(["fetchSongs", "fetchAllUserPlaylists"])
   },
   computed: {
     ...mapGetters(["getSongs", "getSongId", "getSongList"]),
@@ -46,7 +46,7 @@ export default {
         return "Songs";
       }
       return "Playlist";
-    },
+    }
   },
   watch: {
     playlist() {},
@@ -55,12 +55,12 @@ export default {
     },
     getSongList() {
       this.song_exist = false;
-    },
+    }
   },
   created() {
     this.fetchSongs({ order_by: "time_added", asc: true });
     this.fetchAllUserPlaylists();
-  },
+  }
 };
 </script>
 

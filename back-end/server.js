@@ -1,10 +1,6 @@
 // IMPORTS
 
 const fastify = require('fastify')();
-const path = require('path');
-
-// start web socket
-require('./server-ws');
 
 const { init } = require('./api/db');
 const seeds = require('./api/db/seeds');
@@ -47,14 +43,6 @@ fastify.setErrorHandler(function (error, request, reply) {
   reply.status(status).send(response);
 });
 
-fastify.register(require('fastify-static'), {
-  root: path.join(__dirname, '../front-end/dist'),
-  prefix: '/',
-});
-// Show main page in browser from front-end/dist/index.html
-fastify.get('/', function (req, reply) {
-  return reply.sendFile('index.html');
-});
 // ROUTES
 fastify.register(
   (fastifyInstance, opts, done) => {
