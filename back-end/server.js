@@ -17,7 +17,7 @@ fastify.register(require('fastify-cors'), {
     'http://localhost:3000',
     'http://localhost:8080',
     'http://:::3000',
-    'https://audiostore-app.herokuapp.com/',
+    'https://audiostore-app.herokuapp.com',
     `http://localhost:${PORT}`,
     `http://:::${PORT}`,
   ],
