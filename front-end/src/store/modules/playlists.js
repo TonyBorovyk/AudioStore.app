@@ -86,9 +86,6 @@ const actions = {
       `${process.env.VUE_APP_URL}/profile/playlists/${id}`,
       {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
-        },
         credentials: "include"
       }
     )
