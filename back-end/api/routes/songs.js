@@ -151,11 +151,13 @@ async function routes(fastify) {
     );
 
     const response = await getFullTracks(tracks);
-    response.total = total;
-    response.total_ages = totalPages;
 
     return {
-      data: response,
+      data: {
+        tracks: response,
+        total,
+        total_pages: totalPages,
+      },
       success: true,
     };
   });
@@ -178,10 +180,8 @@ async function routes(fastify) {
     const { album_id: albumId } = req.query;
     const tracks = await dbTrack.info.getByAlbumId(albumId);
 
-    const response = await getFullTracks(tracks);
-
     return {
-      response,
+      data: tracks,
       success: true,
     };
   });
@@ -189,10 +189,8 @@ async function routes(fastify) {
     const { artist_id: artistId } = req.query;
     const tracks = await dbTrack.info.getByArtistId(artistId);
 
-    const response = await getFullTracks(tracks);
-
     return {
-      response,
+      data: tracks,
       success: true,
     };
   });
