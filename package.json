@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "prepare": "husky install",
-    "modules": "cd back-end && npm install && cd ../front-end && npm install"
+    "modules": "cd back-end && npm install && cd ../front-end && npm install",
+    "frontend": "cd front-end && npm run serve",
+    "api": "cd api && npm run dev",
+    "dev": "concurrently --kill-others-on-fail \"npm run api\" \"npm run frontend\"",
+    "heroku-postbuild": "cd back-end && npm install"
   },
   "repository": {
     "type": "git",

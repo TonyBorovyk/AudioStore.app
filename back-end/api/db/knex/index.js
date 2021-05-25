@@ -30,7 +30,14 @@ const throwIfInvalid = (isValid, message = '') => {
 async function createDBWithTablesIfNotExists() {
   const createTablesSQL = (
     await fsp.readFile(
-      path.join(process.cwd(), 'api', 'db', 'migration', 'createTables.sql')
+      path.join(
+        process.cwd(),
+        'back-end',
+        'api',
+        'db',
+        'migration',
+        'createTables.sql'
+      )
     )
   ).toString();
   await knex.raw(createTablesSQL);
