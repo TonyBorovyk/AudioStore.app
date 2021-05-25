@@ -41,8 +41,8 @@ async function routes(fastify) {
     res.setCookie('jwt', token, {
       httpOnly: true,
       maxAge: 12 * 60 * 1000,
-      SameSite: None,
-      Secure
+      sameSite: 'none',
+      secure: true,
     });
 
     return sendResponse(res, 200, true);
