@@ -52,7 +52,7 @@ export default {
       this.$router.push("/");
     },
     wsConenction() {
-      this.connection = new WebSocket("ws://localhost:8081");
+      this.connection = new WebSocket(process.env.VUE_APP_WS_URL);
       if (this.getRoomData.admin_id == this.getUser.user_id) {
         this.admin = true;
       }

@@ -54,16 +54,13 @@ async function boot() {
   await seeds();
 
   // LISTNER
-  fastify.listen(
-    PORT,
-    /*ADDRESS,*/ (err /* , adress */) => {
-      if (err) {
-        console.log(err);
-        process.exit(1);
-      }
-      console.log(`Server is listening on Port:${PORT}`);
+  fastify.listen(PORT, ADDRESS, (err /* , adress */) => {
+    if (err) {
+      console.log(err);
+      process.exit(1);
     }
-  );
+    console.log(`Server is listening on Port:${PORT}`);
+  });
 }
 
 boot();
