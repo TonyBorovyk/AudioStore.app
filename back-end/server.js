@@ -1,6 +1,10 @@
 // IMPORTS
 
 const fastify = require('fastify')();
+const path = require('path');
+
+// start web socket
+require('./server-ws');
 
 const { init } = require('./api/db');
 const seeds = require('./api/db/seeds');
@@ -13,7 +17,14 @@ const PORT = process.env.PORT || 3000;
 fastify.register(require('fastify-cookie'));
 fastify.register(require('fastify-cors'), {
   credentials: true,
-  origin: ['http://localhost:3000', 'http://localhost:8080'],
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:8080',
+    'http://:::3000',
+    'https://audio-storage.herokuapp.com/',
+    `http://localhost:${PORT}`,
+    `http://:::${PORT}`,
+  ],
 });
 
 // GLOBAL ERROR HANDLER
@@ -35,13 +46,38 @@ fastify.setErrorHandler(function (error, request, reply) {
 
   reply.status(status).send(response);
 });
+
+fastify.register(require('fastify-static'), {
+  root: path.join(__dirname, '../front-end/dist'),
+  prefix: '/',
+});
+// Show main page in browser from front-end/dist/index.html
+fastify.get('/', function (req, reply) {
+  return reply.sendFile('index.html');
+});
 // ROUTES
-fastify.register(require('./api/routes/songs'), { prefix: '/songs' });
-fastify.register(require('./api/routes/albums'), { prefix: '/albums' });
-fastify.register(require('./api/routes/artists'), { prefix: '/artists' });
-fastify.register(require('./api/routes/profile'), { prefix: '/profile' });
-fastify.register(require('./api/routes/search'), { prefix: '/search' });
-fastify.register(require('./api/routes/auth'));
+fastify.register(
+  (fastifyInstance, opts, done) => {
+    fastifyInstance.register(require('./api/routes/songs'), {
+      prefix: '/songs',
+    });
+    fastifyInstance.register(require('./api/routes/albums'), {
+      prefix: '/albums',
+    });
+    fastifyInstance.register(require('./api/routes/artists'), {
+      prefix: '/artists',
+    });
+    fastifyInstance.register(require('./api/routes/profile'), {
+      prefix: '/profile',
+    });
+    fastifyInstance.register(require('./api/routes/search'), {
+      prefix: '/search',
+    });
+    fastifyInstance.register(require('./api/routes/auth'));
+    done();
+  },
+  { prefix: '/api' }
+);
 
 async function boot() {
   await init();
@@ -49,7 +85,7 @@ async function boot() {
   await seeds();
 
   // LISTNER
-  fastify.listen(PORT, (err /* , adress */) => {
+  fastify.listen(PORT, '::', (err /* , adress */) => {
     if (err) {
       console.log(err);
       process.exit(1);

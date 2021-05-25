@@ -93,12 +93,11 @@ async function routes(fastify) {
 
     const response = await getFullAlbums(albums);
 
+    response.total = total;
+    response.total_ages = totalPages;
+
     return {
-      data: {
-        albums: response,
-        total,
-        total_pages: totalPages,
-      },
+      data: response,
       success: true,
     };
   });

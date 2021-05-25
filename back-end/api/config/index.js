@@ -1,4 +1,7 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({
+  path: path.join(process.cwd(), 'back-end', '.env'),
+});
 
 const fatalError = require('../utils/fatalError.js');
 
@@ -28,26 +31,14 @@ module.exports = {
       knex: {
         client: 'postgresql',
         connection: {
-          user:
-            process.env.POSTGRES_USER ||
-            fatalError('POSTGRES_USER is not defined'),
-          host:
-            process.env.POSTGRES_HOST ||
-            fatalError('POSTGRES_HOST is not defined'),
-          port:
-            process.env.EXTERNAL_POSTGRES_PORT ||
-            fatalError('EXTERNAL_POSTGRES_PORT is not defined'),
-          database:
-            process.env.POSTGRES_DB || fatalError('POSTGRES_DB is not defined'),
-          password:
-            process.env.POSTGRES_PASSWORD ||
-            fatalError('POSTGRES_PASSWORD is not defined'),
+          connectionString: process.env.DATABASE_URL,
+          ssl: { rejectUnauthorized: false },
         },
         pool: {
           min: 2,
           max: 10,
         },
-        debug: false,
+        debug: true,
       },
     },
   },

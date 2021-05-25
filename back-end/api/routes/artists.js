@@ -47,14 +47,10 @@ async function routes(fastify) {
     const limit = parseInt(req.query.limit, 10);
     const page = parseInt(req.query.page, 10);
 
-    const { artists, total, totalPages } = await dbArtists.getMore(limit, page);
+    const artists = await dbArtists.getMore(limit, page);
 
     return {
-      data: {
-        artists: artists,
-        total,
-        total_pages: totalPages,
-      },
+      data: artists,
       success: true,
     };
   });

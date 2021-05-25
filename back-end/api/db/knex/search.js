@@ -1,5 +1,5 @@
 const {
-  tables: { ALBUM, ARTIST, TRACK_INFO, TRACK_CATEGORY },
+  tables: { ALBUM, ARTIST, PLAYLIST, TRACK_INFO, TRACK_CATEGORY },
 } = require('../../config');
 const { dbDTO } = require('../../services');
 
@@ -21,6 +21,12 @@ async function global(searchString) {
     .where('album_name', 'like', likeString);
 
   const artists = await knex(ARTIST).where('artist_name', 'like', likeString);
+
+  const playlists = await knex(PLAYLIST).where(
+    'playlist_title',
+    'like',
+    likeString
+  );
 
   const tracks = await knex(TRACK_INFO)
     .join(
@@ -53,6 +59,7 @@ async function global(searchString) {
   return {
     albums: albums.map(dbDTO.albumGet),
     artists,
+    playlists: playlists.map(dbDTO.playlistGet),
     tracks: tracks.map(dbDTO.trackGet),
   };
 }
