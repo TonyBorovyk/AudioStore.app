@@ -20,6 +20,12 @@
           >
             <h3>{{ playlist.playlist_title }}</h3>
           </router-link>
+          <button
+            class="btn btn-delete"
+            @click="handleClick(playlist.playlist_id)"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>
@@ -58,9 +64,16 @@ export default {
       "fetchUser",
       "changeCreateRoomPopUpActivity",
       "changeAddPlaylistActivity",
-      "fetchAllUserPlaylists"
+      "fetchAllUserPlaylists",
+      "deletePlaylist"
     ]),
-    ...mapActions("data_upload", ["changeDataUploadStatus"])
+    ...mapActions("data_upload", ["changeDataUploadStatus"]),
+    async handleClick(id) {
+      const res = await this.deletePlaylist(id);
+      if (res.success) {
+        this.fetchAllUserPlaylists();
+      }
+    }
   },
   created() {
     this.fetchUser();
@@ -81,6 +94,15 @@ export default {
   font-size: 20px;
 }
 .create-room:hover {
+  background: var(--third-button-hover-color);
+}
+
+.btn-delete {
+  background: var(--third-button-color);
+  color: white;
+}
+
+.btn-delete:hover {
   background: var(--third-button-hover-color);
 }
 </style>

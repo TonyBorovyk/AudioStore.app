@@ -124,6 +124,7 @@ const actions = {
         dispatch("data_upload/changeDataUploadStatus", true, { root: true });
         router.push("/error");
       });
+    console.log(res.data);
     dispatch("page/changeTotalPages", true, { root: true });
     if (res.data.total_pages <= rootGetters["page/getCurPage"]) {
       dispatch("page/changeTotalPages", false, { root: true });

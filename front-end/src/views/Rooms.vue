@@ -1,8 +1,9 @@
 <template>
   <div class="rooms-container">
     <h1>Rooms</h1>
+    <h3 v-if="getRooms.length == 0">No rooms</h3>
     <RoomsList :rooms="getRooms" />
-    <ButtonTenMore :AskMore="moreRooms" />
+    <ButtonTenMore v-if="getTotalPages" :AskMore="moreRooms" />
   </div>
 </template>
 
@@ -18,7 +19,8 @@ export default {
     ButtonTenMore
   },
   computed: {
-    ...mapGetters(["getAlbums", "getRooms"])
+    ...mapGetters(["getAlbums", "getRooms"]),
+    ...mapGetters("page", ["getTotalPages"])
   },
   methods: {
     ...mapActions(["fetchRooms", "moreRooms"])
