@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 const fastify = require('fastify');
+const plug = require('fastify-plugin');
 const routes = require('../auth');
 const { users: dbUsers } = require('../../db');
 
@@ -14,7 +15,6 @@ dbUsers.emailExists = jest.fn();
 dbUsers.usernameExists = jest.fn();
 dbUsers.create = jest.fn();
 dbUsers.getByEmail = jest.fn();
-
 describe('Test the root path', () => {
   test('It should response the POST method when testing signup with the correct password', async () => {
     dbUsers.getByEmail.mockReturnValue({
@@ -26,6 +26,8 @@ describe('Test the root path', () => {
       password: '$2a$10$MUtwiJkDWy6eewLTmqA79.f5Dg5MQzJjb8Lqy6twK4AekhYZcCSUG',
       role: 'body',
     });
+    //await app.inject('fastify-plugin');
+    await app.register(require('fastify-cookie'));
     const response = await app.inject({
       method: 'POST',
       url: '/login',
@@ -34,7 +36,6 @@ describe('Test the root path', () => {
         password: 'Qwerty253',
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
   });
 
@@ -56,7 +57,6 @@ describe('Test the root path', () => {
         password: 'Qwerty253',
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(400);
     expect(JSON.parse(response.body).success).toBe(false);
     expect(JSON.parse(response.body).message).toBe('Password is incorrect');
@@ -72,7 +72,6 @@ describe('Test the root path', () => {
         password: 'Qwerty253',
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(404);
     expect(JSON.parse(response.body).success).toBe(false);
     expect(JSON.parse(response.body).message).toBe('User not found');
@@ -92,7 +91,6 @@ describe('Test the root path', () => {
         password: 'Qwerty253',
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(201);
     expect(JSON.parse(response.body).success).toBe(true);
   });
@@ -111,7 +109,6 @@ describe('Test the root path', () => {
         password: 'Qwerty253',
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(400);
     expect(JSON.parse(response.body).success).toBe(false);
     expect(JSON.parse(response.body).message).toBe('username exist');
@@ -131,7 +128,6 @@ describe('Test the root path', () => {
         password: 'Qwerty253',
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(400);
     expect(JSON.parse(response.body).success).toBe(false);
     expect(JSON.parse(response.body).message).toBe('email exist');
@@ -142,7 +138,6 @@ describe('Test the root path', () => {
       method: 'POST',
       url: '/logout',
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(201);
     expect(JSON.parse(response.body).success).toBe(true);
   });

@@ -12,7 +12,11 @@
     "prettier": "npx prettier -c .",
     "prettier:format": "npx prettier -w .",
     "test": "jest --reporter=list --watch",
-    "test:watch": "jest --reporter=list --coverage"
+    "test:watch": "jest --reporter=list --coverage",
+    "start-dev": "nodemon index.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npm run migrate",
+    "test:int": "cross-env NODE_ENV=test jest --testTimeout=10000 --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",
@@ -33,14 +37,16 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cookie-signature": "^1.1.0",
     "docker": "^1.0.0",
     "docker-compose": "^0.23.8",
-    "dotenv": "^8.2.0",
+    "dotenv": "^8.6.0",
     "fastify": "^3.15.1",
     "fastify-cookie": "^5.3.1",
     "fastify-cors": "^5.2.0",
+    "fastify-plugin": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.95.4",
+    "knex": "^0.95.6",
     "mongoose": "^5.12.8",
     "pg": "^8.6.0",
     "ws": "^7.4.5",
@@ -48,6 +54,12 @@
   },
   "directories": {
     "doc": "doc"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "keywords": []
 }

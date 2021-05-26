@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+const path = require('path');
+
 const fatalError = require('../utils/fatalError.js');
 
 module.exports = {
@@ -38,7 +40,7 @@ module.exports = {
             process.env.EXTERNAL_POSTGRES_PORT ||
             fatalError('EXTERNAL_POSTGRES_PORT is not defined'),
           database:
-            process.env.POSTGRES_DB || fatalError('POSTGRES_DB is not defined'),
+            process.env.POSTGRES_DB ||fatalError('POSTGRES_DB is not defined'),
           password:
             process.env.POSTGRES_PASSWORD ||
             fatalError('POSTGRES_PASSWORD is not defined'),

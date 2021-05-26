@@ -2,17 +2,11 @@ process.env.NODE_ENV = 'test';
 
 const fastify = require('fastify');
 const routes = require('../albums');
-const {
-  albums: dbAlbums,
-  artists: dbArtists,
-} = require('../../db');
-const {
-  transform: { getArtists, getFullAlbums },
-} = require('../services');
+const { albums: dbAlbums, artists: dbArtists } = require('../../db');
+const getTransform = require('../../services/transform');
 
 const app = fastify();
 routes(app);
-const request = require('supertest');
 
 dbAlbums.create = jest.fn().mockReturnValue([
   {
@@ -22,7 +16,7 @@ dbAlbums.create = jest.fn().mockReturnValue([
     album_name: 'Origins',
     cover:
       'https://upload.wikimedia.org/wikipedia/ru/5/59/Origins_cover_%28Imagine_Dragons%29.jpg',
-    artist_list: '[1, 2]',
+    artist_list: [1, 2],
   },
   {
     artist_id: 3,
@@ -31,7 +25,7 @@ dbAlbums.create = jest.fn().mockReturnValue([
     album_name: 'Greatest Hits',
     cover:
       'https://www.udiscovermusic.com/wp-content/uploads/2017/11/Queen-Greatest-Hits.jpg',
-    artist_list: '[3]',
+    artist_list: [3],
   },
   {
     artist_id: 4,
@@ -40,7 +34,7 @@ dbAlbums.create = jest.fn().mockReturnValue([
     album_name: 'Blurryface',
     cover:
       'https://uk.wikipedia.org/wiki/%D0%A4%D0%B0%D0%B9%D0%BB:Twenty_One_Pilots_-_Blurryface.png#/media/Файл:Twenty_One_Pilots_-_Blurryface.png',
-    artist_list: '[4]',
+    artist_list: [4],
   },
 ]);
 
@@ -52,7 +46,7 @@ dbAlbums.getAll = jest.fn().mockReturnValue([
     album_name: 'Origins',
     cover:
       'https://upload.wikimedia.org/wikipedia/ru/5/59/Origins_cover_%28Imagine_Dragons%29.jpg',
-    artist_list: '[1, 2]',
+    artist_list: [1, 2],
   },
   {
     artist_id: 3,
@@ -61,7 +55,7 @@ dbAlbums.getAll = jest.fn().mockReturnValue([
     album_name: 'Greatest Hits',
     cover:
       'https://www.udiscovermusic.com/wp-content/uploads/2017/11/Queen-Greatest-Hits.jpg',
-    artist_list: '[3]',
+    artist_list: [3],
   },
   {
     artist_id: 4,
@@ -70,7 +64,7 @@ dbAlbums.getAll = jest.fn().mockReturnValue([
     album_name: 'Blurryface',
     cover:
       'https://uk.wikipedia.org/wiki/%D0%A4%D0%B0%D0%B9%D0%BB:Twenty_One_Pilots_-_Blurryface.png#/media/Файл:Twenty_One_Pilots_-_Blurryface.png',
-    artist_list: '[4]',
+    artist_list: [4],
   },
 ]);
 
@@ -85,7 +79,7 @@ dbAlbums.getMore = jest.fn().mockReturnValue({
       album_name: 'Blurryface',
       cover:
         'https://uk.wikipedia.org/wiki/%D0%A4%D0%B0%D0%B9%D0%BB:Twenty_One_Pilots_-_Blurryface.png#/media/Файл:Twenty_One_Pilots_-_Blurryface.png',
-      artist_list: '[4]',
+      artist_list: [4],
     },
   ],
 });
@@ -97,7 +91,7 @@ dbAlbums.getById = jest.fn().mockReturnValue({
   album_name: 'Origins',
   cover:
     'https://upload.wikimedia.org/wikipedia/ru/5/59/Origins_cover_%28Imagine_Dragons%29.jpg',
-  artist_list: '[1, 2]',
+  artist_list: [1, 2],
 });
 
 dbAlbums.update = jest.fn().mockReturnValue({
@@ -107,25 +101,51 @@ dbAlbums.update = jest.fn().mockReturnValue({
   album_name: 'Origins',
   cover:
     'https://upload.wikimedia.org/wikipedia/ru/5/59/Origins_cover_%28Imagine_Dragons%29.jpg',
-  artist_list: '[1, 2, 3]',
+  artist_list: [1, 2, 3],
 });
 
 dbAlbums.remove = jest.fn();
 
-dbArtists.getById = jest.fn().mockReturnValue({
+dbArtists.getById = jest.fn().mockImplementation((artistId) => {
+  if (artistId === 1) {
+    return {
+      artist_id: 1,
+      artist_name: 'Imagine Dragons',
+    };
+  } else if (artistId === 2) {
+    return {
+      artist_id: 2,
+      artist_name: 'The Chainsmokers',
+    };
+  }
+});; /*.mockReturnValue({
   artist_id: 1,
   artist_name: 'Imagine Dragons',
-});
+});*/
 
 dbArtists.getByArtistName = jest.fn().mockReturnValue({
   artist_id: 1,
   artist_name: 'Imagine Dragons',
 });
 
-getArtists.jest.fn();
-getFullAlbums.jest.fn();
+/*jest.mock('../../services/transform');
 
-jest.mock('../../services');
+getTransform.getArtists = jest.fn().mockReturnValue({
+  artist_id: 1,
+  artist_name: 'Imagine Dragons',
+});
+
+getTransform.getFullAlbums = jest.fn().mockReturnValue([
+  {
+    artist_id: 1,
+    artist_name: 'Imagine Dragons',
+    album_id: 1,
+    album_name: 'Origins',
+    cover:
+      'https://upload.wikimedia.org/wikipedia/ru/5/59/Origins_cover_%28Imagine_Dragons%29.jpg',
+    artist_list: '[1, 2]',
+  },
+]);*/
 
 describe('Test the root path', () => {
   test('It should response the POST method', async () => {
@@ -140,8 +160,8 @@ describe('Test the root path', () => {
         artist_list: [1, 2],
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(201);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
 
   test('It should response the POST method', async () => {
@@ -153,8 +173,8 @@ describe('Test the root path', () => {
         album_id: 1,
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(201);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
 
   test('It should response the GET method', async () => {
@@ -162,8 +182,8 @@ describe('Test the root path', () => {
       method: 'GET',
       url: '/',
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
 
   test('It should response the GET method', async () => {
@@ -175,16 +195,19 @@ describe('Test the root path', () => {
         page: 1,
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
   test('It should response the GET method', async () => {
     const response = await app.inject({
       method: 'GET',
       url: '/:id',
+      params: {
+        id: 1,
+      },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
   test('It should response the GET method', async () => {
     dbAlbums.getById.mockReturnValue(undefined);
@@ -192,15 +215,15 @@ describe('Test the root path', () => {
       method: 'GET',
       url: '/:id',
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
   test('It should response the DELETE method', async () => {
     const response = await app.inject({
       method: 'DELETE',
       url: '/:id',
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
 });

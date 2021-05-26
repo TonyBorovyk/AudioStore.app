@@ -104,7 +104,7 @@ async function routes(fastify) {
   fastify.get('/:id', async (req) => {
     let album = await dbAlbums.getById(req.params.id);
     if (album) {
-      album.artists = await getTransform.getArtists(album.artist_list);
+      album.artists = await getArtists(album.artist_list);
     }
     return {
       data: album,

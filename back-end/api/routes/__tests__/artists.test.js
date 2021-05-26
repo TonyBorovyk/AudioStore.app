@@ -3,9 +3,6 @@ process.env.NODE_ENV = 'test';
 const fastify = require('fastify');
 const routes = require('../artists');
 const { artists: dbArtists } = require('../../db');
-const {
-  transform: { getArtists, getFullAlbums },
-} = require('../services');
 
 const app = fastify();
 routes(app);
@@ -80,9 +77,6 @@ dbArtists.remove = jest.fn().mockReturnValue([
   },
 ]);
 
-getArtists.jest.fn();
-getFullAlbums.jest.fn();
-
 describe('Test the root path', () => {
   test('It should response the POST method', async () => {
     const response = await app.inject({
@@ -94,6 +88,7 @@ describe('Test the root path', () => {
     });
     console.log(response.body);
     expect(response.statusCode).toBe(201);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
 
   test('It should response the GET method', async () => {
@@ -103,6 +98,7 @@ describe('Test the root path', () => {
     });
     console.log(response.body);
     expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
 
   test('It should response the GET method', async () => {
@@ -116,6 +112,7 @@ describe('Test the root path', () => {
     });
     console.log(response.body);
     expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
   test('It should response the GET method', async () => {
     const response = await app.inject({
@@ -125,8 +122,8 @@ describe('Test the root path', () => {
         id: 2,
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
   test('It should response the DELETE method', async () => {
     const response = await app.inject({
@@ -136,7 +133,7 @@ describe('Test the root path', () => {
         id: 3,
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
   });
 });

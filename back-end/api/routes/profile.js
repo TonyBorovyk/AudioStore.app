@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-
+const verify = require('./verifyToken');
 const {
   users: dbUsers,
   playlist: dbPlaylist,
@@ -10,17 +10,6 @@ const {
 } = require('../services');
 
 const PAGINATION = { LIMIT: 20, PAGE: 1 };
-
-const verifyToken = (token, res) => {
-  const claims = jwt.verify(token, process.env.JWT_SECRET);
-  if (!claims) {
-    return res.code(401).send({
-      message: 'Unauthenticated',
-      success: false,
-    });
-  }
-  return claims;
-};
 
 const playlistCreateOpts = {
   schema: {
@@ -85,14 +74,14 @@ const roomsGetMoreOpts = {
 
 async function routes(fastify) {
   fastify.get('/', async (req, res) => {
-    const claims = verifyToken(req.cookies.jwt, res);
+    const claims = verify.verifyToken(req.cookies.jwt, res);
     // eslint-disable-next-line no-unused-vars
     const { password, ...user } = await dbUsers.getById(claims.id); // claims.id returns user id
     return { user, success: true };
   });
 
   fastify.post('/playlists', playlistCreateOpts, async (req, res) => {
-    const claims = verifyToken(req.cookies.jwt, res);
+    const claims = verify.verifyToken(req.cookies.jwt, res);
     const newPlaylist = {
       user_id: claims.id,
       playlist_title: req.body.playlist_title,
@@ -105,7 +94,7 @@ async function routes(fastify) {
     });
   });
   fastify.post('/playlists/add', playlistAddOpts, async (req, res) => {
-    const claims = verifyToken(req.cookies.jwt, res);
+    const claims = verify.verifyToken(req.cookies.jwt, res);
     const { playlist_id: playlistId, track_id: trackId } = req.body;
     const playlist = await dbPlaylist.getById(playlistId);
 
@@ -122,7 +111,7 @@ async function routes(fastify) {
     };
   });
   fastify.get('/playlists', async (req, res) => {
-    const claims = verifyToken(req.cookies.jwt, res);
+    const claims = verify.verifyToken(req.cookies.jwt, res);
     const playlists = await dbPlaylist.getByUserId(claims.id);
 
     return {
@@ -131,7 +120,7 @@ async function routes(fastify) {
     };
   });
   fastify.get('/playlists/:id', async (req, res) => {
-    const claims = verifyToken(req.cookies.jwt, res);
+    const claims = verify.verifyToken(req.cookies.jwt, res);
     const playlist = await dbPlaylist.getById(req.params.id, claims.id);
     playlist.tracks = await getTracks(playlist.track_list);
 
@@ -148,7 +137,7 @@ async function routes(fastify) {
   });
 
   fastify.post('/rooms', roomsCreateOpts, async (req, res) => {
-    const claims = verifyToken(req.cookies.jwt, res);
+    const claims = verify.verifyToken(req.cookies.jwt, res);
     const { room_name: roomName } = req.body;
     const newRoom = { adminId: claims.id, roomName };
     const room = await dbRooms.create(newRoom);
@@ -158,13 +147,13 @@ async function routes(fastify) {
     });
   });
   fastify.post('/rooms/add', roomsAddOpts, async (req, res) => {
-    verifyToken(req.cookies.jwt, res);
+    verify.verifyToken(req.cookies.jwt, res);
     const { room_name: roomName, admin_id: adminId } = req.body;
     const room = await dbRooms.create({ roomName, adminId });
-    ({
+    return {
       data: room,
       success: true,
-    });
+    };
   });
   fastify.get('/rooms', async () => {
     const result = await dbRooms.getAll();
@@ -190,7 +179,7 @@ async function routes(fastify) {
     };
   });
   fastify.delete('/rooms/:id', async (req, res) => {
-    const claims = verifyToken(req.cookies.jwt, res);
+    const claims = verify.verifyToken(req.cookies.jwt, res);
     await dbRooms.remove(req.params.id, claims.id);
     return {
       success: true,
