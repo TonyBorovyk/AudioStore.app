@@ -1,2 +1,2 @@
-web-server: node back-end/server.js
-web: node back-end/server-ws.js
+web: node back-end/server.js
+ws: node back-end/server-ws.js
