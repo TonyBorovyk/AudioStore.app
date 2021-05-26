@@ -71,9 +71,6 @@ const actions = {
     dispatch("data_upload/changeDataUploadStatus", false, { root: true });
     const res = await fetch(`${process.env.VUE_APP_URL}/profile/rooms/${id}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json"
-      },
       credentials: "include"
     })
       .then(response => {
