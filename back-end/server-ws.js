@@ -138,6 +138,6 @@ webSocketServer.on('connection', (socket) => {
   });
 });
 
-server.listen(process.env.PORT || 8080, process.env.HOST || '0.0.0.0', () => {
+server.listen(process.env.PORT || 8000, process.env.HOST || '0.0.0.0', () => {
   console.log(`websocket listening on on port ${process.env.PORT}`);
 });
