@@ -154,7 +154,7 @@ getTransform.getTracks = jest.fn().mockReturnValue({
 
 jest.mock('../verifyToken');
 
-const token = jwt.sign({ id: 1 }, process.env.JWT_SECRET);
+const token = jwt.sign({ id: 1 }, ${process.env.JWT_SECRET});
 
 verify.verifyToken = jest.fn().mockReturnValue({ id: 1 });
 
@@ -247,6 +247,41 @@ describe('Test the root path', () => {
       url: '/:id',
       params: {
         id: 1,
+      },
+    });
+    expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
+  });
+
+  test('It should response the GET method', async () => {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/rooms',
+      headers: {
+        cookies: {
+          jwt: token,
+        },
+      },
+      body: {
+        room_name: 'Room1',
+      },
+    });
+    expect(response.statusCode).toBe(201);
+    expect(JSON.parse(response.body).success).toBe(true);
+  });
+
+  test('It should response the POST method', async () => {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/rooms/add',
+      headers: {
+        cookies: {
+          jwt: token,
+        },
+      },
+      body: {
+        room_name: 'Room1',
+        admin_id: 1,
       },
     });
     expect(response.statusCode).toBe(200);

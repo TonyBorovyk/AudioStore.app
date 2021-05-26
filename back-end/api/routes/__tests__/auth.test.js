@@ -26,7 +26,6 @@ describe('Test the root path', () => {
       password: '$2a$10$MUtwiJkDWy6eewLTmqA79.f5Dg5MQzJjb8Lqy6twK4AekhYZcCSUG',
       role: 'body',
     });
-    //await app.inject('fastify-plugin');
     await app.register(require('fastify-cookie'));
     const response = await app.inject({
       method: 'POST',
@@ -36,6 +35,7 @@ describe('Test the root path', () => {
         password: 'Qwerty253',
       },
     });
+    console.log(response.body);
     expect(response.statusCode).toBe(200);
   });
 
