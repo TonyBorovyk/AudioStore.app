@@ -1,19 +1,13 @@
 const WebSocketServer = require('ws');
+const http = require('http');
 
 require('dotenv').config();
 
-console.log(process.env.WS_PORT);
-
 const rooms = [];
 
-const webSocketServer = new WebSocketServer.Server(
-  {
-    port: process.env.WS_PORT,
-  },
-  () => {
-    console.log(`websocket listening on on port ${process.env.WS_PORT}`);
-  }
-);
+const server = http.createServer();
+
+const webSocketServer = new WebSocketServer.Server({ server });
 
 const addRoom = (messageObj, connection) => {
   rooms.push({
@@ -143,3 +137,7 @@ webSocketServer.on('connection', (socket) => {
     }
   });
 });
+
+server.listen(process.env.WS_PORT, () => {
+  console.log(`websocket listening on on port ${process.env.WS_PORT}`);
+})
