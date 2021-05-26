@@ -287,4 +287,56 @@ describe('Test the root path', () => {
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body).success).toBe(true);
   });
+  test('It should response the GET method', async () => {
+    const response = await app.inject({
+        method: 'GET',
+        url: '/rooms',
+    });
+    console.log(response.body);
+    expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
+});
+test('It should response the GET method', async () => {
+    const response = await app.inject({
+        method: 'GET',
+        url: '/rooms/more',
+        query: {
+            limit: 2,
+            page: 1,
+        },
+    });
+    console.log(response.body);
+    expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
+});
+test('It should response the GET method', async () => {
+    //dbAlbums.getById.mockReturnValue(undefined);
+    const response = await app.inject({
+        method: 'GET',
+        url: '/rooms/:id',
+        params: {
+            id: 1,
+        },
+    });
+    console.log(response.body);
+    expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
+});
+test('It should response the DELETE method', async () => {
+    const response = await app.inject({
+        method: 'DELETE',
+        url: '/rooms/:id',
+        headers: {
+            cookies: {
+                jwt: token,
+            },
+        },
+        params: {
+            id: 1,
+        },
+    });
+    console.log(response.body);
+    expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body).success).toBe(true);
+});
 });
