@@ -3,5 +3,6 @@ README.md
 docker-compose.yaml
 .eslintrc.json
 .prettierrc
+heroku.yml
 package-lock.json
 package.json
