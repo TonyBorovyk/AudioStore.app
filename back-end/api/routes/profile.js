@@ -113,7 +113,7 @@ async function routes(fastify) {
   });
 
   fastify.delete('/playlists/delete', playlistAddOpts, async (req, res) => {
-    const claims = verifyToken(req.cookies.jwt, res);
+    const claims = verify.verifyToken(req.cookies.jwt, res);
     const { playlist_id: playlistId, track_id: trackId } = req.body;
     const playlist = await dbPlaylist.getById(playlistId);
 

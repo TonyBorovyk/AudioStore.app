@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test';
-
 const fastify = require('fastify');
 const routes = require('../albums');
 const { albums: dbAlbums, artists: dbArtists } = require('../../db');
@@ -118,34 +116,12 @@ dbArtists.getById = jest.fn().mockImplementation((artistId) => {
       artist_name: 'The Chainsmokers',
     };
   }
-});; /*.mockReturnValue({
-  artist_id: 1,
-  artist_name: 'Imagine Dragons',
-});*/
+});
 
 dbArtists.getByArtistName = jest.fn().mockReturnValue({
   artist_id: 1,
   artist_name: 'Imagine Dragons',
 });
-
-/*jest.mock('../../services/transform');
-
-getTransform.getArtists = jest.fn().mockReturnValue({
-  artist_id: 1,
-  artist_name: 'Imagine Dragons',
-});
-
-getTransform.getFullAlbums = jest.fn().mockReturnValue([
-  {
-    artist_id: 1,
-    artist_name: 'Imagine Dragons',
-    album_id: 1,
-    album_name: 'Origins',
-    cover:
-      'https://upload.wikimedia.org/wikipedia/ru/5/59/Origins_cover_%28Imagine_Dragons%29.jpg',
-    artist_list: '[1, 2]',
-  },
-]);*/
 
 describe('Test the root path', () => {
   test('It should response the POST method', async () => {
@@ -162,6 +138,8 @@ describe('Test the root path', () => {
     });
     expect(response.statusCode).toBe(201);
     expect(JSON.parse(response.body).success).toBe(true);
+    expect(JSON.parse(response.body).data[1].artist_name).toBe('Queen');
+    expect(JSON.parse(response.body).data[1].album_name).toBe('Greatest Hits');
   });
 
   test('It should response the POST method', async () => {
@@ -175,6 +153,8 @@ describe('Test the root path', () => {
     });
     expect(response.statusCode).toBe(201);
     expect(JSON.parse(response.body).success).toBe(true);
+    expect(JSON.parse(response.body).data.album_name).toBe('Origins');
+    expect(JSON.parse(response.body).data.album_id).toBe(1);
   });
 
   test('It should response the GET method', async () => {
@@ -184,6 +164,12 @@ describe('Test the root path', () => {
     });
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body).success).toBe(true);
+    expect(JSON.parse(response.body).data[0].artist_name).toBe(
+      'Imagine Dragons'
+    );
+    expect(JSON.parse(response.body).data[0].artists[1].artist_name).toBe(
+      'The Chainsmokers'
+    );
   });
 
   test('It should response the GET method', async () => {
@@ -197,6 +183,9 @@ describe('Test the root path', () => {
     });
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body).success).toBe(true);
+    expect(JSON.parse(response.body).data.albums[0].artist_id).toBe(4);
+    expect(JSON.parse(response.body).data.albums[0].album_id).toBe(3);
+    expect(JSON.parse(response.body).data.total).toBe(3);
   });
   test('It should response the GET method', async () => {
     const response = await app.inject({
@@ -208,6 +197,10 @@ describe('Test the root path', () => {
     });
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body).success).toBe(true);
+    expect(JSON.parse(response.body).data.artist_id).toBe(1);
+    expect(JSON.parse(response.body).data.artists[0].artist_name).toBe(
+      'Imagine Dragons'
+    );
   });
   test('It should response the GET method', async () => {
     dbAlbums.getById.mockReturnValue(undefined);

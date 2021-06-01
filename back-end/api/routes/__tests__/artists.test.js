@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test';
-
 const fastify = require('fastify');
 const routes = require('../artists');
 const { artists: dbArtists } = require('../../db');
@@ -86,9 +84,12 @@ describe('Test the root path', () => {
         artist_name: 'Imagine Dragons',
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(201);
     expect(JSON.parse(response.body).success).toBe(true);
+    expect(JSON.parse(response.body).data[0].artist_name).toBe(
+      'Imagine Dragons'
+    );
+    expect(JSON.parse(response.body).data[0].artist_id).toBe(1);
   });
 
   test('It should response the GET method', async () => {
@@ -96,9 +97,12 @@ describe('Test the root path', () => {
       method: 'GET',
       url: '/',
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body).success).toBe(true);
+    expect(JSON.parse(response.body).data[0].artist_name).toBe(
+      'Imagine Dragons'
+    );
+    expect(JSON.parse(response.body).data[0].artist_id).toBe(1);
   });
 
   test('It should response the GET method', async () => {
@@ -110,9 +114,13 @@ describe('Test the root path', () => {
         limit: 2,
       },
     });
-    console.log(response.body);
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body).success).toBe(true);
+    expect(JSON.parse(response.body).data.artists[0].artist_name).toBe(
+      'Imagine Dragons'
+    );
+    expect(JSON.parse(response.body).data.artists[0].artist_id).toBe(1);
+    expect(JSON.parse(response.body).data.total).toBe(3);
   });
   test('It should response the GET method', async () => {
     const response = await app.inject({
@@ -124,6 +132,8 @@ describe('Test the root path', () => {
     });
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body).success).toBe(true);
+    expect(JSON.parse(response.body).data.artist_name).toBe('The Chainsmokers');
+    expect(JSON.parse(response.body).data.artist_id).toBe(2);
   });
   test('It should response the DELETE method', async () => {
     const response = await app.inject({

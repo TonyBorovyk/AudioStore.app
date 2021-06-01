@@ -1,10 +1,7 @@
-process.env.NODE_ENV = 'test';
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = `${process.env.JWT_SECRET}`;
 const fastify = require('fastify');
-const plug = require('fastify-plugin');
 const routes = require('../auth');
 const { users: dbUsers } = require('../../db');
 
