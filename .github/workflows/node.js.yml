@@ -27,6 +27,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build --if-present
-    - run: cd back-end && npm run lint
+    - run: cd back-end && npm run lint --no-inline-config
     - run: cd back-end && npm run prettier
     - run: cd ../front-end && npm run lint
