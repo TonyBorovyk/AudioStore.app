@@ -3,8 +3,6 @@ const jwt = require('jsonwebtoken');
 
 const { users: dbUsers } = require('../db');
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
 const singUpOpts = {
   schema: {
     body: {

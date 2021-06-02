@@ -4,6 +4,6 @@
 
 cd back-end
 npm run lint
-npm run prettier
+npm run check-format
 cd ../front-end
 npm run lint

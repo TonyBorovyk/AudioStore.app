@@ -6,3 +6,4 @@ docker-compose.yaml
 heroku.yml
 package-lock.json
 package.json
+api/routes/__tests__

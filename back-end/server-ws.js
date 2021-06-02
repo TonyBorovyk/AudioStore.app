@@ -121,6 +121,12 @@ webSocketServer.on('connection', (socket) => {
   });
 });
 
+setInterval(() => {
+  webSocketServer.clients.forEach((client) => {
+    client.send(new Date().toTimeString());
+  });
+}, 40000);
+
 server.listen(process.env.PORT || 8000, process.env.HOST || '0.0.0.0', () => {
   console.log(`websocket listening on on port ${process.env.PORT}`);
 });
