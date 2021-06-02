@@ -36,7 +36,7 @@ async function routes(fastify) {
       return sendResponse(res, 400, false, 'Password is incorrect');
     }
 
-    const token = jwt.sign({ id: user.user_id }, JWT_SECRET);
+    const token = jwt.sign({ id: user.user_id }, `${process.env.JWT_SECRET}`);
 
     res.setCookie('jwt', token, {
       httpOnly: true,

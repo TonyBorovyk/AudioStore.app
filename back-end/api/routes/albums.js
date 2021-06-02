@@ -3,7 +3,6 @@ const { albums: dbAlbums, artists: dbArtists } = require('../db');
 const {
   transform: { getArtists, getFullAlbums },
 } = require('../services');
-
 const PAGINATION = { LIMIT: 20, PAGE: 1 };
 
 const createOpts = {
@@ -61,16 +60,16 @@ async function routes(fastify) {
       success: true,
     });
   });
-  fastify.post('/add', addOpts, async (req) => {
+  fastify.post('/add', addOpts, async (req, res) => {
     const { album_id: albumId, artist_id: artistId } = req.body;
 
     const album = await dbAlbums.getById(albumId);
     const updatedAlbum = {
       album_id: albumId,
-      artist_list: album.concat(artistId),
+      artist_list: album.artist_list.concat(artistId),
     };
     const result = await dbAlbums.update(updatedAlbum);
-    ({
+    res.code(201).send({
       data: result,
       success: true,
     });
