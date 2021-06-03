@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
+        node-version: [14.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -27,5 +27,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build --if-present
-    - run: cd back-end && npm ci && npm run lint && npm run check-format && npm run test
-    - run: cd front-end && npm ci && npm run lint && npm run test:unit
+    - run: npm ci --workspace=back-end && npm run lint --workspace=back-end && npm run check-format --workspace=back-end && npm run test --workspace=back-end
+    - run: npm ci --workspace=front-end && npm run lint --workspace=front-end && npm run test:unit --workspace=front-end
