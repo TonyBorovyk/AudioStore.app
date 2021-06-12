@@ -14,7 +14,7 @@ dbUsers.create = jest.fn();
 dbUsers.getByEmail = jest.fn();
 describe('Test the root path', () => {
   test('It should response the POST method when testing signup with the correct password', async () => {
-    dbUsers.getByEmail.mockReturnValue({
+    dbUsers.getByEmail.mockReturnValueOnce({
       user_id: 1,
       fist_name: 'User',
       last_name: 'Audiostore',
@@ -37,7 +37,7 @@ describe('Test the root path', () => {
   });
 
   test('It should response the POST method when testing signup with the incorrect password', async () => {
-    dbUsers.getByEmail.mockReturnValue({
+    dbUsers.getByEmail.mockReturnValueOnce({
       user_id: 1,
       fist_name: 'User',
       last_name: 'Audiostore',
@@ -60,7 +60,7 @@ describe('Test the root path', () => {
   });
 
   test('It should response the POST method when testing signup with non-existing user', async () => {
-    dbUsers.getByEmail.mockReturnValue(undefined);
+    dbUsers.getByEmail.mockReturnValueOnce(undefined);
     const response = await app.inject({
       method: 'POST',
       url: '/login',
@@ -75,8 +75,8 @@ describe('Test the root path', () => {
   });
 
   test('It should response the POST method when testing signup with unregistered username and email', async () => {
-    dbUsers.emailExists.mockReturnValue(false);
-    dbUsers.usernameExists.mockReturnValue(false);
+    dbUsers.emailExists.mockReturnValueOnce(false);
+    dbUsers.usernameExists.mockReturnValueOnce(false);
     const response = await app.inject({
       method: 'POST',
       url: '/signup',
@@ -93,8 +93,8 @@ describe('Test the root path', () => {
   });
 
   test('It should response the POST method when testing signup with registered username', async () => {
-    dbUsers.emailExists.mockReturnValue(false);
-    dbUsers.usernameExists.mockReturnValue(true);
+    dbUsers.emailExists.mockReturnValueOnce(false);
+    dbUsers.usernameExists.mockReturnValueOnce(true);
     const response = await app.inject({
       method: 'POST',
       url: '/signup',
@@ -112,8 +112,8 @@ describe('Test the root path', () => {
   });
 
   test('It should response the POST method when testing signup with registered email', async () => {
-    dbUsers.emailExists.mockReturnValue(true);
-    dbUsers.usernameExists.mockReturnValue(false);
+    dbUsers.emailExists.mockReturnValueOnce(true);
+    dbUsers.usernameExists.mockReturnValueOnce(false);
     const response = await app.inject({
       method: 'POST',
       url: '/signup',
